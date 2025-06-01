@@ -1,0 +1,302 @@
+"use client"
+
+import { AdminLinkKeys, AdminRoles, siteConfig } from "@/app/siteConfig"
+import { Badge } from "@/components/Badge"
+import { Tooltip } from "@/components/Tooltip"
+import { cx, focusRing } from "@/lib/utils"
+import { useAdminTransactionsStore } from "@/stores/admin/useAdminTransactionsStore"
+import { TransactionType } from "@/types/transaction"
+import { createClient } from "@/utils/supabase/client"
+import { Icon } from "@iconify/react"
+import Link from "next/link"
+import { usePathname, useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
+import { AdminProfileDesktop } from "./AdminProfile"
+
+interface AdminSidebarProps {
+  isCollapsed: boolean
+  toggleSidebar: () => void
+}
+
+interface SectionConfig {
+  title: string
+  icon: string
+  href: string
+  badge?: {
+    type: "transactions" | "funds"
+    transactionTypes?: TransactionType[]
+  }
+}
+
+const sectionConfigs: Record<AdminLinkKeys, SectionConfig> = {
+  overview: {
+    title: "Динаміка",
+    icon: "solar:chat-square-2-bold",
+    href: siteConfig.adminLinks.overview,
+  },
+  total: {
+    title: "Статистика",
+    icon: "solar:full-screen-square-bold",
+    href: siteConfig.adminLinks.total,
+  },
+  users: {
+    title: "Користувачі",
+    icon: "solar:expressionless-square-bold",
+    href: siteConfig.adminLinks.users,
+  },
+  deposits: {
+    title: "Депозити",
+    icon: "solar:add-square-bold",
+    href: siteConfig.adminLinks.deposits,
+    badge: {
+      type: "transactions",
+      transactionTypes: ["deposit"],
+    },
+  },
+  withdrawals: {
+    title: "Вивід",
+    icon: "solar:minus-square-bold",
+    href: siteConfig.adminLinks.withdrawals,
+    badge: {
+      type: "transactions",
+      transactionTypes: ["withdrawal"],
+    },
+  },
+  wallets: {
+    title: "Гаманці",
+    icon: "solar:wallet-bold",
+    href: siteConfig.adminLinks.wallets,
+  },
+  locations: {
+    title: "Локації",
+    icon: "solar:map-point-bold",
+    href: siteConfig.adminLinks.locations,
+  },
+  userLocations: {
+    title: "Локації користувачів",
+    icon: "solar:map-arrow-square-bold",
+    href: siteConfig.adminLinks.userLocations,
+  },
+  windMods: {
+    title: "Моди",
+    icon: "solar:wind-bold",
+    href: siteConfig.adminLinks.windMods,
+  },
+  userMods: {
+    title: "Моди придбані",
+    icon: "solar:inbox-out-bold",
+    href: siteConfig.adminLinks.userMods,
+  },
+  pushes: {
+    title: "Пуші",
+    icon: "solar:archive-minimalistic-bold",
+    href: siteConfig.adminLinks.pushes,
+  },
+  tasks: {
+    title: "Завдання",
+    icon: "solar:checklist-minimalistic-bold",
+    href: siteConfig.adminLinks.tasks,
+  },
+  userTasks: {
+    title: "Завдання виконані",
+    icon: "solar:check-read-bold",
+    href: siteConfig.adminLinks.userTasks,
+  },
+  referralEarnings: {
+    title: "Реферальні",
+    icon: "solar:users-group-rounded-bold",
+    href: siteConfig.adminLinks.referralEarnings,
+  },
+} as const
+
+export function AdminSidebar({
+  isCollapsed,
+  toggleSidebar,
+}: AdminSidebarProps) {
+  const [userRole, setUserRole] = useState<AdminRoles | null>(null)
+  const pathname = usePathname()
+  const { getPendingTransactions } = useAdminTransactionsStore()
+
+  const router = useRouter()
+
+  const getBadgeForSection = (config: SectionConfig) => {
+    if (!config.badge) return null
+
+    let stats = { pendingCount: 0 }
+
+    if (config.badge.type === "transactions") {
+      stats = getPendingTransactions(config.badge.transactionTypes || [])
+    }
+
+    if (stats.pendingCount > 0) {
+      return (
+        <Badge
+          className={cx(
+            "flex min-w-5 cursor-pointer items-center justify-center px-1.5 py-0.5 text-xs transition-colors",
+            "hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-500",
+            isCollapsed ? "absolute -mt-6 ml-3" : "ml-auto",
+          )}
+          variant="indigo"
+          onClick={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            router.push(config.href + `?filters={"status":"pending"}`)
+          }}
+        >
+          {stats.pendingCount}
+        </Badge>
+      )
+    }
+
+    return null
+  }
+
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      const supabase = createClient()
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+      if (user?.user_metadata?.role) {
+        setUserRole(user.user_metadata.role as AdminRoles)
+      }
+    }
+    fetchUserRole()
+  }, [])
+
+  const availableSections =  siteConfig.adminAccess['admin'].map((section) => {
+        const link = siteConfig.adminLinks[section]
+        return link
+  })
+    // : []
+
+  const isActive = (itemHref: string) => {
+    if (!pathname) return false
+    return pathname === itemHref || pathname.startsWith(itemHref)
+  }
+
+  return (
+    <div
+      className={cx(
+        isCollapsed ? "lg:w-[65px]" : "lg:w-64",
+        "hidden overflow-x-hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:flex-col",
+        "ease transform-gpu transition-all duration-100 will-change-transform",
+      )}
+    >
+      <aside className="flex grow flex-col gap-y-4 overflow-y-auto whitespace-nowrap border-r border-gray-200 px-3 py-4 dark:border-gray-800">
+        <div>
+          <div className="flex items-center gap-x-3">
+            <button
+              className="group inline-flex rounded-md p-2 text-gray-400 dark:text-gray-700"
+              onClick={toggleSidebar}
+            >
+              {isCollapsed ? (
+                <Icon
+                  icon="solar:square-alt-arrow-right-linear"
+                  className="h-6 w-6"
+                  aria-hidden="true"
+                />
+              ) : (
+                <Icon
+                  icon="solar:square-alt-arrow-left-linear"
+                  className="h-6 w-6"
+                  aria-hidden="true"
+                />
+              )}
+              <span
+                className={cx(
+                  "px-4 py-0.5 text-sm transition-opacity",
+                  isCollapsed ? "opacity-0" : "opacity-0 hover:opacity-100",
+                )}
+              >
+                згорнути
+              </span>
+            </button>
+          </div>
+        </div>
+
+        <nav className="flex flex-1 flex-col">
+          <ul role="list" className="space-y-1">
+            {availableSections.map((section) => {
+              const sectionKey = Object.entries(siteConfig.adminLinks).find(
+                ([_, path]) => path === section,
+              )?.[0] as AdminLinkKeys | undefined
+
+              if (!sectionKey) return null
+
+              const config = sectionConfigs[sectionKey]
+              if (!config) return null
+
+              const badge = getBadgeForSection(config)
+
+              return (
+                <li key={sectionKey}>
+                  {isCollapsed ? (
+                    <Tooltip
+                      side="right"
+                      content={config.title}
+                      sideOffset={6}
+                      showArrow={false}
+                      className="z-[999]"
+                    >
+                      <Link
+                        href={config.href}
+                        className={cx(
+                          isActive(siteConfig.adminLinks[sectionKey])
+                            ? "bg-gray-100 text-indigo-600 dark:bg-gray-800 dark:text-indigo-500"
+                            : "text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white",
+                          "group flex items-center justify-center rounded-md p-2 text-base font-semibold",
+                          focusRing,
+                        )}
+                      >
+                        <Icon
+                          icon={config.icon}
+                          className={cx(
+                            "h-6 w-6",
+                            isActive(siteConfig.adminLinks[sectionKey])
+                              ? "text-indigo-600 dark:text-indigo-500"
+                              : "text-gray-400 group-hover:text-gray-600 dark:text-gray-400 dark:group-hover:text-gray-300",
+                          )}
+                          aria-hidden="true"
+                        />
+                        {badge}
+                      </Link>
+                    </Tooltip>
+                  ) : (
+                    <Link
+                      href={config.href}
+                      className={cx(
+                        isActive(siteConfig.adminLinks[sectionKey])
+                          ? "bg-gray-100 text-indigo-600 dark:bg-gray-800 dark:text-indigo-500"
+                          : "text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white",
+                        "group flex items-center gap-x-3 rounded-md p-2 text-base font-semibold",
+                        focusRing,
+                      )}
+                    >
+                      <Icon
+                        icon={config.icon}
+                        className={cx(
+                          "h-6 w-6",
+                          isActive(siteConfig.adminLinks[sectionKey])
+                            ? "text-indigo-600 dark:text-indigo-500"
+                            : "text-gray-400 group-hover:text-gray-600 dark:text-gray-400 dark:group-hover:text-gray-300",
+                        )}
+                        aria-hidden="true"
+                      />
+                      {config.title}
+                      {badge}
+                    </Link>
+                  )}
+                </li>
+              )
+            })}
+          </ul>
+        </nav>
+
+        <div className="mt-auto overflow-hidden">
+          <AdminProfileDesktop isCollapsed={isCollapsed} />
+        </div>
+      </aside>
+    </div>
+  )
+}
