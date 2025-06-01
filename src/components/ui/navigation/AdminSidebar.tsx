@@ -1,6 +1,6 @@
 "use client"
 
-import { AdminLinkKeys, AdminRoles, siteConfig } from "@/app/siteConfig"
+import { AdminLinkKeys, siteConfig } from "@/app/siteConfig"
 import { Badge } from "@/components/Badge"
 import { Tooltip } from "@/components/Tooltip"
 import { cx, focusRing } from "@/lib/utils"
@@ -10,7 +10,7 @@ import { createClient } from "@/utils/supabase/client"
 import { Icon } from "@iconify/react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { AdminProfileDesktop } from "./AdminProfile"
 
 interface AdminSidebarProps {
@@ -113,7 +113,7 @@ export function AdminSidebar({
   isCollapsed,
   toggleSidebar,
 }: AdminSidebarProps) {
-  const [userRole, setUserRole] = useState<AdminRoles | null>(null)
+  // const [userRole, setUserRole] = useState<AdminRoles | null>(null)
   const pathname = usePathname()
   const { getPendingTransactions } = useAdminTransactionsStore()
 
@@ -158,7 +158,7 @@ export function AdminSidebar({
         data: { user },
       } = await supabase.auth.getUser()
       if (user?.user_metadata?.role) {
-        setUserRole(user.user_metadata.role as AdminRoles)
+        // setUserRole(user.user_metadata.role as AdminRoles)
       }
     }
     fetchUserRole()
