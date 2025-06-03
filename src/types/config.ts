@@ -10,7 +10,7 @@ export type AdminLinksConfig = {
   userLocations: string;
   windMods: string;
   userMods: string;
-  pushes: string;
+  // pushes: string;
   tasks: string;
   userTasks: string;
   referralEarnings: string;

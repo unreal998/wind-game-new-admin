@@ -20,7 +20,7 @@ export const useAdminTasksStore = create<AdminTasksState>((set) => ({
     fetchTasks: async () => {
         try {
             const { data, error } = await supabase
-                .from("tasks")
+                .from("missions")
                 .select()
                 .order("created_at", { ascending: false });
 

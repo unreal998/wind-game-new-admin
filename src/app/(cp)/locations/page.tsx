@@ -4,7 +4,6 @@ import { Badge } from "@/components/Badge"
 import { Card } from "@/components/Card"
 import { DataTable } from "@/components/data-table/DataTable"
 import { useAdminLocationsStore } from "@/stores/admin/useAdminLocationsStore"
-import { LOCATION_TYPES } from "@/types/location"
 import { FilterableColumn } from "@/types/table"
 import { useState } from "react"
 import { locationColumns } from "./_components/LocationColumns"
@@ -15,38 +14,27 @@ export default function LocationsAdminPage() {
 
   const filterableColumns: FilterableColumn[] = [
     {
-      id: "id",
+      id: "title",
       title: "Локація",
-      type: "select",
-      options: LOCATION_TYPES,
+      type: "text",
     },
     {
-      id: "base_wind_speed",
-      title: "Базова швидкість вітру",
+      id: "basicBonusPerClick",
+      title: "Базова енергія за клік",
       type: "number",
     },
     {
-      id: "base_energy_per_hour",
-      title: "Базова енергія за годину",
-      type: "number",
-    },
-    {
-      id: "profit_multiplier",
-      title: "Множник прибутку",
-      type: "number",
-    },
-    {
-      id: "required_referrals",
+      id: "referalsToUnlock",
       title: "Необхідно рефералів",
       type: "number",
     },
     {
-      id: "unlock_price",
+      id: "unlockPrice",
       title: "Ціна розблокування",
       type: "number",
     },
   ]
-
+  console.log("LocationsAdminPage locations:", locations)
   return (
     <>
       <div className="mb-4 flex items-center justify-between">

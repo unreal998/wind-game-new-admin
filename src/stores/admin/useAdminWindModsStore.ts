@@ -20,9 +20,9 @@ export const useAdminWindModsStore = create<AdminWindModsState>((set) => ({
     fetchWindMods: async () => {
         try {
             const { data, error } = await supabase
-                .from("wind_mods")
+                .from("modifiers")
                 .select()
-                .order("wind_speed", { ascending: true });
+                .order("area", { ascending: true });
 
             if (error) throw error;
 
@@ -35,13 +35,13 @@ export const useAdminWindModsStore = create<AdminWindModsState>((set) => ({
 
     subscribeToWindMods: async () => {
         const channel = supabase
-            .channel("wind_mods_channel")
+            .channel("mdifiers")
             .on(
                 "postgres_changes",
                 {
                     event: "*",
                     schema: "public",
-                    table: "wind_mods",
+                    table: "mdifiers",
                 },
                 () => {
                     set((state) => {

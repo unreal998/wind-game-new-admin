@@ -87,11 +87,11 @@ const sectionConfigs: Record<AdminLinkKeys, SectionConfig> = {
     icon: "solar:inbox-out-bold",
     href: siteConfig.adminLinks.userMods,
   },
-  pushes: {
-    title: "Пуші",
-    icon: "solar:archive-minimalistic-bold",
-    href: siteConfig.adminLinks.pushes,
-  },
+  // pushes: {
+  //   title: "Пуші",
+  //   icon: "solar:archive-minimalistic-bold",
+  //   href: siteConfig.adminLinks.pushes,
+  // },
   tasks: {
     title: "Завдання",
     icon: "solar:checklist-minimalistic-bold",

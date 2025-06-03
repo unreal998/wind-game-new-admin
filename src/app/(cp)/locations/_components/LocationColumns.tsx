@@ -3,7 +3,7 @@
 import { Checkbox } from "@/components/Checkbox"
 // import { DateWithDistance } from "@/components/data-table/DateWithDistance"
 // import { formatTimestamp } from "@/hooks/formatTimestamp"
-import { type Location, LOCATION_TYPES } from "@/types/location"
+import { type Location } from "@/types/location"
 import { type TableColumn } from "@/types/table"
 import { formatAmount } from "@/utils/amountFormatter"
 import { createColumnHelper } from "@tanstack/react-table"
@@ -39,75 +39,49 @@ export const locationColumns: TableColumn<Location>[] = [
     enableHiding: false,
   }),
 
-  columnHelper.accessor("id", {
+  columnHelper.accessor("title", {
     header: "Локація",
-    cell: ({ getValue }) => {
-      const type = getValue()
-      return LOCATION_TYPES.find((t) => t.value === type)?.label || type
-    },
+    cell: ({ getValue }) => getValue(),
     enableSorting: true,
-    filterFn: "select",
+    filterFn: "text",
     meta: {
-      exportValue: (row) =>
-        LOCATION_TYPES.find((t) => t.value === row.id)?.label || row.id,
-    },
-  }),
-
-  columnHelper.accessor("base_wind_speed", {
-    header: "Базова швидкість вітру",
-    cell: ({ getValue }) => `${getValue()} м/с`,
-    enableSorting: true,
-    filterFn: "number",
-    meta: {
-      exportHeader: "Базова швидкість вітру (м/с)",
-      exportValue: (row) => row.base_wind_speed || 0,
+      exportHeader: "Локація",
+      exportValue: (row) => row.title || 0,
       exportAlign: "right",
     },
   }),
 
-  columnHelper.accessor("base_energy_per_hour", {
-    header: "Базова енергія за годину",
-    cell: ({ getValue }) => `${getValue()} ENRG`,
+  columnHelper.accessor("basicBonusPerClick", {
+    header: "Базова енергія за клік",
+    cell: ({ getValue }) => `${getValue()} квт`,
     enableSorting: true,
     filterFn: "number",
     meta: {
-      exportHeader: "Базова енергія за годину (ENRG)",
-      exportValue: (row) => row.base_energy_per_hour || 0,
+      exportHeader: "Базова енергія за клік (квт)",
+      exportValue: (row) => row.basicBonusPerClick || 0,
       exportAlign: "right",
     },
   }),
 
-  columnHelper.accessor("profit_multiplier", {
-    header: "Множник прибутку",
-    cell: ({ getValue }) => `${getValue()}x`,
-    enableSorting: true,
-    filterFn: "number",
-    meta: {
-      exportHeader: "Множник прибутку",
-      exportValue: (row) => row.profit_multiplier || 0,
-      exportAlign: "right",
-    },
-  }),
-
-  columnHelper.accessor("required_referrals", {
+  columnHelper.accessor("referalsToUnlock", {
     header: "Необхідно рефералів",
     cell: ({ getValue }) => getValue(),
     enableSorting: true,
     filterFn: "number",
     meta: {
-      exportValue: (row) => row.required_referrals || 0,
+      exportValue: (row) => row.referalsToUnlock || 0,
       exportAlign: "right",
     },
   }),
 
-  columnHelper.accessor("unlock_price", {
+  columnHelper.accessor("unlockPrice", {
     header: "Ціна розблокування",
     cell: ({ getValue }) => formatAmount(getValue()),
     enableSorting: true,
     filterFn: "number",
     meta: {
       exportHeader: "Ціна розблокування (TON)",
-      exportValue: (row) => row.unlock_price || 0,
+      exportValue: (row) => row.unlockPrice || 0,
       exportAlign: "right",
     },
   }),

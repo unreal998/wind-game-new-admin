@@ -20,9 +20,9 @@ export const useAdminLocationsStore = create<AdminLocationsState>((set) => ({
     fetchLocations: async () => {
         try {
             const { data, error } = await supabase
-                .from("locations")
+                .from("countries")
                 .select()
-                .order("profit_multiplier", { ascending: true });
+                .order("id", { ascending: true });
 
             if (error) throw error;
 

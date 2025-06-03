@@ -31,7 +31,7 @@ export default function ReferralsAdminPage() {
       type: "text",
     },
     {
-      id: "username",
+      id: "userName",
       title: "Username",
       type: "text",
     },

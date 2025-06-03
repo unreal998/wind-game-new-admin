@@ -5,7 +5,6 @@ import { Card } from "@/components/Card"
 import { DataTable } from "@/components/data-table/DataTable"
 import { useAdminTasksStore } from "@/stores/admin/useAdminTasksStore"
 import { FilterableColumn } from "@/types/table"
-import { TASK_TYPES } from "@/types/task"
 import { useState } from "react"
 import { taskColumns } from "./_components/TaskColumns"
 
@@ -17,8 +16,7 @@ export default function TasksAdminPage() {
     {
       id: "type",
       title: "Тип",
-      type: "select",
-      options: TASK_TYPES,
+      type: "text",
     },
     {
       id: "title",
@@ -26,14 +24,29 @@ export default function TasksAdminPage() {
       type: "text",
     },
     {
-      id: "url",
-      title: "URL",
+      id: "description",
+      title: "Опис",
       type: "text",
     },
     {
       id: "reward",
       title: "Винагорода",
       type: "number",
+    },
+    {
+      id: "coin",
+      title: "Монета",
+      type: "text",
+    },
+    {
+      id: "specType",
+      title: "Специфічний тип",
+      type: "text",
+    },
+    {
+      id: "specValue",
+      title: "Специфічне значення",
+      type: "text",
     },
     {
       id: "created_at",

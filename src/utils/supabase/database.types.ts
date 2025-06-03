@@ -11,33 +11,31 @@ export type Database = {
     Tables: {
       locations: {
         Row: {
-          base_energy_per_hour: number
-          base_wind_speed: number
+          basicBonusPerClick: number
+          title: string
           created_at: string | null
           id: Database["public"]["Enums"]["location_type"]
-          profit_multiplier: number
-          required_referrals: number
-          unlock_price: number
+          referalsToUnlock: number
+          unlockPrice: number
           updated_at: string | null
         }
         Insert: {
-          base_energy_per_hour: number
-          base_wind_speed: number
+          basicBonusPerClick: number
+          title: string
           created_at?: string | null
           id: Database["public"]["Enums"]["location_type"]
-          profit_multiplier: number
-          required_referrals: number
-          unlock_price: number
+          referalsToUnlock: number
+          unlockPrice: number
           updated_at?: string | null
         }
         Update: {
-          base_energy_per_hour?: number
-          base_wind_speed?: number
+          basicBonusPerClick?: number
+          title?: string
           created_at?: string | null
           id?: Database["public"]["Enums"]["location_type"]
           profit_multiplier?: number
-          required_referrals?: number
-          unlock_price?: number
+          referalsToUnlock?: number
+          unlockPrice?: number
           updated_at?: string | null
         }
         Relationships: []
@@ -161,7 +159,11 @@ export type Database = {
           created_at: string
           id: string
           reward: number
-          title: string
+          title: {en: string; ru: string}
+          description: {en: string; ru: string}
+          coin: string
+          specType: string
+          specValue: string
           type: Database["public"]["Enums"]["task_type"]
           updated_at: string
           url: string
@@ -170,7 +172,11 @@ export type Database = {
           created_at?: string
           id?: string
           reward: number
-          title: string
+          title: {en: string; ru: string}
+          coin: string
+          description: {en: string; ru: string}
+          specType: string
+          specValue: string
           type?: Database["public"]["Enums"]["task_type"]
           updated_at?: string
           url: string
@@ -179,7 +185,11 @@ export type Database = {
           created_at?: string
           id?: string
           reward?: number
-          title?: string
+          title?: {en: string; ru: string}
+          coin: string
+          specType: string
+          specValue: string
+          description?: {en: string; ru: string}
           type?: Database["public"]["Enums"]["task_type"]
           updated_at?: string
           url?: string
@@ -297,7 +307,6 @@ export type Database = {
           location_id: Database["public"]["Enums"]["location_type"] | null
           mod_id: string | null
           price: number
-          profit_multiplier: number
           purchased_at: string | null
           pushes_done: number
           required_pushes: number
@@ -314,7 +323,6 @@ export type Database = {
           location_id?: Database["public"]["Enums"]["location_type"] | null
           mod_id?: string | null
           price: number
-          profit_multiplier: number
           purchased_at?: string | null
           pushes_done?: number
           required_pushes: number
@@ -419,17 +427,15 @@ export type Database = {
           added_to_attachment_menu: boolean | null
           allows_write_to_pm: boolean | null
           auth_date: string | null
-          chat_instance: string | null
-          chat_type: string | null
-          coin_balance: number | null
+          WindBalance: number | null
           created_at: string | null
-          first_name: string | null
+          firstName: string | null
           hash: string | null
           id: number
           is_bot: boolean | null
           is_premium: boolean | null
-          language_code: string | null
-          last_name: string | null
+          language: string | null
+          lastName: string | null
           photo_url: string | null
           platform: string | null
           query_id: string | null
@@ -439,9 +445,9 @@ export type Database = {
           signature: string | null
           start_param: string | null
           status: Database["public"]["Enums"]["user_status"] | null
-          ton_balance: number | null
+          TONBalance: number | null
           updated_at: string | null
-          username: string | null
+          userName: string | null
           version: string | null
           wallet: string | null
           wallet_ton: string | null
@@ -450,17 +456,15 @@ export type Database = {
           added_to_attachment_menu?: boolean | null
           allows_write_to_pm?: boolean | null
           auth_date?: string | null
-          chat_instance?: string | null
-          chat_type?: string | null
-          coin_balance?: number | null
+          WindBalance?: number | null
           created_at?: string | null
-          first_name?: string | null
+          firstName?: string | null
           hash?: string | null
           id: number
           is_bot?: boolean | null
           is_premium?: boolean | null
-          language_code?: string | null
-          last_name?: string | null
+          language?: string | null
+          lastName?: string | null
           photo_url?: string | null
           platform?: string | null
           query_id?: string | null
@@ -470,9 +474,9 @@ export type Database = {
           signature?: string | null
           start_param?: string | null
           status?: Database["public"]["Enums"]["user_status"] | null
-          ton_balance?: number | null
+          TONBalance?: number | null
           updated_at?: string | null
-          username?: string | null
+          userName?: string | null
           version?: string | null
           wallet?: string | null
           wallet_ton?: string | null
@@ -481,17 +485,15 @@ export type Database = {
           added_to_attachment_menu?: boolean | null
           allows_write_to_pm?: boolean | null
           auth_date?: string | null
-          chat_instance?: string | null
-          chat_type?: string | null
-          coin_balance?: number | null
+          WindBalance?: number | null
           created_at?: string | null
-          first_name?: string | null
+          firstName?: string | null
           hash?: string | null
           id?: number
           is_bot?: boolean | null
           is_premium?: boolean | null
-          language_code?: string | null
-          last_name?: string | null
+          language?: string | null
+          lastName?: string | null
           photo_url?: string | null
           platform?: string | null
           query_id?: string | null
@@ -501,9 +503,9 @@ export type Database = {
           signature?: string | null
           start_param?: string | null
           status?: Database["public"]["Enums"]["user_status"] | null
-          ton_balance?: number | null
+          TONBalance?: number | null
           updated_at?: string | null
-          username?: string | null
+          userName?: string | null
           version?: string | null
           wallet?: string | null
           wallet_ton?: string | null

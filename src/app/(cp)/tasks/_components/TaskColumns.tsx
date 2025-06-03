@@ -2,7 +2,6 @@
 
 import { Badge } from "@/components/Badge"
 import { Checkbox } from "@/components/Checkbox"
-import { CopyButton } from "@/components/CopyButton"
 import { DateWithDistance } from "@/components/data-table/DateWithDistance"
 import { formatTimestamp } from "@/hooks/formatTimestamp"
 import { type TableColumn } from "@/types/table"
@@ -40,6 +39,16 @@ export const taskColumns: TableColumn<Task>[] = [
     enableHiding: false,
   }),
 
+  columnHelper.accessor("title", {
+    header: "Назва",
+    cell: ({ getValue }) => getValue().ru,
+    enableSorting: true,
+    filterFn: "text",
+    meta: {
+      exportValue: (row) => row.title.ru,
+    },
+  }),
+
   columnHelper.accessor("type", {
     header: "Тип",
     cell: ({ getValue }) => {
@@ -58,41 +67,59 @@ export const taskColumns: TableColumn<Task>[] = [
     },
   }),
 
-  columnHelper.accessor("title", {
-    header: "Назва",
-    cell: ({ getValue }) => getValue(),
+  columnHelper.accessor("description", {
+    header: "Опис",
+    cell: ({ getValue }) => getValue().ru,
     enableSorting: true,
     filterFn: "text",
     meta: {
-      exportValue: (row) => row.title,
-    },
-  }),
-
-  columnHelper.accessor("url", {
-    header: "URL",
-    cell: ({ getValue }) => {
-      const url = getValue()
-      return (
-        <span className="flex items-center space-x-2">
-          <span className="max-w-[200px] truncate">{url}</span>
-          <CopyButton text={url} />
-        </span>
-      )
-    },
-    enableSorting: true,
-    filterFn: "text",
-    meta: {
-      exportValue: (row) => row.url,
+      exportValue: (row) => row.title.ru,
     },
   }),
 
   columnHelper.accessor("reward", {
     header: "Винагорода",
-    cell: ({ getValue }) => `${getValue()} ENRG`,
+    cell: ({ getValue }) => `${getValue()}`,
     enableSorting: true,
     filterFn: "number",
     meta: {
-      exportHeader: "Винагорода (ENRG)",
+      exportHeader: "Винагорода",
+      exportValue: (row) => row.reward || 0,
+      exportAlign: "right",
+    },
+  }),
+
+  columnHelper.accessor("coin", {
+    header: "Монета",
+    cell: ({ getValue }) => `${getValue()}`,
+    enableSorting: true,
+    filterFn: "number",
+    meta: {
+      exportHeader: "Монета",
+      exportValue: (row) => row.reward || 0,
+      exportAlign: "right",
+    },
+  }),
+
+  columnHelper.accessor("specType", {
+    header: "Специфічний тип",
+    cell: ({ getValue }) => `${getValue()}`,
+    enableSorting: true,
+    filterFn: "number",
+    meta: {
+      exportHeader: "Специфічний тип",
+      exportValue: (row) => row.reward || 0,
+      exportAlign: "right",
+    },
+  }),
+
+  columnHelper.accessor("specValue", {
+    header: "Специфічне значення",
+    cell: ({ getValue }) => `${getValue()}`,
+    enableSorting: true,
+    filterFn: "number",
+    meta: {
+      exportHeader: "Специфічне значення",
       exportValue: (row) => row.reward || 0,
       exportAlign: "right",
     },

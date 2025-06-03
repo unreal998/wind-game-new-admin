@@ -5,7 +5,6 @@ import { Checkbox } from "@/components/Checkbox"
 import { CopyButton } from "@/components/CopyButton"
 import {
   BOOLEAN_OPTIONS,
-  CHAT_TYPES,
   LANGUAGE_TO_COUNTRY,
   PLATFORMS,
 } from "@/components/data-table/constants"
@@ -68,31 +67,7 @@ export const userColumns: TableColumn<AdminProfile>[] = [
     },
   }),
 
-  columnHelper.display({
-    id: "photo_url",
-    header: "Фото",
-    cell: ({ row }) => {
-      const url = row.original.photo_url
-      if (!url) return "-"
-      const user =
-        row.original.first_name || row.original.username || row.original.id
-      return (
-        <Image
-          src={url}
-          alt={String(user)}
-          width={32}
-          height={32}
-          className="rounded-full object-cover"
-        />
-      )
-    },
-    enableSorting: false,
-    meta: {
-      exportValue: (row) => row.photo_url || "-",
-    },
-  }),
-
-  columnHelper.accessor("username", {
+  columnHelper.accessor("userName", {
     header: "Username",
     cell: ({ getValue }) => {
       const username = getValue()
@@ -107,31 +82,31 @@ export const userColumns: TableColumn<AdminProfile>[] = [
     enableSorting: true,
     filterFn: "text",
     meta: {
-      exportValue: (row) => row.username || "-",
+      exportValue: (row) => row.userName || "-",
     },
   }),
 
-  columnHelper.accessor("first_name", {
+  columnHelper.accessor("firstName", {
     header: "Ім'я",
     cell: ({ getValue }) => getValue() || "-",
     enableSorting: true,
     filterFn: "text",
     meta: {
-      exportValue: (row) => row.first_name || "-",
+      exportValue: (row) => row.firstName || "-",
     },
   }),
 
-  columnHelper.accessor("last_name", {
+  columnHelper.accessor("lastName", {
     header: "Прізвище",
     cell: ({ getValue }) => getValue() || "-",
     enableSorting: true,
     filterFn: "text",
     meta: {
-      exportValue: (row) => row.last_name || "-",
+      exportValue: (row) => row.lastName || "-",
     },
   }),
 
-  columnHelper.accessor("language_code", {
+  columnHelper.accessor("language", {
     header: "Мова",
     cell: ({ getValue }) => {
       const langCode = getValue()
@@ -151,7 +126,7 @@ export const userColumns: TableColumn<AdminProfile>[] = [
     enableSorting: true,
     filterFn: "text",
     meta: {
-      exportValue: (row) => row.language_code?.toUpperCase() || "-",
+      exportValue: (row) => row.language?.toUpperCase() || "-",
     },
   }),
 
@@ -361,50 +336,26 @@ export const userColumns: TableColumn<AdminProfile>[] = [
   //   },
   // }),
 
-  columnHelper.accessor("chat_type", {
-    header: "Джерело переходу",
-    cell: ({ getValue }) => {
-      const type = getValue()
-      return CHAT_TYPES.find((t) => t.value === type)?.label || "-"
-    },
-    enableSorting: true,
-    filterFn: "select",
-    meta: {
-      exportValue: (row) =>
-        CHAT_TYPES.find((t) => t.value === row.chat_type)?.label || "-",
-    },
-  }),
-
-  columnHelper.accessor("chat_instance", {
-    header: "ID джерела",
-    cell: ({ getValue }) => getValue() || "-",
-    enableSorting: true,
-    filterFn: "text",
-    meta: {
-      exportValue: (row) => row.chat_instance || "-",
-    },
-  }),
-
-  columnHelper.accessor("ton_balance", {
+  columnHelper.accessor("TONBalance", {
     header: "TON баланс",
     cell: ({ getValue }) => formatAmount(getValue()),
     enableSorting: true,
     filterFn: "number",
     meta: {
       exportHeader: "TON баланс",
-      exportValue: (row) => row.ton_balance || 0,
+      exportValue: (row) => row.TONBalance || 0,
       exportAlign: "right",
     },
   }),
 
-  columnHelper.accessor("coin_balance", {
+  columnHelper.accessor("WindBalance", {
     header: "ENRG баланс",
     cell: ({ getValue }) => formatAmount(getValue()),
     enableSorting: true,
     filterFn: "number",
     meta: {
       exportHeader: "ENRG баланс",
-      exportValue: (row) => row.coin_balance || 0,
+      exportValue: (row) => row.WindBalance || 0,
       exportAlign: "right",
     },
   }),
