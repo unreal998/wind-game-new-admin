@@ -15,7 +15,6 @@ import { type AdminProfile } from "@/types/profile"
 import { type TableColumn } from "@/types/table"
 import { formatAmount } from "@/utils/amountFormatter"
 import { createColumnHelper } from "@tanstack/react-table"
-import Image from "next/image"
 import { FlagImage } from "react-international-phone"
 
 const columnHelper = createColumnHelper<AdminProfile>()

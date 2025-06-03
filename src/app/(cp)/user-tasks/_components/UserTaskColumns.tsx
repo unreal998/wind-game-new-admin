@@ -99,7 +99,7 @@ export const userTaskColumns: TableColumn<UserTask>[] = [
     enableSorting: true,
     filterFn: "text",
     meta: {
-      exportValue: (row) => row.task?.title || "-",
+      exportValue: (row) => row.task?.title.ru || "-",
     },
   }),
 

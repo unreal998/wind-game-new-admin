@@ -130,18 +130,18 @@ export const userModColumns: TableColumn<UserMod>[] = [
     },
   }),
 
-  columnHelper.accessor((row) => row.price * row.profit_multiplier, {
-    id: "final_profit",
-    header: "Фінальний прибуток",
-    cell: ({ getValue }) => formatAmount(getValue()),
-    enableSorting: true,
-    filterFn: "number",
-    meta: {
-      exportHeader: "Фінальний прибуток (TON)",
-      exportValue: (row) => row.price * row.profit_multiplier || 0,
-      exportAlign: "right",
-    },
-  }),
+  // columnHelper.accessor((row) => row.price * row.profit_multiplier, {
+  //   id: "final_profit",
+  //   header: "Фінальний прибуток",
+  //   cell: ({ getValue }) => formatAmount(getValue()),
+  //   enableSorting: true,
+  //   filterFn: "number",
+  //   meta: {
+  //     exportHeader: "Фінальний прибуток (TON)",
+  //     exportValue: (row) => row.price * row.profit_multiplier || 0,
+  //     exportAlign: "right",
+  //   },
+  // }),
 
   columnHelper.accessor("required_pushes", {
     header: "Необхідно пушів",
