@@ -1,63 +1,70 @@
-import { AdminProfile } from "@/types/profile";
-import { createClient } from "@/utils/supabase/client";
-import { create } from "zustand";
+import { AdminProfile } from "@/types/profile"
+import { createClient } from "@/utils/supabase/client"
+import { create } from "zustand"
 
 interface AdminReferralsState {
-  profiles: AdminProfile[];
-  isLoading: boolean;
-  error: string | null;
-  fetchProfiles: () => Promise<void>;
-  subscribeToProfiles: () => Promise<() => void>;
+  profiles: AdminProfile[]
+  isLoading: boolean
+  error: string | null
+  fetchProfiles: () => Promise<void>
+  updateUser: (updatedUser: AdminProfile) => void
+  subscribeToProfiles: () => Promise<() => void>
 }
 
-const supabase = createClient();
+const supabase = createClient()
 
-export const useAdminReferralsStore = create<AdminReferralsState>((
-  set,
-  get,
-) => ({
-  profiles: [],
-  isLoading: true,
-  error: null,
+export const useAdminReferralsStore = create<AdminReferralsState>(
+  (set, get) => ({
+    profiles: [],
+    isLoading: true,
+    error: null,
 
-  fetchProfiles: async () => {
-    // set({ isLoading: true, error: null });
-    try {
-      const { data, error } = await supabase
-        .from("users")
-        .select("*")
-        .order("created_at", { ascending: false });
+    fetchProfiles: async () => {
+      // set({ isLoading: true, error: null });
+      try {
+        const { data, error } = await supabase
+          .from("users")
+          .select("*")
+          .order("created_at", { ascending: false })
 
-      if (error) throw error;
+        if (error) throw error
 
-      set({
-        profiles: data || [],
-        isLoading: false,
-      });
-    } catch (error) {
-      console.error("Error fetching profiles:", error);
-      set({ error: "Failed to load profiles", isLoading: false });
-    }
-  },
+        set({
+          profiles: data || [],
+          isLoading: false,
+        })
+      } catch (error) {
+        console.error("Error fetching profiles:", error)
+        set({ error: "Failed to load profiles", isLoading: false })
+      }
+    },
 
-  subscribeToProfiles: async () => {
-    const subscription = supabase
-      .channel("users_channel")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "users",
-        },
-        () => {
-          get().fetchProfiles();
-        },
-      )
-      .subscribe();
+    subscribeToProfiles: async () => {
+      const subscription = supabase
+        .channel("users_channel")
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "users",
+          },
+          () => {
+            get().fetchProfiles()
+          },
+        )
+        .subscribe()
 
-    return () => {
-      supabase.removeChannel(subscription);
-    };
-  },
-}));
+      return () => {
+        supabase.removeChannel(subscription)
+      }
+    },
+    updateUser: (updatedUser) => {
+      set((state) => ({
+        profiles: state.profiles.map((u) =>
+          u.id === updatedUser.id ? updatedUser : u,
+        ),
+      }))
+    },
+  }),
+)

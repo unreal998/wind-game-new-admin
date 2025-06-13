@@ -47,6 +47,8 @@ interface DataTableProps<TData> {
   }[]
   onRefetch?: () => Promise<void>
   isLoading?: boolean
+  openSidebarOnRowClick?: boolean
+  onRowClick: (row: TData) => void
 }
 
 // Функція для форматування значень для пошуку
@@ -114,13 +116,6 @@ const formatSearchValue = (key: string, value: any): string => {
 // Функція для створення пошукового рядка
 const createSearchString = (data: Record<string, any>): string => {
   return Object.entries(data)
-    .filter(
-      ([key]) =>
-        !key.startsWith("_") &&
-        key !== "user_id" &&
-        key !== "id" &&
-        key !== "order_date",
-    )
     .map(([key, value]) => formatSearchValue(key, value))
     .join(" ")
     .toLowerCase()
@@ -134,6 +129,8 @@ export function DataTable<TData extends Record<string, any>>({
   aggregations,
   onRefetch,
   isLoading,
+  onRowClick,
+  openSidebarOnRowClick = false,
 }: DataTableProps<TData>) {
   const [pagination, setPagination] = useState({
     pageSize: simple ? 100 : 10,
@@ -150,7 +147,7 @@ export function DataTable<TData extends Record<string, any>>({
 
   const [preparedData, setPreparedData] =
     useState<(TData & { _searchable?: string })[]>(data)
-
+  const [activeRow, setActiveRow] = useState<TData | null>(null)
   // Підготовка даних при зміні вхідних даних
   useEffect(() => {
     const prepared = data.map((item) => ({
@@ -403,7 +400,15 @@ export function DataTable<TData extends Record<string, any>>({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  className="group hover:bg-gray-50 hover:dark:bg-gray-900"
+                  onClick={() => {
+                    if (openSidebarOnRowClick) {
+                      setActiveRow(row.original)
+                      onRowClick?.(row.original)
+                    }
+                  }}
+                  className={cx(
+                    "group cursor-pointer hover:bg-gray-50 hover:dark:bg-gray-900",
+                  )}
                 >
                   {row.getVisibleCells().map((cell, index) => (
                     <TableCell

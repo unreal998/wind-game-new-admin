@@ -2,22 +2,40 @@
 
 import { Badge } from "@/components/Badge"
 import { Card } from "@/components/Card"
-import {
-  BOOLEAN_OPTIONS,
-  CHAT_TYPES,
-  PLATFORMS,
-} from "@/components/data-table/constants"
 import { DataTable } from "@/components/data-table/DataTable"
 import { useAdminReferralsStore } from "@/stores/admin/useAdminReferralsStore"
 import { FilterableColumn } from "@/types/table"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { userColumns } from "./_components/UserColumns"
+import { UserSidebar } from "./_components/UserSidebar"
+import { fetchWithdrawals } from "./_components/fetchWithdrawals"
+import { withdrawalsColumns } from "./_components/withdrawalsColumns"
 
 export default function ReferralsAdminPage() {
-  const { profiles, isLoading } = useAdminReferralsStore()
+  const { profiles, isLoading, updateUser } = useAdminReferralsStore()
   const [aggregatedValue, setAggregatedValue] = useState<
     string | number | null
   >(null)
+  const [activeUser, setActiveUser] = useState<any | null>(null)
+  const [withdrawals, setWithdrawals] = useState<any[]>()
+
+  const handleUpdateUser = (updated: any) => {
+    setActiveUser(updated)
+  }
+
+  useEffect(() => {
+    const loadWithdrawals = async () => {
+      try {
+        const data = await fetchWithdrawals()
+        console.log("Withdrawals:", data)
+        setWithdrawals(data)
+      } catch (error) {
+        console.error("Failed to fetch withdrawals", error)
+      }
+    }
+
+    loadWithdrawals()
+  }, [])
 
   const filterableColumns: FilterableColumn[] = [
     {
@@ -26,8 +44,8 @@ export default function ReferralsAdminPage() {
       type: "text",
     },
     {
-      id: "name",
-      title: "Ім'я",
+      id: "telegramID",
+      title: "Telegram ID",
       type: "text",
     },
     {
@@ -36,104 +54,28 @@ export default function ReferralsAdminPage() {
       type: "text",
     },
     {
-      id: "language_code",
-      title: "Мова",
-      type: "text",
-    },
-    {
-      id: "is_premium",
-      title: "Premium",
-      type: "boolean",
-      options: BOOLEAN_OPTIONS,
-    },
-    {
-      id: "is_bot",
-      title: "Бот",
-      type: "boolean",
-      options: BOOLEAN_OPTIONS,
-    },
-    {
-      id: "allows_write_to_pm",
-      title: "Повідомлення",
-      type: "boolean",
-      options: BOOLEAN_OPTIONS,
-    },
-    {
-      id: "added_to_attachment_menu",
-      title: "Закріплено",
-      type: "boolean",
-      options: BOOLEAN_OPTIONS,
-    },
-    {
-      id: "platform",
-      title: "Платформа",
-      type: "select",
-      options: PLATFORMS,
-    },
-    {
-      id: "version",
-      title: "Версія",
-      type: "text",
-    },
-    {
-      id: "created_at",
-      title: "Реєстрація",
-      type: "dateRange",
-    },
-    // {
-    //   id: "auth_date",
-    //   title: "Авторизація",
-    //   type: "dateRange",
-    // },
-    {
-      id: "start_param",
-      title: "Параметр запуску",
-      type: "text",
-    },
-    {
-      id: "referrer_id",
-      title: "Запросив",
-      type: "text",
-    },
-    {
-      id: "referral_code",
-      title: "Код запрошення",
-      type: "text",
-    },
-    // {
-    //   id: "query_id",
-    //   title: "Query ID",
-    //   type: "text",
-    // },
-    {
-      id: "chat_type",
-      title: "Джерело переходу",
-      type: "select",
-      options: CHAT_TYPES,
-    },
-    {
-      id: "chat_instance",
-      title: "ID джерела",
-      type: "text",
-    },
-    {
       id: "ton_balance",
-      title: "TON баланс",
+      title: "TON Balance",
       type: "number",
     },
     {
       id: "coin_balance",
-      title: "ENRG баланс",
+      title: "Wind Balance",
       type: "number",
     },
     {
-      id: "wallet",
-      title: "Гаманець користувача",
+      id: "first_name",
+      title: "First Name",
       type: "text",
     },
     {
-      id: "wallet_ton",
-      title: "Гаманець поповнення",
+      id: "last_name",
+      title: "Last Name",
+      type: "text",
+    },
+    {
+      id: "wallet",
+      title: "Wallet",
       type: "text",
     },
   ]
@@ -162,8 +104,37 @@ export default function ReferralsAdminPage() {
             },
           ]}
           isLoading={isLoading}
+          openSidebarOnRowClick={true}
+          onRowClick={(row) => setActiveUser(row)}
         />
       </Card>
+      {activeUser &&
+        (() => {
+          const userWithdrawals = withdrawals?.filter(
+            (w) => w.uid === activeUser.id,
+          )
+
+          console.log(
+            "User withdrawals for",
+            activeUser.id,
+            "=>",
+            userWithdrawals,
+          )
+
+          return (
+            <UserSidebar
+              user={activeUser}
+              onClose={() => setActiveUser(null)}
+              onUpdate={(updatedUser) => {
+                updateUser(updatedUser)
+                setActiveUser(updatedUser)
+              }}
+              tableData={userWithdrawals}
+              tableColumns={withdrawalsColumns}
+              filterableColumns={filterableColumns}
+            />
+          )
+        })()}
     </>
   )
 }
