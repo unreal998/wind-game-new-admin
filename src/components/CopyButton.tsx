@@ -11,7 +11,9 @@ interface CopyButtonProps {
 export function CopyButton({ text }: CopyButtonProps) {
   const [copied, setCopied] = useState(false)
 
-  const handleCopy = async () => {
+  const handleCopy = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation()
+
     try {
       await navigator.clipboard.writeText(text)
       setCopied(true)
@@ -27,6 +29,7 @@ export function CopyButton({ text }: CopyButtonProps) {
       size="sm"
       className="h-6 w-6 p-0"
       onClick={handleCopy}
+      title="Скопіювати"
     >
       {copied ? (
         <RiCheckboxCircleLine className="size-4 text-green-500" />

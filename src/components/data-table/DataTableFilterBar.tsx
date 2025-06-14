@@ -3,11 +3,7 @@
 import { Button } from "@/components/Button"
 import { Searchbar } from "@/components/Searchbar"
 import { DataTableFilterBarProps } from "@/types/table"
-import {
-  RiFilterLine,
-  RiFilterOffLine,
-  RiResetLeftLine,
-} from "@remixicon/react"
+import { RiResetLeftLine } from "@remixicon/react"
 import { useQueryState } from "nuqs"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useDebouncedCallback } from "use-debounce"
@@ -157,13 +153,13 @@ export function DataTableFilterBar<TData extends Record<string, any>>({
       <div className="flex items-center justify-between gap-4">
         <Searchbar
           type="search"
-          placeholder="Пошук..."
+          placeholder="Search..."
           onChange={handleSearchChange}
           className="w-full sm:max-w-[350px] [&>input]:h-[34px]"
         />
 
         <div className="flex items-center gap-2">
-          <Button
+          {/* <Button
             onClick={() => setShowFilters(!showFilters)}
             variant="secondary"
             className="flex min-h-[34px] gap-x-2 px-2 py-1.5 text-sm sm:text-xs"
@@ -175,7 +171,7 @@ export function DataTableFilterBar<TData extends Record<string, any>>({
               <RiFilterLine className="size-4 shrink-0" aria-hidden="true" />
             )}
             <span className="hidden sm:block">Фільтри</span>
-          </Button>
+          </Button> */}
           <DataTableViewOptions table={table} />
           <ExportButton
             data={table.getCoreRowModel().rows.map((row) => row.original)}
