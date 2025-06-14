@@ -2,7 +2,21 @@
 export type AdminLinksConfig = {
   users: string
   transactions: string
+  missions: string
   roadmap: string
+  overview: string
+  total: string
+  deposits: string
+  withdrawals: string
+  wallets: string
+  locations: string
+  userLocations: string
+  windMods: string
+  userMods: string
+  // pushes: string;
+  tasks: string
+  userTasks: string
+  referralEarnings: string
 }
 
 export type AdminAccessConfig = {

@@ -39,10 +39,88 @@ const sectionConfigs: Record<AdminLinkKeys, SectionConfig> = {
     icon: "solar:card-transfer-bold",
     href: siteConfig.adminLinks.transactions,
   },
+  missions: {
+    title: "Місії",
+    icon: "solar:target-bold",
+    href: siteConfig.adminLinks.missions,
+  },
   roadmap: {
     title: "Дорожня карта",
     icon: "solar:document-text-outline",
     href: siteConfig.adminLinks.roadmap,
+  },
+  overview: {
+    title: "Динаміка",
+    icon: "solar:chat-square-2-bold",
+    href: siteConfig.adminLinks.overview,
+  },
+  total: {
+    title: "Статистика",
+    icon: "solar:full-screen-square-bold",
+    href: siteConfig.adminLinks.total,
+  },
+  deposits: {
+    title: "Депозити",
+    icon: "solar:add-square-bold",
+    href: siteConfig.adminLinks.deposits,
+    badge: {
+      type: "transactions",
+      transactionTypes: ["deposit"],
+    },
+  },
+  withdrawals: {
+    title: "Вивід",
+    icon: "solar:minus-square-bold",
+    href: siteConfig.adminLinks.withdrawals,
+    badge: {
+      type: "transactions",
+      transactionTypes: ["withdrawal"],
+    },
+  },
+  wallets: {
+    title: "Гаманці",
+    icon: "solar:wallet-bold",
+    href: siteConfig.adminLinks.wallets,
+  },
+  locations: {
+    title: "Локації",
+    icon: "solar:map-point-bold",
+    href: siteConfig.adminLinks.locations,
+  },
+  userLocations: {
+    title: "Локації користувачів",
+    icon: "solar:map-arrow-square-bold",
+    href: siteConfig.adminLinks.userLocations,
+  },
+  windMods: {
+    title: "Моди",
+    icon: "solar:wind-bold",
+    href: siteConfig.adminLinks.windMods,
+  },
+  userMods: {
+    title: "Моди придбані",
+    icon: "solar:inbox-out-bold",
+    href: siteConfig.adminLinks.userMods,
+  },
+  // pushes: {
+  //   title: "Пуші",
+  //   icon: "solar:archive-minimalistic-bold",
+  //   href: siteConfig.adminLinks.pushes,
+  // },
+  tasks: {
+    title: "Завдання",
+    icon: "solar:checklist-minimalistic-bold",
+    href: siteConfig.adminLinks.tasks,
+  },
+  userTasks: {
+    title: "Завдання виконані",
+    icon: "solar:check-read-bold",
+    href: siteConfig.adminLinks.userTasks,
+  },
+  referralEarnings: {
+    title: "Реферальні",
+    icon: "solar:users-group-rounded-bold",
+    href: siteConfig.adminLinks.referralEarnings,
   },
 } as const
 
