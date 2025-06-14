@@ -15,16 +15,16 @@ const columnHelper = createColumnHelper<Withdrawal>()
 
 export const withdrawalsColumns: TableColumn<Withdrawal>[] = [
   columnHelper.accessor("created_at", {
-    header: "Creation Time",
+    header: "Час створення",
     cell: ({ getValue }) =>
       getValue() ? new Date(getValue()).toLocaleString("uk-UA") : "-",
   }),
   columnHelper.accessor("wallet", {
-    header: "Wallet",
+    header: "Гаманець",
     cell: ({ getValue }) => getValue() ?? "-",
   }),
   columnHelper.accessor("sum", {
-    header: "Sum",
+    header: "Сума",
     cell: ({ getValue }) => Number(getValue()) || 0,
   }),
   columnHelper.accessor("MEMO", {
@@ -32,7 +32,7 @@ export const withdrawalsColumns: TableColumn<Withdrawal>[] = [
     cell: ({ getValue }) => getValue()?.trim() || "-",
   }),
   columnHelper.accessor("status", {
-    header: "Status",
+    header: "Статус",
     cell: ({ getValue }) => getValue() ?? "-",
   }),
 ]

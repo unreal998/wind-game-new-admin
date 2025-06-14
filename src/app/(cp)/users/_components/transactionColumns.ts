@@ -18,11 +18,11 @@ export const transactionColumns: TableColumn<Transaction>[] = [
     cell: ({ getValue }) => getValue(),
   }),
   columnHelper.accessor("created_at", {
-    header: "Created At",
+    header: "Час створення",
     cell: ({ getValue }) => formatTimestamp({ date: getValue() }),
   }),
   columnHelper.accessor("summ", {
-    header: "Amount",
+    header: "Сума",
     cell: ({ getValue }) => `${getValue().toFixed(2)} TON`,
   }),
 ]

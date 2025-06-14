@@ -64,15 +64,15 @@ export const UserSidebar = ({
             { label: "Telegram ID", value: user.telegramID },
             { label: "Username", value: user.userName || "—" },
             {
-              label: "Finished Tutorial",
+              label: "Туторіал завершено",
               value: user.userSettings?.isTutorialFinished ? "Yes" : "No",
             },
             {
-              label: "Referrals",
+              label: "Рефералів",
               value: user.referals?.length || 0,
             },
             {
-              label: "TON Balance",
+              label: "TON Баланс",
               value: (
                 <EditableBalanceField
                   value={user.TONBalance}
@@ -89,7 +89,7 @@ export const UserSidebar = ({
               ),
             },
             {
-              label: "Wind Balance",
+              label: "Wind Баланс",
               value: (
                 <EditableBalanceField
                   value={user.WindBalance}
@@ -116,7 +116,7 @@ export const UserSidebar = ({
           ))}
           {tableData && tableColumns && (
             <div className="pt-6">
-              <h3 className="mb-2 text-lg font-semibold">Withdrawals</h3>
+              <h3 className="mb-2 text-lg font-semibold">Виведення коштів</h3>
               <div className="max-h-[300px] overflow-auto rounded border dark:border-gray-700">
                 <DataTable
                   data={tableData}
@@ -130,7 +130,7 @@ export const UserSidebar = ({
           )}
           {transactions && (
             <div className="pt-6">
-              <h3 className="mb-2 text-lg font-semibold">Transactions</h3>
+              <h3 className="mb-2 text-lg font-semibold">Транзакції</h3>
               <div className="max-h-[400px] overflow-auto rounded border dark:border-gray-700">
                 <DataTable
                   data={transactions}

@@ -1,11 +1,7 @@
 "use client"
-
-import { Checkbox } from "@/components/Checkbox"
 import { CopyButton } from "@/components/CopyButton"
 import { DateWithDistance } from "@/components/data-table/DateWithDistance"
-import { formatTimestamp } from "@/hooks/formatTimestamp"
 import { type TableColumn } from "@/types/table"
-import { type Wallet } from "@/types/wallet"
 import { createColumnHelper } from "@tanstack/react-table"
 
 type Transaction = {
@@ -33,11 +29,11 @@ export const walletColumns: TableColumn<Transaction>[] = [
     },
   }),
   columnHelper.accessor("created_at", {
-    header: "Creation time",
+    header: "Час створення",
     cell: ({ getValue }) => <DateWithDistance date={getValue()} />,
   }),
   columnHelper.accessor("wallet", {
-    header: "Wallet",
+    header: "Гаманець",
     cell: ({ getValue }) => {
       const value = getValue()
       return (
@@ -49,7 +45,7 @@ export const walletColumns: TableColumn<Transaction>[] = [
     },
   }),
   columnHelper.accessor("summ", {
-    header: "Sum",
+    header: "Сума",
     cell: ({ getValue }) => getValue().toFixed(2),
   }),
   columnHelper.accessor("uid", {

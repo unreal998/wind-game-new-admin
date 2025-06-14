@@ -117,7 +117,7 @@ export const userColumns: TableColumn<AdminProfile>[] = [
   // }),
 
   columnHelper.accessor("TONBalance", {
-    header: "TON Balance",
+    header: "TON Баланс",
     cell: ({ getValue }) => formatAmount(getValue()),
     enableSorting: true,
     filterFn: "number",
@@ -129,7 +129,7 @@ export const userColumns: TableColumn<AdminProfile>[] = [
   }),
 
   columnHelper.accessor("WindBalance", {
-    header: "Wind Balance",
+    header: "Wind Баланс",
     cell: ({ getValue }) => formatAmount(getValue()),
     enableSorting: true,
     filterFn: "number",
@@ -141,7 +141,7 @@ export const userColumns: TableColumn<AdminProfile>[] = [
   }),
 
   columnHelper.accessor("firstName", {
-    header: "First Name",
+    header: "Ім'я",
     cell: ({ getValue }) => getValue() || "-",
     enableSorting: true,
     filterFn: "text",
@@ -151,7 +151,7 @@ export const userColumns: TableColumn<AdminProfile>[] = [
   }),
 
   columnHelper.accessor("lastName", {
-    header: "Last Name",
+    header: "Фамілія",
     cell: ({ getValue }) => getValue() || "-",
     enableSorting: true,
     filterFn: "text",
@@ -161,7 +161,7 @@ export const userColumns: TableColumn<AdminProfile>[] = [
   }),
 
   columnHelper.accessor("wallet", {
-    header: "Wallet",
+    header: "Гаманець",
     cell: ({ getValue }) => {
       const wallet = getValue()
       if (!wallet) return "-"
