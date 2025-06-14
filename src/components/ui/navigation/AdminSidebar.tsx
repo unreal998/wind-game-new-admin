@@ -41,7 +41,7 @@ const sectionConfigs: Record<AdminLinkKeys, SectionConfig> = {
   },
   missions: {
     title: "Місії",
-    icon: "solar:target-bold",
+    icon: "solar:checklist-minimalistic-bold",
     href: siteConfig.adminLinks.missions,
   },
   roadmap: {
@@ -107,16 +107,6 @@ const sectionConfigs: Record<AdminLinkKeys, SectionConfig> = {
   //   icon: "solar:archive-minimalistic-bold",
   //   href: siteConfig.adminLinks.pushes,
   // },
-  tasks: {
-    title: "Завдання",
-    icon: "solar:checklist-minimalistic-bold",
-    href: siteConfig.adminLinks.tasks,
-  },
-  userTasks: {
-    title: "Завдання виконані",
-    icon: "solar:check-read-bold",
-    href: siteConfig.adminLinks.userTasks,
-  },
   referralEarnings: {
     title: "Реферальні",
     icon: "solar:users-group-rounded-bold",

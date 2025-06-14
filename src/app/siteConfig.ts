@@ -20,8 +20,6 @@ export const siteConfig: SiteConfig = {
     windMods: "/wind-mods",
     userMods: "/user-mods",
     // pushes: "/pushes",
-    tasks: "/tasks",
-    userTasks: "/user-tasks",
     referralEarnings: "/referral-earnings",
   },
   adminAccess: {
@@ -40,8 +38,6 @@ export const siteConfig: SiteConfig = {
       "windMods",
       "userMods",
       // "pushes",
-      "tasks",
-      "userTasks",
       "referralEarnings",
     ],
     manager: [],
