@@ -23,7 +23,6 @@ export default function ReferralsAdminPage() {
     const loadWithdrawals = async () => {
       try {
         const data = await fetchWithdrawals()
-        console.log("Withdrawals:", data)
         setWithdrawals(data)
       } catch (error) {
         console.error("Failed to fetch withdrawals", error)
