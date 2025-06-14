@@ -2,6 +2,7 @@
 export type AdminLinksConfig = {
   users: string
   transactions: string
+  roadmap: string
 }
 
 export type AdminAccessConfig = {

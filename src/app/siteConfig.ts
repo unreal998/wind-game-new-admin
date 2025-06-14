@@ -8,9 +8,10 @@ export const siteConfig: SiteConfig = {
   adminLinks: {
     users: "/users",
     transactions: "/transactions",
+    roadmap: "/roadmap",
   },
   adminAccess: {
-    admin: ["users", "transactions"],
+    admin: ["users", "transactions", "roadmap"],
     manager: [],
     withdrawal: [],
     support: [],

@@ -39,6 +39,11 @@ const sectionConfigs: Record<AdminLinkKeys, SectionConfig> = {
     icon: "solar:card-transfer-bold",
     href: siteConfig.adminLinks.transactions,
   },
+  roadmap: {
+    title: "Дорожня карта",
+    icon: "solar:document-text-outline",
+    href: siteConfig.adminLinks.roadmap,
+  },
 } as const
 
 export function AdminSidebar({
