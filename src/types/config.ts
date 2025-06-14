@@ -6,9 +6,9 @@ export type AdminLinksConfig = {
   roadmap: string
   overview: string
   total: string
-  deposits: string
+  // deposits: string
   withdrawals: string
-  wallets: string
+  // wallets: string
   locations: string
   userLocations: string
   windMods: string

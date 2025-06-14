@@ -35,7 +35,7 @@ const sectionConfigs: Record<AdminLinkKeys, SectionConfig> = {
     href: siteConfig.adminLinks.users,
   },
   transactions: {
-    title: "Транзакції",
+    title: "Поповнення",
     icon: "solar:card-transfer-bold",
     href: siteConfig.adminLinks.transactions,
   },
@@ -59,15 +59,15 @@ const sectionConfigs: Record<AdminLinkKeys, SectionConfig> = {
     icon: "solar:full-screen-square-bold",
     href: siteConfig.adminLinks.total,
   },
-  deposits: {
-    title: "Депозити",
-    icon: "solar:add-square-bold",
-    href: siteConfig.adminLinks.deposits,
-    badge: {
-      type: "transactions",
-      transactionTypes: ["deposit"],
-    },
-  },
+  // deposits: {
+  //   title: "Депозити",
+  //   icon: "solar:add-square-bold",
+  //   href: siteConfig.adminLinks.deposits,
+  //   badge: {
+  //     type: "transactions",
+  //     transactionTypes: ["deposit"],
+  //   },
+  // },
   withdrawals: {
     title: "Вивід",
     icon: "solar:minus-square-bold",
@@ -77,11 +77,11 @@ const sectionConfigs: Record<AdminLinkKeys, SectionConfig> = {
       transactionTypes: ["withdrawal"],
     },
   },
-  wallets: {
-    title: "Гаманці",
-    icon: "solar:wallet-bold",
-    href: siteConfig.adminLinks.wallets,
-  },
+  // wallets: {
+  //   title: "Гаманці",
+  //   icon: "solar:wallet-bold",
+  //   href: siteConfig.adminLinks.wallets,
+  // },
   locations: {
     title: "Локації",
     icon: "solar:map-point-bold",

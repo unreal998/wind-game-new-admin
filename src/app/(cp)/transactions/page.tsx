@@ -41,7 +41,7 @@ export default function WalletsAdminPage() {
   return (
     <>
       <div className="mb-4 flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Транзакції</h1>
+        <h1 className="text-2xl font-semibold">Поповнення</h1>
         {!isLoading && aggregatedValue && (
           <Badge variant="indigo" className="px-3 py-1 text-base">
             {aggregatedValue}
