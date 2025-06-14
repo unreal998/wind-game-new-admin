@@ -19,10 +19,6 @@ export default function ReferralsAdminPage() {
   const [activeUser, setActiveUser] = useState<any | null>(null)
   const [withdrawals, setWithdrawals] = useState<any[]>()
 
-  const handleUpdateUser = (updated: any) => {
-    setActiveUser(updated)
-  }
-
   useEffect(() => {
     const loadWithdrawals = async () => {
       try {

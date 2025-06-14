@@ -3,11 +3,7 @@
 import { Button } from "@/components/Button"
 import { Searchbar } from "@/components/Searchbar"
 import { DataTableFilterBarProps } from "@/types/table"
-import {
-  RiFilterLine,
-  RiFilterOffLine,
-  RiResetLeftLine,
-} from "@remixicon/react"
+import { RiResetLeftLine } from "@remixicon/react"
 import { useQueryState } from "nuqs"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useDebouncedCallback } from "use-debounce"

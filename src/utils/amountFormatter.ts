@@ -7,9 +7,31 @@ export interface FormatAmountOptions {
 
 export const formatAmount = (
   amount: number | string | null | undefined,
+  options?: FormatAmountOptions,
 ): string => {
   if (amount == null || amount === "") return "-"
-  return String(amount)
+
+  if (!options) {
+    return String(amount)
+  }
+
+  const {
+    currency = "TON",
+    locale = "de-CH",
+    fraction = 2,
+    hide = false,
+  } = options
+
+  const num = typeof amount === "string" ? parseFloat(amount) : amount
+
+  const formatter = new Intl.NumberFormat(locale, {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: fraction,
+  })
+
+  const formatted = formatter.format(num).replace(/’/g, " ")
+
+  return hide ? formatted : `${formatted} ${currency}`
 }
 
 export const formatAmountRange = (

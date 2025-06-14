@@ -48,7 +48,7 @@ interface DataTableProps<TData> {
   onRefetch?: () => Promise<void>
   isLoading?: boolean
   openSidebarOnRowClick?: boolean
-  onRowClick: (row: TData) => void
+  onRowClick?: (row: TData) => void
 }
 
 // Функція для форматування значень для пошуку
@@ -147,14 +147,12 @@ export function DataTable<TData extends Record<string, any>>({
 
   const [preparedData, setPreparedData] =
     useState<(TData & { _searchable?: string })[]>(data)
-  const [activeRow, setActiveRow] = useState<TData | null>(null)
-  // Підготовка даних при зміні вхідних даних
+  const [, setActiveRow] = useState<TData | null>(null)
   useEffect(() => {
     const prepared = data.map((item) => ({
       ...item,
       _searchable: createSearchString(item),
     }))
-    // console.log(prepared)
     setPreparedData(prepared)
   }, [data])
 
