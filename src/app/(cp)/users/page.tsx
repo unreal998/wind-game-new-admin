@@ -1,6 +1,5 @@
 "use client"
 
-import { Badge } from "@/components/Badge"
 import { Card } from "@/components/Card"
 import { DataTable } from "@/components/data-table/DataTable"
 import { useAdminReferralsStore } from "@/stores/admin/useAdminReferralsStore"
@@ -13,9 +12,6 @@ import { withdrawalsColumns } from "./_components/withdrawalsColumns"
 
 export default function ReferralsAdminPage() {
   const { profiles, isLoading, updateUser } = useAdminReferralsStore()
-  const [aggregatedValue, setAggregatedValue] = useState<
-    string | number | null
-  >(null)
   const [activeUser, setActiveUser] = useState<any | null>(null)
   const [withdrawals, setWithdrawals] = useState<any[]>()
 
@@ -96,13 +92,6 @@ export default function ReferralsAdminPage() {
           data={profiles}
           columns={userColumns}
           filterableColumns={filterableColumns}
-          aggregations={[
-            {
-              columnId: "ton_balance",
-              type: "sum",
-              onResult: setAggregatedValue,
-            },
-          ]}
           isLoading={isLoading}
           openSidebarOnRowClick={true}
           onRowClick={(row) => setActiveUser(row)}
