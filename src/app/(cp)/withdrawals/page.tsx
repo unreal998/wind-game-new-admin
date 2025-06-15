@@ -4,18 +4,15 @@ import { Badge } from "@/components/Badge"
 import { Card } from "@/components/Card"
 import { TRANSACTION_STATUSES } from "@/components/data-table/constants"
 import { DataTable } from "@/components/data-table/DataTable"
-import { useAdminTransactionsStore } from "@/stores/admin/useAdminTransactionsStore"
 import { FilterableColumn } from "@/types/table"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { withdrawalColumns } from "./_components/WithdrawalColumns"
+import { fetchWithdrawalsApi } from "./_components/fetchWithdrawal"
 
-export default function DepositsAdminPage() {
-  const { isLoading, getFilteredTransactions } = useAdminTransactionsStore()
-  const [aggregatedValue, setAggregatedValue] = useState<
-    string | number | null
-  >(null)
-
-  const transactions = getFilteredTransactions(["withdrawal"])
+export default function WithdrawalAdminPage() {
+  const [aggregatedValue] = useState<string | number | null>(null)
+  const [withdrawals, setWithdrawals] = useState<any[]>([])
+  const [isLoading, setIsLoading] = useState(false)
 
   const filterableColumns: FilterableColumn[] = [
     // {
@@ -90,6 +87,22 @@ export default function DepositsAdminPage() {
     },
   ]
 
+  useEffect(() => {
+    const loadWithdrawls = async () => {
+      try {
+        setIsLoading(true)
+        const data = await fetchWithdrawalsApi()
+        setWithdrawals(data)
+      } catch (error) {
+        console.error("Помилка при отриманні транзакцій:", error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    loadWithdrawls()
+  }, [])
+
   return (
     <>
       <div className="mb-4 flex items-center justify-between">
@@ -103,16 +116,9 @@ export default function DepositsAdminPage() {
 
       <Card className="p-0">
         <DataTable
-          data={transactions}
+          data={withdrawals}
           columns={withdrawalColumns}
           filterableColumns={filterableColumns}
-          aggregations={[
-            {
-              columnId: "tx_amount",
-              type: "sum",
-              onResult: setAggregatedValue,
-            },
-          ]}
           isLoading={isLoading}
         />
       </Card>
