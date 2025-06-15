@@ -3,7 +3,7 @@
 import { AdminSidebar } from "@/components/ui/navigation/AdminSidebar"
 import { useAdminInitialization } from "@/hooks/admin/useAdminInitialization"
 import { cx } from "@/lib/utils"
-import React, { useLayoutEffect } from "react"
+import React, { useEffect, useLayoutEffect } from "react"
 
 export default function Layout({
   children,
@@ -14,6 +14,17 @@ export default function Layout({
 
   const [isCollapsed, setIsCollapsed] = React.useState(false)
   const [isHydrated, setIsHydrated] = React.useState(false)
+  const [isMobile, setIsMobile] = React.useState(false)
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1024)
+    }
+
+    handleResize()
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
+  }, [])
 
   useLayoutEffect(() => {
     const saved = localStorage.getItem("adminSidebarCollapsed")
@@ -38,7 +49,13 @@ export default function Layout({
       <main
         className={cx(
           "ease flex flex-col p-5 transition-all duration-100",
-          isCollapsed ? "ml-[65px]" : "ml-64",
+          isMobile
+            ? isCollapsed
+              ? "ml-[65px]"
+              : "hidden"
+            : isCollapsed
+              ? "ml-[65px]"
+              : "ml-64",
         )}
       >
         {children}
