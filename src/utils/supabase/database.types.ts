@@ -88,45 +88,6 @@ export type Database = {
           },
         ]
       }
-      referral_earnings: {
-        Row: {
-          amount: number
-          created_at: string
-          id: number
-          referral_user_id: number
-          user_id: number
-        }
-        Insert: {
-          amount: number
-          created_at?: string
-          id?: number
-          referral_user_id: number
-          user_id: number
-        }
-        Update: {
-          amount?: number
-          created_at?: string
-          id?: number
-          referral_user_id?: number
-          user_id?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "referral_earnings_referral_user_id_fkey"
-            columns: ["referral_user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "referral_earnings_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       request_tracker: {
         Row: {
           body: Json | null

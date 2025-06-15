@@ -11,7 +11,7 @@ import { referralEarningColumns } from "./_components/ReferralEarningColumns"
 export default function ReferralEarningsAdminPage() {
   const { referralEarnings, isLoading } = useAdminReferralEarningsStore()
   const [aggregatedValue] = useState<string | number | null>(null)
-
+  console.log("Referral Earnings:", referralEarnings)
   const filterableColumns: FilterableColumn[] = [
     {
       id: "user.id",

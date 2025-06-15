@@ -20,28 +20,44 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
 
         fetchReferralEarnings: async () => {
             try {
-                const { data, error } = await supabase
-                    .from("referral_earnings")
-                    .select(`
-                    *,
-                    user:users!referral_earnings_user_id_fkey (
-                        id,
-                        username,
-                        first_name,
-                        last_name
-                    ),
-                    referral_user:users!referral_earnings_referral_user_id_fkey (
-                        id,
-                        username,
-                        first_name,
-                        last_name
-                    )
-                `)
-                    .order("created_at", { ascending: false });
+                const { data: users, error } = await supabase
+                    .from("users")
+                    .select("*")
+                    .filter("referals", "neq", "[]");
 
                 if (error) throw error;
 
-                set({ referralEarnings: data || [], isLoading: false });
+                const allReferalIds = Array.from(
+                    new Set(users.flatMap((u) => u.referals))
+                );
+                const { data: referalUsers, error: refError } = await supabase
+                    .from("users")
+                    .select("telegramID, userName, created_at, WindBalance")
+                    .in("telegramID", allReferalIds);
+
+                
+                if (refError) throw refError;
+                const result: ReferralEarning[] = [];
+                allReferalIds.forEach((id) => {
+                    const user = users.find((u) => u.referals.includes(id));
+                    if (user) {
+                        result.push({
+                            created_at: referalUsers.find(ru => ru.telegramID === id)?.created_at || new Date().toISOString(),
+                            amount: referalUsers.find(ru => ru.telegramID === id)?.WindBalance / 10 || 0,
+                            user: {
+                                id: user.id,
+                                username: user.userName || user.telegramID,
+                            },
+                            referral_user: {
+                                id: id,
+                                username: referalUsers.find(ru => ru.telegramID === id)?.userName || id,
+                                first_name: "",
+                                last_name: "",
+                            },
+                        });
+                    }
+                })
+                set({ referralEarnings: result || [], isLoading: false });
             } catch (error) {
                 console.error("Error fetching referral earnings:", error);
                 set({
@@ -59,7 +75,7 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
                     {
                         event: "*",
                         schema: "public",
-                        table: "referral_earnings",
+                        table: "users",
                     },
                     () => {
                         set((state) => {

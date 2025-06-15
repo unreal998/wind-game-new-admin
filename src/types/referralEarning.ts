@@ -1,8 +1,7 @@
-import { type Database } from "@/utils/supabase/database.types";
 
-export type ReferralEarning =
-    & Database["public"]["Tables"]["referral_earnings"]["Row"]
-    & {
+export type ReferralEarning = {
+        created_at: string;
+        amount: number;
         user?: {
             id: number;
             username?: string;
