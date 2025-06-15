@@ -4,10 +4,38 @@ import { type TableColumn } from "@/types/table"
 import { createColumnHelper } from "@tanstack/react-table"
 import MissionActionsCell from "./MissionActionsCell"
 import type { Mission } from "./fetchMissions"
+import { Checkbox } from "@/components/Checkbox"
 
 const columnHelper = createColumnHelper<Mission>()
 
 export const missionColumns: TableColumn<Mission>[] = [
+  columnHelper.display({
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected()
+            ? true
+            : table.getIsSomeRowsSelected()
+              ? "indeterminate"
+              : false
+        }
+        onCheckedChange={() => table.toggleAllPageRowsSelected()}
+        className="translate-y-0.5"
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={() => row.toggleSelected()}
+        className="translate-y-0.5"
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  }),
   columnHelper.accessor("id", {
     header: "ID",
     cell: ({ getValue }) => {

@@ -1,4 +1,5 @@
 "use client"
+import { Checkbox } from "@/components/Checkbox"
 import { CopyButton } from "@/components/CopyButton"
 import { DateWithDistance } from "@/components/data-table/DateWithDistance"
 import { type TableColumn } from "@/types/table"
@@ -16,6 +17,33 @@ type Transaction = {
 const columnHelper = createColumnHelper<Transaction>()
 
 export const walletColumns: TableColumn<Transaction>[] = [
+  columnHelper.display({
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected()
+            ? true
+            : table.getIsSomeRowsSelected()
+              ? "indeterminate"
+              : false
+        }
+        onCheckedChange={() => table.toggleAllPageRowsSelected()}
+        className="translate-y-0.5"
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={() => row.toggleSelected()}
+        className="translate-y-0.5"
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  }),
   columnHelper.accessor("id", {
     header: "ID",
     cell: ({ getValue }) => {

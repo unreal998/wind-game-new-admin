@@ -5,6 +5,7 @@ import { createColumnHelper } from "@tanstack/react-table"
 import { CopyButton } from "@/components/CopyButton"
 import { Button } from "@/components"
 import { fetchUpdateWithDrawStatus } from "./fetchWithdrawal"
+import { Checkbox } from "@/components/Checkbox"
 
 type WithdrawalDataColumn = {
   id: string
@@ -20,6 +21,33 @@ type WithdrawalDataColumn = {
 const columnHelper = createColumnHelper<WithdrawalDataColumn>()
 
 export const withdrawalColumns: TableColumn<WithdrawalDataColumn>[] = [
+  columnHelper.display({
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected()
+            ? true
+            : table.getIsSomeRowsSelected()
+              ? "indeterminate"
+              : false
+        }
+        onCheckedChange={() => table.toggleAllPageRowsSelected()}
+        className="translate-y-0.5"
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={() => row.toggleSelected()}
+        className="translate-y-0.5"
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  }),
   columnHelper.accessor("id", {
     header: "ID",
     cell: ({ getValue }) => {
