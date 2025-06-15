@@ -10,7 +10,7 @@ import { createClient } from "@/utils/supabase/client"
 import { Icon } from "@iconify/react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { AdminProfileDesktop } from "./AdminProfile"
 
 interface AdminSidebarProps {
@@ -121,8 +121,18 @@ export function AdminSidebar({
   // const [userRole, setUserRole] = useState<AdminRoles | null>(null)
   const pathname = usePathname()
   const { getPendingTransactions } = useAdminTransactionsStore()
-
+  const [isMobile, setIsMobile] = useState(false)
   const router = useRouter()
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1024)
+    }
+
+    handleResize()
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
+  }, [])
 
   const getBadgeForSection = (config: SectionConfig) => {
     if (!config.badge) return null
@@ -246,6 +256,9 @@ export function AdminSidebar({
                     >
                       <Link
                         href={config.href}
+                        onClick={() => {
+                          if (isMobile) toggleSidebar()
+                        }}
                         className={cx(
                           isActive(siteConfig.adminLinks[sectionKey])
                             ? "bg-gray-100 text-indigo-600 dark:bg-gray-800 dark:text-indigo-500"
@@ -270,6 +283,9 @@ export function AdminSidebar({
                   ) : (
                     <Link
                       href={config.href}
+                      onClick={() => {
+                        if (isMobile) toggleSidebar()
+                      }}
                       className={cx(
                         isActive(siteConfig.adminLinks[sectionKey])
                           ? "bg-gray-100 text-indigo-600 dark:bg-gray-800 dark:text-indigo-500"
