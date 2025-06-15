@@ -5,43 +5,43 @@ import { Badge } from "@/components/Badge"
 import { Card } from "@/components/Card"
 import { DataTable } from "@/components/data-table/DataTable"
 import { FilterableColumn } from "@/types/table"
-import { fetchTransactionsApi } from "./_components/fetchTransactions"
-import { walletColumns } from "./_components/WalletColumns"
+import { missionColumns } from "./_components/MissionColumns"
+import { fetchMissions } from "./_components/fetchMissions"
 
-export default function WalletsAdminPage() {
-  const [transactions, setTransactions] = useState<any[]>([])
+export default function MissionAdminPage() {
+  const [missions, setMissions] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [aggregatedValue] = useState<string | number | null>(null)
 
   const filterableColumns: FilterableColumn[] = [
     { id: "id", title: "ID", type: "text" },
-    { id: "created_at", title: "Creation time", type: "dateRange" },
-    { id: "wallet", title: "Wallet", type: "text" },
-    { id: "summ", title: "Sum", type: "number" },
-    { id: "uid", title: "UID", type: "text" },
-    { id: "txid", title: "TXID", type: "text" },
+    { id: "title", title: "Title", type: "text" },
+    { id: "description", title: "Description", type: "text" },
+    { id: "reward", title: "Reward", type: "number" },
+    { id: "coin", title: "Coin", type: "text" },
+    { id: "type", title: "Type", type: "text" },
   ]
 
-  useEffect(() => {
-    const loadTransactions = async () => {
-      try {
-        setIsLoading(true)
-        const data = await fetchTransactionsApi()
-        setTransactions(data)
-      } catch (error) {
-        console.error("Помилка при отриманні транзакцій:", error)
-      } finally {
-        setIsLoading(false)
-      }
+  const loadMissions = async () => {
+    try {
+      setIsLoading(true)
+      const data = await fetchMissions()
+      setMissions(data)
+    } catch (error) {
+      console.error("Помилка при отриманні місій:", error)
+    } finally {
+      setIsLoading(false)
     }
+  }
 
-    loadTransactions()
+  useEffect(() => {
+    loadMissions()
   }, [])
 
   return (
     <>
       <div className="mb-4 flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Транзакції</h1>
+        <h1 className="text-2xl font-semibold">Місії</h1>
         {!isLoading && aggregatedValue && (
           <Badge variant="indigo" className="px-3 py-1 text-base">
             {aggregatedValue}
@@ -51,10 +51,11 @@ export default function WalletsAdminPage() {
 
       <Card className="p-0">
         <DataTable
-          data={transactions}
-          columns={walletColumns}
+          data={missions}
+          columns={missionColumns}
           filterableColumns={filterableColumns}
           isLoading={isLoading}
+          onRefetch={loadMissions}
         />
       </Card>
     </>
