@@ -416,8 +416,8 @@ export function DataTable<TData extends Record<string, any>>({
                         index === 0 &&
                           row.getIsSelected() &&
                           "relative before:absolute before:inset-y-0 before:left-0 before:w-0.5 before:bg-indigo-500",
-                        cell.id.includes("actions") &&
-                          "sticky right-0 before:inset-0 before:-left-4 before:w-4 before:bg-gradient-to-r before:from-gray-50/0 before:to-gray-50 group-hover:bg-gray-50 group-hover:before:absolute before:dark:from-gray-900/0 before:dark:to-gray-900 group-hover:dark:bg-gray-900",
+                        // cell.id.includes("actions") &&
+                        //   "sticky right-0 before:inset-0 before:-left-4 before:w-4 before:bg-gradient-to-r before:from-gray-50/0 before:to-gray-50 group-hover:bg-gray-50 group-hover:before:absolute before:dark:from-gray-900/0 before:dark:to-gray-900 group-hover:dark:bg-gray-900",
                         cell.column.columnDef.meta?.className,
                       )}
                     >
