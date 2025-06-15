@@ -5,7 +5,7 @@ import { Badge } from "@/components/Badge"
 import { Card } from "@/components/Card"
 import { DataTable } from "@/components/data-table/DataTable"
 import { FilterableColumn } from "@/types/table"
-import { missionColumns } from "./_components/MissionColumns"
+import { getMissionColumns, missionColumns } from "./_components/MissionColumns"
 import { fetchMissions } from "./_components/fetchMissions"
 import { Button } from "@/components"
 import { CreateMissionModal } from "./_components/CreateMissionModal"
@@ -15,6 +15,7 @@ export default function MissionAdminPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [aggregatedValue] = useState<string | number | null>(null)
+  const [activeLang, setActiveLang] = useState<"ru" | "en">("ru")
 
   const filterableColumns: FilterableColumn[] = [
     { id: "id", title: "ID", type: "text" },
@@ -30,6 +31,7 @@ export default function MissionAdminPage() {
       setIsLoading(true)
       const data = await fetchMissions()
       setMissions(data)
+      console.log("Отримані місії:", data)
     } catch (error) {
       console.error("Помилка при отриманні місій:", error)
     } finally {
@@ -45,6 +47,28 @@ export default function MissionAdminPage() {
     <>
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Місії</h1>
+        <div className="flex gap-2">
+          <Button
+            onClick={() => setActiveLang("ru")}
+            className={
+              activeLang === "ru"
+                ? ""
+                : "border border-indigo-500 bg-transparent text-indigo-500 hover:bg-indigo-50"
+            }
+          >
+            Ru
+          </Button>
+          <Button
+            onClick={() => setActiveLang("en")}
+            className={
+              activeLang === "en"
+                ? ""
+                : "border border-indigo-500 bg-transparent text-indigo-500 hover:bg-indigo-50"
+            }
+          >
+            En
+          </Button>
+        </div>
         <div className="flex items-center gap-2">
           {!isLoading && aggregatedValue && (
             <Badge variant="indigo" className="px-3 py-1 text-base">
@@ -57,8 +81,9 @@ export default function MissionAdminPage() {
 
       <Card className="p-0">
         <DataTable
+          key={activeLang}
           data={missions}
-          columns={missionColumns}
+          columns={getMissionColumns(activeLang)}
           filterableColumns={filterableColumns}
           isLoading={isLoading}
           onRefetch={loadMissions}
