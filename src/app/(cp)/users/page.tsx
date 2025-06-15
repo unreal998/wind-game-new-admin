@@ -32,6 +32,8 @@ export default function ReferralsAdminPage() {
     loadWithdrawals()
   }, [])
 
+  console.log("profiles data:", profiles)
+
   const filterableColumns: FilterableColumn[] = [
     {
       id: "id",
@@ -66,6 +68,11 @@ export default function ReferralsAdminPage() {
     {
       id: "last_name",
       title: "Last Name",
+      type: "text",
+    },
+    {
+      id: "invitedBy",
+      title: "Запрошений",
       type: "text",
     },
     {

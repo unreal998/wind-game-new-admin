@@ -159,7 +159,24 @@ export const userColumns: TableColumn<AdminProfile>[] = [
       exportValue: (row) => row.lastName || "-",
     },
   }),
-
+  columnHelper.accessor("invitedBy", {
+    header: "Запрошений",
+    cell: ({ getValue }) => {
+      const invitedBy = getValue()
+      if (!invitedBy) return "-"
+      return (
+        <span className="flex items-center space-x-2">
+          <span className="max-w-[150px] truncate">{invitedBy}</span>
+          <CopyButton text={invitedBy} />
+        </span>
+      )
+    },
+    enableSorting: true,
+    filterFn: "text",
+    meta: {
+      exportValue: (row) => row.invitedBy || "-",
+    },
+  }),
   columnHelper.accessor("wallet", {
     header: "Гаманець",
     cell: ({ getValue }) => {
