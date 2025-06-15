@@ -48,11 +48,11 @@ export const windModColumns: TableColumn<WindMod>[] = [
     enableSorting: false,
     enableHiding: false,
   }),
-  columnHelper.display({
-    id: "wind_speed",
-    header: "Швидкість вітру",
-    cell: () => "",
-  }),
+  // columnHelper.display({
+  //   id: "wind_speed",
+  //   header: "Швидкість вітру",
+  //   cell: () => "",
+  // }),
   columnHelper.accessor("turxValue", {
     header: "TURX дохід",
     cell: ({ getValue }) => `${getValue()}`,

@@ -84,11 +84,11 @@ export default function ReferralsAdminPage() {
     <>
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Користувачі</h1>
-        {!isLoading && aggregatedValue && (
+        {/* {!isLoading && aggregatedValue && (
           <Badge variant="indigo" className="px-3 py-1 text-base">
             {aggregatedValue}
           </Badge>
-        )}
+        )} */}
       </div>
 
       <Card className="p-0">
