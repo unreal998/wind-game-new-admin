@@ -183,8 +183,8 @@ export function AdminSidebar({
   return (
     <div
       className={cx(
-        isCollapsed ? "lg:w-[65px]" : "lg:w-64",
-        "hidden overflow-x-hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:flex-col",
+        isCollapsed ? "w-[65px]" : "w-64",
+        "fixed inset-y-0 z-50 flex flex-col overflow-x-hidden",
         "ease transform-gpu transition-all duration-100 will-change-transform",
       )}
     >

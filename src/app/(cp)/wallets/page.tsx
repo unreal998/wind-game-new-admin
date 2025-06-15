@@ -1,16 +1,15 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Badge } from "@/components/Badge"
 import { Card } from "@/components/Card"
 import { DataTable } from "@/components/data-table/DataTable"
 import { FilterableColumn } from "@/types/table"
-import { fetchTransactionsApi } from "./_components/fetchTransactions"
 import { walletColumns } from "./_components/WalletColumns"
 
 export default function WalletsAdminPage() {
-  const [transactions, setTransactions] = useState<any[]>([])
-  const [isLoading, setIsLoading] = useState(false)
+  const [transactions] = useState<any[]>([])
+  const [isLoading] = useState(false)
   const [aggregatedValue] = useState<string | number | null>(null)
 
   const filterableColumns: FilterableColumn[] = [
@@ -21,22 +20,6 @@ export default function WalletsAdminPage() {
     { id: "uid", title: "UID", type: "text" },
     { id: "txid", title: "TXID", type: "text" },
   ]
-
-  useEffect(() => {
-    const loadTransactions = async () => {
-      try {
-        setIsLoading(true)
-        const data = await fetchTransactionsApi()
-        setTransactions(data)
-      } catch (error) {
-        console.error("Помилка при отриманні транзакцій:", error)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    loadTransactions()
-  }, [])
 
   return (
     <>

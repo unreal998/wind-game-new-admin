@@ -38,8 +38,7 @@ export default function Layout({
       <main
         className={cx(
           "ease flex flex-col p-5 transition-all duration-100",
-          isCollapsed ? "lg:ml-[65px]" : "lg:ml-64",
-          // "lg:py-5 lg:pr-5",
+          isCollapsed ? "ml-[65px]" : "ml-64",
         )}
       >
         {children}

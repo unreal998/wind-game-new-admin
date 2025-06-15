@@ -32,6 +32,7 @@ export default function WindModsAdminPage() {
     { id: "required_pushes", title: "Необхідно пушів", type: "number" },
   ]
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const loadMods = async () => {
       try {
