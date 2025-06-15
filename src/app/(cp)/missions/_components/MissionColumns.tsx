@@ -1,5 +1,4 @@
 "use client"
-import Image from "next/image"
 import { CopyButton } from "@/components/CopyButton"
 import { type TableColumn } from "@/types/table"
 import { createColumnHelper } from "@tanstack/react-table"
@@ -26,13 +25,10 @@ export const missionColumns: TableColumn<Mission>[] = [
     cell: ({ getValue }) => {
       const imgUrl = getValue()
       return imgUrl ? (
-        <Image
+        <img
           src={imgUrl}
           alt="Mission image"
-          width={20}
-          height={20}
-          className="rounded object-cover"
-          style={{ width: "20px", height: "20px" }}
+          className="h-10 w-10 rounded object-cover"
         />
       ) : (
         <span className="italic text-gray-400">Немає</span>
