@@ -92,6 +92,7 @@ export default function WithdrawalAdminPage() {
       try {
         setIsLoading(true)
         const data = await fetchWithdrawalsApi()
+        console.log("Fetched withdrawals:", data)
         setWithdrawals(data)
       } catch (error) {
         console.error("Помилка при отриманні транзакцій:", error)

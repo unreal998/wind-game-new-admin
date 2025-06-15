@@ -27,6 +27,7 @@ export default function WalletsAdminPage() {
       try {
         setIsLoading(true)
         const data = await fetchTransactionsApi()
+        console.log("Fetched transactions:", data)
         setTransactions(data)
       } catch (error) {
         console.error("Помилка при отриманні транзакцій:", error)

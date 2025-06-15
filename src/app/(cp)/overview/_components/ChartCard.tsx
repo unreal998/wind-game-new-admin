@@ -1,8 +1,8 @@
 "use client"
 
 import { Badge } from "@/components/Badge"
-import { useTransactionStats } from "@/hooks/admin/useTransactionStats"
 import { useRegistrationStats } from "@/hooks/useRegistrationStats"
+
 import { cx, formatters } from "@/lib/utils"
 import { type PeriodValue } from "@/types/overview"
 import {
@@ -15,6 +15,8 @@ import {
 import { type DateRange } from "react-day-picker"
 import { getPeriod } from "./FilterBar"
 import { LineChart } from "./LineChart"
+import { useWithdrawalsStats } from "@/hooks/useWithdrawalsStats"
+import { useTransactionStatsNew } from "@/hooks/useTransactionStatsNew"
 
 type StatsType = {
   registrations: Array<{ date: Date; value: number }>
@@ -58,13 +60,17 @@ export function ChartCard({
   const formatter = formattingMap[type]
 
   // Отримуємо дані транзакцій та реєстрацій
-  const transactionStats = useTransactionStats()
   const registrationStats = useRegistrationStats()
+  const { withdrawals, currentTotal, previousTotal } = useWithdrawalsStats()
+  const { transactions, currentTotalTransactions, previousTotalTransactions } =
+    useTransactionStatsNew()
 
   // Вибираємо потрібний набір даних
-  const stats = (
-    title === "registrations" ? registrationStats : transactionStats
-  ) as StatsType
+  const stats: StatsType = {
+    registrations: registrationStats.registrations,
+    deposits: transactions,
+    withdrawals: withdrawals,
+  }
 
   // Створюємо інтервали для фільтрації
   const selectedDatesInterval =
@@ -160,11 +166,20 @@ export function ChartCard({
   const categories =
     selectedPeriod === "no-comparison" ? ["value"] : ["value", "previousValue"]
 
-  const value = chartData.reduce((acc, item) => acc + (item.value || 0), 0)
-  const previousValue = chartData.reduce(
-    (acc, item) => acc + (item.previousValue || 0),
-    0,
-  )
+  const value =
+    title === "withdrawals"
+      ? currentTotal
+      : title === "deposits"
+        ? currentTotalTransactions
+        : chartData.reduce((acc, item) => acc + (item.value || 0), 0)
+
+  const previousValue =
+    title === "withdrawals"
+      ? previousTotal
+      : title === "deposits"
+        ? previousTotalTransactions
+        : chartData.reduce((acc, item) => acc + (item.previousValue || 0), 0)
+
   const evolution =
     selectedPeriod !== "no-comparison" && value !== 0 && previousValue !== 0
       ? (value - previousValue) / previousValue
