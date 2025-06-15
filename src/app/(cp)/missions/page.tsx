@@ -30,6 +30,7 @@ export default function MissionAdminPage() {
       setIsLoading(true)
       const data = await fetchMissions()
       setMissions(data)
+      console.log("Отримані місії:", data)
     } catch (error) {
       console.error("Помилка при отриманні місій:", error)
     } finally {

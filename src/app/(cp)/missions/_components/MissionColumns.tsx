@@ -63,12 +63,12 @@ export const missionColumns: TableColumn<Mission>[] = [
       )
     },
   }),
-  columnHelper.accessor((row) => row.title.en, {
+  columnHelper.accessor((row) => row.title.ru, {
     id: "title",
     header: "Заголовок",
     cell: (info) => info.getValue(),
   }),
-  columnHelper.accessor((row) => row.description.en, {
+  columnHelper.accessor((row) => row.description.ru, {
     id: "description",
     header: "Опис",
     cell: (info) => info.getValue(),
