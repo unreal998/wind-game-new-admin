@@ -8,7 +8,7 @@ export type AdminLinksConfig = {
   total: string
   // deposits: string
   withdrawals: string
-  // wallets: string
+  wallets: string
   locations: string
   userLocations: string
   windMods: string

@@ -77,11 +77,11 @@ const sectionConfigs: Record<AdminLinkKeys, SectionConfig> = {
       transactionTypes: ["withdrawal"],
     },
   },
-  // wallets: {
-  //   title: "Гаманці",
-  //   icon: "solar:wallet-bold",
-  //   href: siteConfig.adminLinks.wallets,
-  // },
+  wallets: {
+    title: "Гаманці",
+    icon: "solar:wallet-bold",
+    href: siteConfig.adminLinks.wallets,
+  },
   locations: {
     title: "Локації",
     icon: "solar:map-point-bold",

@@ -1,12 +1,15 @@
 "use client"
 
-import { Checkbox } from "@/components/Checkbox"
-// import { DateWithDistance } from "@/components/data-table/DateWithDistance"
-// import { formatTimestamp } from "@/hooks/formatTimestamp"
 import { type TableColumn } from "@/types/table"
-import { type WindMod } from "@/types/windMod"
-import { formatAmount } from "@/utils/amountFormatter"
 import { createColumnHelper } from "@tanstack/react-table"
+import { formatAmount } from "@/utils/amountFormatter"
+import { Checkbox } from "@/components/Checkbox"
+
+type WindMod = {
+  price: number
+  tonValue: number
+  turxValue: number
+}
 
 const columnHelper = createColumnHelper<WindMod>()
 
@@ -38,61 +41,36 @@ export const windModColumns: TableColumn<WindMod>[] = [
     enableSorting: false,
     enableHiding: false,
   }),
-
-  columnHelper.accessor("wind_speed", {
+  columnHelper.display({
+    id: "index",
+    header: "№",
+    cell: ({ row }) => row.index + 1,
+    enableSorting: false,
+    enableHiding: false,
+  }),
+  columnHelper.display({
+    id: "wind_speed",
     header: "Швидкість вітру",
-    cell: ({ getValue }) => `${getValue()} м/с`,
+    cell: () => "",
+  }),
+  columnHelper.accessor("turxValue", {
+    header: "TURX дохід",
+    cell: ({ getValue }) => `${getValue()}`,
     enableSorting: true,
     filterFn: "number",
     meta: {
-      exportHeader: "Швидкість вітру (м/с)",
-      exportValue: (row) => row.wind_speed || 0,
+      exportValue: (row) => row.turxValue,
       exportAlign: "right",
     },
   }),
-
-  columnHelper.accessor("energy_per_hour", {
-    header: "Енергія за годину",
-    cell: ({ getValue }) => `${getValue()} ENRG`,
-    enableSorting: true,
-    filterFn: "number",
-    meta: {
-      exportHeader: "Енергія за годину (ENRG)",
-      exportValue: (row) => row.energy_per_hour || 0,
-      exportAlign: "right",
-    },
-  }),
-
-  columnHelper.accessor("price", {
-    header: "Ціна",
+  columnHelper.accessor("tonValue", {
+    header: "TON дохід",
     cell: ({ getValue }) => formatAmount(getValue()),
     enableSorting: true,
     filterFn: "number",
     meta: {
-      exportHeader: "Ціна (TON)",
-      exportValue: (row) => row.price || 0,
+      exportValue: (row) => row.tonValue,
       exportAlign: "right",
     },
   }),
-
-  columnHelper.accessor("required_pushes", {
-    header: "Необхідно пушів",
-    cell: ({ getValue }) => getValue(),
-    enableSorting: true,
-    filterFn: "number",
-    meta: {
-      exportValue: (row) => row.required_pushes || 0,
-      exportAlign: "right",
-    },
-  }),
-
-  // columnHelper.accessor("created_at", {
-  //     header: "Дата створення",
-  //     cell: ({ getValue }) => <DateWithDistance date={getValue()} />,
-  //     enableSorting: true,
-  //     filterFn: "dateRange",
-  //     meta: {
-  //         exportValue: (row) => formatTimestamp({ date: row.created_at }),
-  //     },
-  // }),
 ]
