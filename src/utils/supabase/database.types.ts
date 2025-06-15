@@ -428,6 +428,7 @@ export type Database = {
           allows_write_to_pm: boolean | null
           auth_date: string | null
           WindBalance: number | null
+          invitedBy: string | null
           created_at: string | null
           firstName: string | null
           hash: string | null
@@ -457,6 +458,7 @@ export type Database = {
           allows_write_to_pm?: boolean | null
           auth_date?: string | null
           WindBalance?: number | null
+          invitedBy?: string | null
           created_at?: string | null
           firstName?: string | null
           hash?: string | null
@@ -486,6 +488,7 @@ export type Database = {
           allows_write_to_pm?: boolean | null
           auth_date?: string | null
           WindBalance?: number | null
+          invitedBy: string | null
           created_at?: string | null
           firstName?: string | null
           hash?: string | null

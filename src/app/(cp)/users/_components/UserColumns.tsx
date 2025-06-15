@@ -160,7 +160,7 @@ export const userColumns: TableColumn<AdminProfile>[] = [
     },
   }),
   columnHelper.accessor("invitedBy", {
-    header: "Запрошений",
+    header: "Запросив",
     cell: ({ getValue }) => {
       const invitedBy = getValue()
       if (!invitedBy) return "-"
@@ -168,6 +168,24 @@ export const userColumns: TableColumn<AdminProfile>[] = [
         <span className="flex items-center space-x-2">
           <span className="max-w-[150px] truncate">{invitedBy}</span>
           <CopyButton text={invitedBy} />
+        </span>
+      )
+    },
+    enableSorting: true,
+    filterFn: "text",
+    meta: {
+      exportValue: (row) => row.invitedBy || "-",
+    },
+  }),
+  columnHelper.accessor("telegramID", {
+    header: "Посилання для запрошення",
+    cell: ({ getValue }) => {
+      const invitedBy = getValue()
+      if (!invitedBy) return "-"
+      return (
+        <span className="flex items-center space-x-2">
+          <span className="max-w-[150px] truncate">{`https://t.me/WindGameAppWrapperBot?start=r_${invitedBy}`}</span>
+          <CopyButton text={`https://t.me/WindGameAppWrapperBot?start=r_${invitedBy}`} />
         </span>
       )
     },

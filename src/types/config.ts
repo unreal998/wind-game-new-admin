@@ -5,10 +5,10 @@ export type AdminLinksConfig = {
   missions: string
   roadmap: string
   overview: string
-  total: string
+  // total: string
   // deposits: string
   withdrawals: string
-  wallets: string
+  // wallets: string
   locations: string
   userLocations: string
   windMods: string
