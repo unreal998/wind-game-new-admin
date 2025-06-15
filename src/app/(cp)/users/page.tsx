@@ -49,6 +49,11 @@ export default function ReferralsAdminPage() {
       type: "text",
     },
     {
+      id: "invitedBy",
+      title: "Invited By",
+      type: "text",
+    },
+    {
       id: "ton_balance",
       title: "TON Balance",
       type: "number",

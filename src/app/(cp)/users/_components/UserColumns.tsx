@@ -95,6 +95,24 @@ export const userColumns: TableColumn<AdminProfile>[] = [
       exportValue: (row) => row.userName || "-",
     },
   }),
+  columnHelper.accessor("invitedBy", {
+    header: "Invited By",
+    cell: ({ getValue }) => {
+      const invitedBy = getValue()
+      if (!invitedBy) return "-"
+      return (
+        <span className="flex items-center space-x-2">
+          <span>{invitedBy}</span>
+          <CopyButton text={invitedBy} />
+        </span>
+      )
+    },
+    enableSorting: true,
+    filterFn: "text",
+    meta: {
+      exportValue: (row) => row.invitedBy || "-",
+    },
+  }),
 
   // columnHelper.accessor("is_premium", {
   //   header: "Premium",

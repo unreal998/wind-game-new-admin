@@ -446,6 +446,7 @@ export type Database = {
           start_param: string | null
           status: Database["public"]["Enums"]["user_status"] | null
           TONBalance: number | null
+          invitedBy: string
           updated_at: string | null
           userName: string | null
           version: string | null
