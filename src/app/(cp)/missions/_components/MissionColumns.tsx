@@ -1,4 +1,6 @@
+// MissionColumns.ts
 "use client"
+
 import { CopyButton } from "@/components/CopyButton"
 import { type TableColumn } from "@/types/table"
 import { createColumnHelper } from "@tanstack/react-table"
@@ -8,7 +10,9 @@ import { Checkbox } from "@/components/Checkbox"
 
 const columnHelper = createColumnHelper<Mission>()
 
-export const missionColumns: TableColumn<Mission>[] = [
+export const getMissionColumns = (
+  lang: "ru" | "en",
+): TableColumn<Mission>[] => [
   columnHelper.display({
     id: "select",
     header: ({ table }) => (
@@ -63,12 +67,12 @@ export const missionColumns: TableColumn<Mission>[] = [
       )
     },
   }),
-  columnHelper.accessor((row) => row.title.ru, {
+  columnHelper.accessor((row) => row.title[lang], {
     id: "title",
     header: "Заголовок",
     cell: (info) => info.getValue(),
   }),
-  columnHelper.accessor((row) => row.description.ru, {
+  columnHelper.accessor((row) => row.description[lang], {
     id: "description",
     header: "Опис",
     cell: (info) => info.getValue(),
