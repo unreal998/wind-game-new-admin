@@ -1,5 +1,15 @@
 import axios from "axios"
 
+export type Mission = {
+  id: number
+  img: string
+  title: { en: string; ru: string }
+  description: { en: string; ru: string }
+  reward: number
+  coin: string
+  type: "daily" | "quest"
+}
+
 type MissionsData = {
   id: number
   img: string
@@ -12,7 +22,7 @@ type MissionsData = {
   specValue: string
 }
 
-type CreateMissionData = {
+export type CreateMissionData = {
   img: string
   title: { [key: string]: string }
   description: { [key: string]: string }

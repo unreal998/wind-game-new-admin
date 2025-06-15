@@ -7,9 +7,12 @@ import { DataTable } from "@/components/data-table/DataTable"
 import { FilterableColumn } from "@/types/table"
 import { missionColumns } from "./_components/MissionColumns"
 import { fetchMissions } from "./_components/fetchMissions"
+import { Button } from "@/components"
+import { CreateMissionModal } from "./_components/CreateMissionModal"
 
 export default function MissionAdminPage() {
   const [missions, setMissions] = useState<any[]>([])
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [aggregatedValue] = useState<string | number | null>(null)
 
@@ -42,11 +45,14 @@ export default function MissionAdminPage() {
     <>
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Місії</h1>
-        {!isLoading && aggregatedValue && (
-          <Badge variant="indigo" className="px-3 py-1 text-base">
-            {aggregatedValue}
-          </Badge>
-        )}
+        <div className="flex items-center gap-2">
+          {!isLoading && aggregatedValue && (
+            <Badge variant="indigo" className="px-3 py-1 text-base">
+              {aggregatedValue}
+            </Badge>
+          )}
+          <Button onClick={() => setIsCreateModalOpen(true)}>Додати</Button>
+        </div>
       </div>
 
       <Card className="p-0">
@@ -58,6 +64,9 @@ export default function MissionAdminPage() {
           onRefetch={loadMissions}
         />
       </Card>
+      {isCreateModalOpen && (
+        <CreateMissionModal onClose={() => setIsCreateModalOpen(false)} />
+      )}
     </>
   )
 }
