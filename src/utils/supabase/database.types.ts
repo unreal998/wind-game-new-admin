@@ -120,8 +120,8 @@ export type Database = {
           created_at: string
           id: string
           reward: number
-          title: {en: string; ru: string}
-          description: {en: string; ru: string}
+          title: { en: string; ru: string }
+          description: { en: string; ru: string }
           coin: string
           specType: string
           specValue: string
@@ -133,9 +133,9 @@ export type Database = {
           created_at?: string
           id?: string
           reward: number
-          title: {en: string; ru: string}
+          title: { en: string; ru: string }
           coin: string
-          description: {en: string; ru: string}
+          description: { en: string; ru: string }
           specType: string
           specValue: string
           type?: Database["public"]["Enums"]["task_type"]
@@ -146,11 +146,11 @@ export type Database = {
           created_at?: string
           id?: string
           reward?: number
-          title?: {en: string; ru: string}
+          title?: { en: string; ru: string }
           coin: string
           specType: string
           specValue: string
-          description?: {en: string; ru: string}
+          description?: { en: string; ru: string }
           type?: Database["public"]["Enums"]["task_type"]
           updated_at?: string
           url?: string
@@ -387,13 +387,17 @@ export type Database = {
         Row: {
           added_to_attachment_menu: boolean | null
           allows_write_to_pm: boolean | null
+          referals: string[]
+          userSettings: { isTutorialFinished: boolean }
+          telegramID: string
+          areas: Database["public"]["ComplicatedTypes"]["Area"][]
           auth_date: string | null
           WindBalance: number | null
           invitedBy: string | null
           created_at: string | null
           firstName: string | null
           hash: string | null
-          id: number
+          id: string
           is_bot: boolean | null
           is_premium: boolean | null
           language: string | null
@@ -1558,6 +1562,15 @@ export type Database = {
     }
     CompositeTypes: {
       [_ in never]: never
+    }
+    ComplicatedTypes: {
+      Area: {
+        name: string
+        available: boolean
+        bought: boolean
+        lastButtonPress: number
+        nextButtonPress: number
+      }
     }
   }
 }

@@ -7,12 +7,14 @@ import { updateUserBalance } from "./updateUserBalance"
 import { fetchTransactionsByUid } from "./fetchTransactionsByUid"
 import { transactionColumns } from "./transactionColumns"
 import { Loader2 } from "lucide-react"
+import { Database } from "@/utils/supabase/database.types"
+import { areaColumns } from "./areaColumns"
 
 interface UserSidebarProps {
-  user: any
+  user: Database["public"]["Tables"]["users"]["Row"]
   onClose: () => void
   onUpdate: (user: any) => void
-  tableData?: any[]
+  tableData?: any
   tableColumns?: TableColumn<any>[]
   filterableColumns?: FilterableColumn[]
 }
@@ -29,6 +31,7 @@ export const UserSidebar = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
+        console.log("USER", user)
         const data = await fetchTransactionsByUid(user.id)
         setTransactions(data)
       } catch (error) {
@@ -75,13 +78,13 @@ export const UserSidebar = ({
               label: "TON Баланс",
               value: (
                 <EditableBalanceField
-                  value={user.TONBalance}
+                  value={user.TONBalance ?? 0}
                   onChange={async (val) => {
                     const updated = { ...user, TONBalance: val }
                     await updateUserBalance({
                       id: String(user.id),
                       TONBalance: updated.TONBalance,
-                      WindBalance: updated.WindBalance,
+                      WindBalance: updated.WindBalance ?? 0,
                     })
                     onUpdate(updated)
                   }}
@@ -92,12 +95,12 @@ export const UserSidebar = ({
               label: "Wind Баланс",
               value: (
                 <EditableBalanceField
-                  value={user.WindBalance}
+                  value={user.WindBalance ?? 0}
                   onChange={async (val) => {
                     const updated = { ...user, WindBalance: val }
                     await updateUserBalance({
                       id: String(user.id),
-                      TONBalance: updated.TONBalance,
+                      TONBalance: updated.TONBalance ?? 0,
                       WindBalance: updated.WindBalance,
                     })
                     onUpdate(updated)
@@ -141,11 +144,32 @@ export const UserSidebar = ({
               </div>
             </div>
           )}
+          {user.areas && (
+            <div>
+              <h3 className="mb-2 text-lg font-semibold">Області</h3>
+              <div className="max-h-[400px] overflow-auto rounded border dark:border-gray-700">
+                <DataTable
+                  data={user.areas}
+                  columns={areaColumns}
+                  onRowClick={() => {}}
+                  openSidebarOnRowClick={false}
+                />
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
   )
 }
+
+//areas: {
+//  name: string
+//  available: boolean
+//  bought: boolean
+//  lastButtonPress: number
+//  nextButtonPress: number
+//}[]
 
 const EditableBalanceField = ({
   value,
