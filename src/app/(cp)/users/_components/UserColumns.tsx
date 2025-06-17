@@ -5,6 +5,7 @@ import { CopyButton } from "@/components/CopyButton"
 import { type AdminProfile } from "@/types/profile"
 import { type TableColumn } from "@/types/table"
 import { formatAmount } from "@/utils/amountFormatter"
+import { Database } from "@/utils/supabase/database.types"
 import { createColumnHelper } from "@tanstack/react-table"
 
 const columnHelper = createColumnHelper<AdminProfile>()
@@ -96,26 +97,6 @@ export const userColumns: TableColumn<AdminProfile>[] = [
     },
   }),
 
-  // columnHelper.accessor("is_premium", {
-  //   header: "Premium",
-  //   cell: ({ getValue }) => {
-  //     const isPremium = getValue()
-  //     return (
-  //       <Badge variant={isPremium ? "success" : "neutral"}>
-  //         {BOOLEAN_OPTIONS.find((opt) => opt.value === String(isPremium))
-  //           ?.label || "Ні"}
-  //       </Badge>
-  //     )
-  //   },
-  //   enableSorting: true,
-  //   filterFn: "boolean",
-  //   meta: {
-  //     exportValue: (row) =>
-  //       BOOLEAN_OPTIONS.find((opt) => opt.value === String(row.is_premium))
-  //         ?.label || "Ні",
-  //   },
-  // }),
-
   columnHelper.accessor("TONBalance", {
     header: "TON Баланс",
     cell: ({ getValue }) => formatAmount(getValue()),
@@ -185,7 +166,9 @@ export const userColumns: TableColumn<AdminProfile>[] = [
       return (
         <span className="flex items-center space-x-2">
           <span className="max-w-[150px] truncate">{`https://t.me/WindGameAppWrapperBot?start=r_${invitedBy}`}</span>
-          <CopyButton text={`https://t.me/WindGameAppWrapperBot?start=r_${invitedBy}`} />
+          <CopyButton
+            text={`https://t.me/WindGameAppWrapperBot?start=r_${invitedBy}`}
+          />
         </span>
       )
     },
@@ -193,6 +176,26 @@ export const userColumns: TableColumn<AdminProfile>[] = [
     filterFn: "text",
     meta: {
       exportValue: (row) => row.invitedBy || "-",
+    },
+  }),
+  columnHelper.accessor("areas", {
+    header: "Області",
+    cell: ({ getValue }) => {
+      let areaString: string = ""
+      const areas: Database["public"]["Tables"]["users"]["Row"]["areas"] =
+        getValue()
+      for (const area of areas) {
+        areaString += `name:${area.name}\n bought:${area.bought}\n available:${area.available}\n lastButtonPress${area.lastButtonPress}\n nextButtonPress${area.nextButtonPress}`
+      }
+
+      if (!areas) return "-"
+
+      return (
+        <span className="flex items-center space-x-2">
+          <span className="max-w-[150px] truncate">{areaString}</span>
+          <CopyButton text={areaString} />
+        </span>
+      )
     },
   }),
   columnHelper.accessor("wallet", {
