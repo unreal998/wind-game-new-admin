@@ -27,6 +27,7 @@ export const areaColumns: TableColumn<
     header: "Куплено",
     cell: ({ getValue }) => {
       const bought = getValue()
+      console.log("bought?", bought)
 
       return (
         <span className="flex items-center space-x-2">
@@ -40,6 +41,7 @@ export const areaColumns: TableColumn<
     header: "Доступний",
     cell: ({ getValue }) => {
       const available = getValue()
+      console.log("available?", available)
 
       return (
         <span className="flex items-center space-x-2">

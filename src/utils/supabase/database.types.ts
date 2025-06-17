@@ -387,6 +387,7 @@ export type Database = {
         Row: {
           added_to_attachment_menu: boolean | null
           allows_write_to_pm: boolean | null
+          modifiers: Database["public"]["ComplicatedTypes"]["Modifiers"][]
           referals: string[]
           userSettings: { isTutorialFinished: boolean }
           telegramID: string
@@ -1570,6 +1571,15 @@ export type Database = {
         bought: boolean
         lastButtonPress: number
         nextButtonPress: number
+      }
+      Modifiers: {
+        areaName: string
+        boughtModifier: Database["public"]["ComplicatedTypes"]["Modifier"][]
+      }
+      Modifier: {
+        speed: number
+        clicksRemaining: number
+        boughtDate: number
       }
     }
   }

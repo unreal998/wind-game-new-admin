@@ -9,6 +9,7 @@ import { transactionColumns } from "./transactionColumns"
 import { Loader2 } from "lucide-react"
 import { Database } from "@/utils/supabase/database.types"
 import { areaColumns } from "./areaColumns"
+import { modifiersColumns } from "./ModifierColumn"
 
 interface UserSidebarProps {
   user: Database["public"]["Tables"]["users"]["Row"]
@@ -157,19 +158,24 @@ export const UserSidebar = ({
               </div>
             </div>
           )}
+          {user.modifiers && (
+            <div>
+              <h3 className="mb-2 text-lg font-semibold">Модіфаери</h3>
+              <div className="max-h-[400px] overflow-auto rounded border dark:border-gray-700">
+                <DataTable
+                  data={user.modifiers}
+                  columns={modifiersColumns}
+                  onRowClick={() => {}}
+                  openSidebarOnRowClick={false}
+                />
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
   )
 }
-
-//areas: {
-//  name: string
-//  available: boolean
-//  bought: boolean
-//  lastButtonPress: number
-//  nextButtonPress: number
-//}[]
 
 const EditableBalanceField = ({
   value,
