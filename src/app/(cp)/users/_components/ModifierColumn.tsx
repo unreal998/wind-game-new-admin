@@ -31,8 +31,8 @@ export const modifiersColumns: TableColumn<
         if (!boughtModifier) return "-"
         return (
           <div>
-            {boughtModifier.map((modifier) => (
-              <span className="flex flex-col items-center p-1">
+            {boughtModifier.map((modifier, index) => (
+              <span  key={index} className="flex flex-col items-center p-1">
                 <span className="font-medium">Швидкість: {modifier.speed}</span>
                 <span className="font-medium">
                   Дата покупки: {new Date(modifier.boughtDate).toLocaleString()}
