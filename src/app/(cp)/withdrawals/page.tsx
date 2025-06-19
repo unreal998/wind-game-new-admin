@@ -94,9 +94,8 @@ export default function WithdrawalAdminPage() {
       try {
         setIsWithdrawalsLoading(true)
         const withdrawalsData = await fetchWithdrawalsApi()
-        setWithdrawals(withdrawalsData)
         setWithdrawals(
-          withdrawals.map((withdrawal) => {
+          withdrawalsData.map((withdrawal: any) => {
             const user = profiles.find((user) => {
               if (withdrawal.uid === user.id) {
                 return user
@@ -108,14 +107,11 @@ export default function WithdrawalAdminPage() {
                 ...withdrawal,
                 inviter: user.invitedBy,
               }
-              console.log("withdrawalWithInviter", withdrawalWithInviter)
-
               return withdrawalWithInviter
             }
             return withdrawal
           }),
         )
-        console.log("withdrawals", withdrawals)
       } catch (error) {
         console.error("Помилка при отриманні транзакцій:", error)
       } finally {
@@ -124,7 +120,7 @@ export default function WithdrawalAdminPage() {
     }
 
     loadWithdrawls()
-  }, [])
+  }, [profiles])
 
   return (
     <>
@@ -142,7 +138,7 @@ export default function WithdrawalAdminPage() {
           data={withdrawals}
           columns={withdrawalColumns}
           filterableColumns={filterableColumns}
-          isLoading={isLoading}
+          isLoading={isLoading && isWithdrawalsLoading}
         />
       </Card>
     </>

@@ -61,6 +61,10 @@ export const withdrawalColumns: TableColumn<WithdrawalDataColumn>[] = [
       )
     },
   }),
+  columnHelper.accessor("created_at", {
+    header: "Час створення",
+    cell: ({ getValue }) => new Date(getValue()).toLocaleString("uk-UA"),
+  }),
   columnHelper.accessor("inviter", {
     header: "Inviter",
     cell: ({ getValue }) => {
@@ -73,10 +77,6 @@ export const withdrawalColumns: TableColumn<WithdrawalDataColumn>[] = [
         </span>
       )
     },
-  }),
-  columnHelper.accessor("created_at", {
-    header: "Час створення",
-    cell: ({ getValue }) => new Date(getValue()).toLocaleString("uk-UA"),
   }),
   columnHelper.accessor("wallet", {
     header: "Гаманець",
