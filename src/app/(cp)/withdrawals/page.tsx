@@ -8,11 +8,13 @@ import { FilterableColumn } from "@/types/table"
 import { useEffect, useState } from "react"
 import { withdrawalColumns } from "./_components/WithdrawalColumns"
 import { fetchWithdrawalsApi } from "./_components/fetchWithdrawal"
+import { useAdminReferralsStore } from "@/stores/admin/useAdminReferralsStore"
 
 export default function WithdrawalAdminPage() {
   const [aggregatedValue] = useState<string | number | null>(null)
+  const { profiles, isLoading } = useAdminReferralsStore()
   const [withdrawals, setWithdrawals] = useState<any[]>([])
-  const [isLoading, setIsLoading] = useState(false)
+  const [isWithdrawalsLoading, setIsWithdrawalsLoading] = useState(false)
 
   const filterableColumns: FilterableColumn[] = [
     // {
@@ -90,14 +92,34 @@ export default function WithdrawalAdminPage() {
   useEffect(() => {
     const loadWithdrawls = async () => {
       try {
-        setIsLoading(true)
-        const data = await fetchWithdrawalsApi()
-        console.log("Fetched withdrawals:", data)
-        setWithdrawals(data)
+        setIsWithdrawalsLoading(true)
+        const withdrawalsData = await fetchWithdrawalsApi()
+        setWithdrawals(withdrawalsData)
+        setWithdrawals(
+          withdrawals.map((withdrawal) => {
+            const user = profiles.find((user) => {
+              if (withdrawal.uid === user.id) {
+                return user
+              }
+              return
+            })
+            if (user) {
+              const withdrawalWithInviter = {
+                ...withdrawal,
+                inviter: user.invitedBy,
+              }
+              console.log("withdrawalWithInviter", withdrawalWithInviter)
+
+              return withdrawalWithInviter
+            }
+            return withdrawal
+          }),
+        )
+        console.log("withdrawals", withdrawals)
       } catch (error) {
         console.error("Помилка при отриманні транзакцій:", error)
       } finally {
-        setIsLoading(false)
+        setIsWithdrawalsLoading(false)
       }
     }
 
@@ -108,7 +130,7 @@ export default function WithdrawalAdminPage() {
     <>
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Вивід</h1>
-        {!isLoading && aggregatedValue && (
+        {!isLoading && !isWithdrawalsLoading && aggregatedValue && (
           <Badge variant="indigo" className="px-3 py-1 text-base">
             {aggregatedValue}
           </Badge>
