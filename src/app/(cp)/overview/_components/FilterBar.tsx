@@ -40,12 +40,12 @@ import React from "react"
 import { type DateRange } from "react-day-picker"
 import { ChartCard } from "./ChartCard"
 
-type Period = {
+export type Period = {
   value: PeriodValue
   label: string
 }
 
-const periods: Period[] = [
+export const periods: Period[] = [
   {
     value: "previous-period",
     label: "Попередній період",
@@ -183,10 +183,7 @@ export function FilterBar({
       </div>
       <Dialog>
         <DialogTrigger asChild>
-          <Button
-            variant="secondary"
-            className="hidden px-2.5 py-1 sm:flex"
-          >
+          <Button variant="secondary" className="hidden px-2.5 py-1 sm:flex">
             <RiSettings5Line className="size-4 shrink-0" aria-hidden="true" />
           </Button>
         </DialogTrigger>

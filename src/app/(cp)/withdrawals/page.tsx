@@ -5,12 +5,16 @@ import { Card } from "@/components/Card"
 import { TRANSACTION_STATUSES } from "@/components/data-table/constants"
 import { DataTable } from "@/components/data-table/DataTable"
 import { FilterableColumn } from "@/types/table"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { withdrawalColumns } from "./_components/WithdrawalColumns"
 import { fetchWithdrawalsApi } from "./_components/fetchWithdrawal"
 import { useAdminReferralsStore } from "@/stores/admin/useAdminReferralsStore"
+import { WithdrawalsDateFilter } from "./_components/WithdrawalsDateFilter"
+import { RangeDatePickerRef } from "@/components/DatePicker"
 
 export default function WithdrawalAdminPage() {
+  const rangeRef = useRef<RangeDatePickerRef>(null)
+
   const [aggregatedValue] = useState<string | number | null>(null)
   const { profiles, isLoading } = useAdminReferralsStore()
   const [withdrawals, setWithdrawals] = useState<any[]>([])
@@ -122,10 +126,25 @@ export default function WithdrawalAdminPage() {
     loadWithdrawls()
   }, [profiles])
 
+  useEffect(() => {
+    const select = rangeRef.current?.getValue()
+    console.log("select?.to", select?.to)
+    console.log("select?.from", select?.from)
+  }, [rangeRef.current?.getValue()?.from])
+
   return (
     <>
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Вивід</h1>
+        <WithdrawalsDateFilter rangeRef={rangeRef} />
+        <button
+          onClick={() => {
+            console.log(rangeRef.current?.getValue())
+          }}
+        >
+          HFHJHLK
+        </button>
+
         {!isLoading && !isWithdrawalsLoading && aggregatedValue && (
           <Badge variant="indigo" className="px-3 py-1 text-base">
             {aggregatedValue}
