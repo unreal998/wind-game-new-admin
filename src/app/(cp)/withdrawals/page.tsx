@@ -19,6 +19,7 @@ export default function WithdrawalAdminPage() {
   const { profiles, isLoading } = useAdminReferralsStore()
   const [withdrawals, setWithdrawals] = useState<any[]>([])
   const [isWithdrawalsLoading, setIsWithdrawalsLoading] = useState(false)
+  const [sum, setSum] = useState<number>(0)
 
   const filterableColumns: FilterableColumn[] = [
     // {
@@ -116,6 +117,10 @@ export default function WithdrawalAdminPage() {
             return withdrawal
           }),
         )
+
+        setSum(
+          withdrawalsData.reduce((acc: number, next: any) => acc + next.sum, 0),
+        )
       } catch (error) {
         console.error("Помилка при отриманні транзакцій:", error)
       } finally {
@@ -144,6 +149,9 @@ export default function WithdrawalAdminPage() {
         >
           HFHJHLK
         </button>
+        <h1 className="text-1xl m-1 bg-gray-900 p-2 font-semibold">
+          Загальна сумма: {sum}
+        </h1>
 
         {!isLoading && !isWithdrawalsLoading && aggregatedValue && (
           <Badge variant="indigo" className="px-3 py-1 text-base">
