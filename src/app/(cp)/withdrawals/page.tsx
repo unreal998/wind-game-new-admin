@@ -5,14 +5,21 @@ import { Card } from "@/components/Card"
 import { TRANSACTION_STATUSES } from "@/components/data-table/constants"
 import { DataTable } from "@/components/data-table/DataTable"
 import { FilterableColumn } from "@/types/table"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { withdrawalColumns } from "./_components/WithdrawalColumns"
 import { fetchWithdrawalsApi } from "./_components/fetchWithdrawal"
+import { useAdminReferralsStore } from "@/stores/admin/useAdminReferralsStore"
+import { WithdrawalsDateFilter } from "./_components/WithdrawalsDateFilter"
+import { RangeDatePickerRef } from "@/components/DatePicker"
 
 export default function WithdrawalAdminPage() {
+  const rangeRef = useRef<RangeDatePickerRef>(null)
+
   const [aggregatedValue] = useState<string | number | null>(null)
+  const { profiles, isLoading } = useAdminReferralsStore()
   const [withdrawals, setWithdrawals] = useState<any[]>([])
-  const [isLoading, setIsLoading] = useState(false)
+  const [isWithdrawalsLoading, setIsWithdrawalsLoading] = useState(false)
+  const [sum, setSum] = useState<number>(0)
 
   const filterableColumns: FilterableColumn[] = [
     // {
@@ -90,25 +97,63 @@ export default function WithdrawalAdminPage() {
   useEffect(() => {
     const loadWithdrawls = async () => {
       try {
-        setIsLoading(true)
-        const data = await fetchWithdrawalsApi()
-        console.log("Fetched withdrawals:", data)
-        setWithdrawals(data)
+        setIsWithdrawalsLoading(true)
+        const withdrawalsData = await fetchWithdrawalsApi()
+        setWithdrawals(
+          withdrawalsData.map((withdrawal: any) => {
+            const user = profiles.find((user) => {
+              if (withdrawal.uid === user.id) {
+                return user
+              }
+              return
+            })
+            if (user) {
+              const withdrawalWithInviter = {
+                ...withdrawal,
+                inviter: user.invitedBy,
+              }
+              return withdrawalWithInviter
+            }
+            return withdrawal
+          }),
+        )
+
+        setSum(
+          withdrawalsData.reduce((acc: number, next: any) => acc + next.sum, 0),
+        )
       } catch (error) {
         console.error("Помилка при отриманні транзакцій:", error)
       } finally {
-        setIsLoading(false)
+        setIsWithdrawalsLoading(false)
       }
     }
 
     loadWithdrawls()
-  }, [])
+  }, [profiles])
+
+  useEffect(() => {
+    const select = rangeRef.current?.getValue()
+    console.log("select?.to", select?.to)
+    console.log("select?.from", select?.from)
+  }, [rangeRef.current?.getValue()?.from])
 
   return (
     <>
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Вивід</h1>
-        {!isLoading && aggregatedValue && (
+        <WithdrawalsDateFilter rangeRef={rangeRef} />
+        <button
+          onClick={() => {
+            console.log(rangeRef.current?.getValue())
+          }}
+        >
+          HFHJHLK
+        </button>
+        <h1 className="text-1xl m-1 bg-gray-900 p-2 font-semibold">
+          Загальна сумма: {sum}
+        </h1>
+
+        {!isLoading && !isWithdrawalsLoading && aggregatedValue && (
           <Badge variant="indigo" className="px-3 py-1 text-base">
             {aggregatedValue}
           </Badge>
@@ -120,7 +165,7 @@ export default function WithdrawalAdminPage() {
           data={withdrawals}
           columns={withdrawalColumns}
           filterableColumns={filterableColumns}
-          isLoading={isLoading}
+          isLoading={isLoading && isWithdrawalsLoading}
         />
       </Card>
     </>

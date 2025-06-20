@@ -691,7 +691,12 @@ const SingleDatePicker = ({
 //#region Range Date Picker
 // ============================================================================
 
+export interface RangeDatePickerRef {
+  getValue: () => DateRange | undefined
+}
+
 interface RangeProps extends PickerProps {
+  rangeRef?: React.Ref<RangeDatePickerRef>
   presets?: DateRangePreset[]
   defaultValue?: DateRange
   value?: DateRange
@@ -714,6 +719,7 @@ const RangeDatePicker = ({
   translations,
   align = "center",
   className,
+  rangeRef,
   ...props
 }: RangeProps) => {
   const [open, setOpen] = React.useState(false)
@@ -736,6 +742,10 @@ const RangeDatePicker = ({
         ? new Time(defaultValue.to.getHours(), defaultValue.to.getMinutes())
         : new Time(0, 0),
   )
+
+  React.useImperativeHandle(rangeRef, () => ({
+    getValue: () => range,
+  }))
 
   const initialRange = React.useMemo(() => {
     return range
@@ -1186,18 +1196,29 @@ const DatePicker = ({ presets, ...props }: SingleDatePickerProps) => {
 DatePicker.displayName = "DatePicker"
 
 type RangeDatePickerProps = {
+  rangeRef?: React.Ref<RangeDatePickerRef>
   presets?: DateRangePreset[]
   defaultValue?: DateRange
   value?: DateRange
   onChange?: (dateRange: DateRange | undefined) => void
 } & PickerProps
 
-const DateRangePicker = ({ presets, ...props }: RangeDatePickerProps) => {
+const DateRangePicker = ({
+  presets,
+  rangeRef,
+  ...props
+}: RangeDatePickerProps) => {
   if (presets) {
     validatePresets(presets, props)
   }
 
-  return <RangeDatePicker presets={presets} {...(props as RangeProps)} />
+  return (
+    <RangeDatePicker
+      rangeRef={rangeRef}
+      presets={presets}
+      {...(props as RangeProps)}
+    />
+  )
 }
 
 DateRangePicker.displayName = "DateRangePicker"

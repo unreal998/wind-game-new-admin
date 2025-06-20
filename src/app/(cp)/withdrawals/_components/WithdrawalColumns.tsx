@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/Checkbox"
 
 type WithdrawalDataColumn = {
   id: string
+  inviter: string
   created_at: string
   wallet: string
   sum: number
@@ -63,6 +64,19 @@ export const withdrawalColumns: TableColumn<WithdrawalDataColumn>[] = [
   columnHelper.accessor("created_at", {
     header: "Час створення",
     cell: ({ getValue }) => new Date(getValue()).toLocaleString("uk-UA"),
+  }),
+  columnHelper.accessor("inviter", {
+    header: "Inviter",
+    cell: ({ getValue }) => {
+      const inviter = getValue()
+      if (!inviter) return "-"
+      return (
+        <span className="flex items-center space-x-2">
+          <span className="font-medium">{inviter}</span>
+          <CopyButton text={inviter} />
+        </span>
+      )
+    },
   }),
   columnHelper.accessor("wallet", {
     header: "Гаманець",
