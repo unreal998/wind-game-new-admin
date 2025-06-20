@@ -12,6 +12,7 @@ export default function WalletsAdminPage() {
   const [transactions, setTransactions] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [aggregatedValue] = useState<string | number | null>(null)
+  const [sum, setSum] = useState<number>(0)
 
   const filterableColumns: FilterableColumn[] = [
     { id: "id", title: "ID", type: "text" },
@@ -28,6 +29,7 @@ export default function WalletsAdminPage() {
         setIsLoading(true)
         const data = await fetchTransactionsApi()
         console.log("Fetched transactions:", data)
+        setSum(data.reduce((acc: number, next: any) => acc + next.summ, 0))
         setTransactions(data)
       } catch (error) {
         console.error("Помилка при отриманні транзакцій:", error)
@@ -43,6 +45,10 @@ export default function WalletsAdminPage() {
     <>
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Поповнення</h1>
+        <h1 className="text-1xl m-1 bg-gray-900 p-2 font-semibold">
+          Загальна сумма: {sum}
+        </h1>
+
         {!isLoading && aggregatedValue && (
           <Badge variant="indigo" className="px-3 py-1 text-base">
             {aggregatedValue}
