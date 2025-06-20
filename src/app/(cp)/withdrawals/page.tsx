@@ -142,15 +142,8 @@ export default function WithdrawalAdminPage() {
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Вивід</h1>
         <WithdrawalsDateFilter rangeRef={rangeRef} />
-        <button
-          onClick={() => {
-            console.log(rangeRef.current?.getValue())
-          }}
-        >
-          HFHJHLK
-        </button>
         <h1 className="text-1xl m-1 bg-gray-900 p-2 font-semibold">
-          Загальна сумма: {sum}
+          Загальна сумма: {(Math.round(sum * 100) / 100).toFixed(2)}
         </h1>
 
         {!isLoading && !isWithdrawalsLoading && aggregatedValue && (

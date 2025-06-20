@@ -46,7 +46,7 @@ export default function WalletsAdminPage() {
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Поповнення</h1>
         <h1 className="text-1xl m-1 bg-gray-900 p-2 font-semibold">
-          Загальна сумма: {sum}
+          Загальна сумма: {(Math.round(sum * 100) / 100).toFixed(2)}{" "}
         </h1>
 
         {!isLoading && aggregatedValue && (
