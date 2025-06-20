@@ -10,6 +10,7 @@ import { UserSidebar } from "./_components/UserSidebar"
 import { fetchWithdrawals } from "./_components/fetchWithdrawals"
 import { withdrawalsColumns } from "./_components/withdrawalsColumns"
 import Sum from "@/components/Sum"
+import { AdminProfile } from "@/types/profile"
 
 export default function ReferralsAdminPage() {
   const { profiles, isLoading, updateUser } = useAdminReferralsStore()
@@ -17,6 +18,7 @@ export default function ReferralsAdminPage() {
   const [withdrawals, setWithdrawals] = useState<any[]>()
   const [totalTONSum, setTotalTONSum] = useState<number>(0)
   const [totalTURXSum, setTotalTURXSum] = useState<number>(0)
+  const [usersColumnData, setUsersColumnData] = useState<AdminProfile[]>()
 
   useEffect(() => {
     setTotalTONSum(
@@ -94,6 +96,23 @@ export default function ReferralsAdminPage() {
     },
   ]
 
+  useEffect(() => {
+    setUsersColumnData(
+      profiles.map((user) => {
+        const referalUser = profiles.filter(
+          (anotherUser) => anotherUser.invitedBy === user.telegramID,
+        )
+        if (user.referalCount === undefined)
+          return { ...user, referalCount: referalUser ? referalUser.length : 0 }
+        return {
+          ...user,
+          referalCount:
+            user.referalCount + (referalUser ? referalUser.length : 0),
+        }
+      }),
+    )
+  }, [profiles])
+
   return (
     <>
       <div className="mb-4 flex items-center justify-between">
@@ -109,7 +128,7 @@ export default function ReferralsAdminPage() {
 
       <Card className="p-0">
         <DataTable
-          data={profiles}
+          data={usersColumnData ?? profiles}
           columns={userColumns}
           filterableColumns={filterableColumns}
           isLoading={isLoading}
