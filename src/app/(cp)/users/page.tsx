@@ -9,11 +9,29 @@ import { userColumns } from "./_components/UserColumns"
 import { UserSidebar } from "./_components/UserSidebar"
 import { fetchWithdrawals } from "./_components/fetchWithdrawals"
 import { withdrawalsColumns } from "./_components/withdrawalsColumns"
+import Sum from "@/components/Sum"
 
 export default function ReferralsAdminPage() {
   const { profiles, isLoading, updateUser } = useAdminReferralsStore()
   const [activeUser, setActiveUser] = useState<any | null>(null)
   const [withdrawals, setWithdrawals] = useState<any[]>()
+  const [totalTONSum, setTotalTONSum] = useState<number>(0)
+  const [totalTURXSum, setTotalTURXSum] = useState<number>(0)
+
+  useEffect(() => {
+    setTotalTONSum(
+      profiles.reduce((acc, user) => {
+        if (!user?.TONBalance) return acc
+        return acc + user.TONBalance
+      }, 0),
+    )
+    setTotalTURXSum(
+      profiles.reduce((acc, user) => {
+        if (!user?.WindBalance) return acc
+        return acc + user.WindBalance
+      }, 0),
+    )
+  }, [profiles, isLoading])
 
   useEffect(() => {
     const loadWithdrawals = async () => {
@@ -80,6 +98,8 @@ export default function ReferralsAdminPage() {
     <>
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Користувачі</h1>
+        <Sum label="Загальна сумма TURX" sum={totalTURXSum} />
+        <Sum label="Загальна сумма TON" sum={totalTONSum} />
         {/* {!isLoading && aggregatedValue && (
           <Badge variant="indigo" className="px-3 py-1 text-base">
             {aggregatedValue}
