@@ -34,6 +34,8 @@ import { useTableSettings } from "@/hooks/admin/useTableSettings"
 import { cx } from "@/lib/utils"
 import { FilterableColumn, type TableColumn } from "@/types/table"
 import { rankItem } from "@tanstack/match-sorter-utils"
+import { DateRange } from "react-day-picker"
+import { interval, isWithinInterval } from "date-fns"
 
 interface DataTableProps<TData> {
   data: TData[]
@@ -131,7 +133,8 @@ export function DataTable<TData extends Record<string, any>>({
   isLoading,
   onRowClick,
   openSidebarOnRowClick = false,
-}: DataTableProps<TData>) {
+  selectedDateRange,
+}: DataTableProps<TData> & { selectedDateRange?: DateRange }) {
   const [pagination, setPagination] = useState({
     pageSize: simple ? 100 : 10,
     pageIndex: 0,
@@ -153,8 +156,21 @@ export function DataTable<TData extends Record<string, any>>({
       ...item,
       _searchable: createSearchString(item),
     }))
+
+    if (selectedDateRange && selectedDateRange.from && selectedDateRange.to) {
+      const selectedInterval = interval(
+        selectedDateRange.from,
+        selectedDateRange.to,
+      )
+      const sortedByPeriod = prepared.filter((item) => {
+        return isWithinInterval(item.created_at, selectedInterval)
+      })
+      setPreparedData(sortedByPeriod)
+      return
+    }
+
     setPreparedData(prepared)
-  }, [data])
+  }, [data, selectedDateRange])
 
   const table = useReactTable({
     data: preparedData,
