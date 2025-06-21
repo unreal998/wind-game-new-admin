@@ -32,7 +32,7 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
                 );
                 const { data: referalUsers, error: refError } = await supabase
                     .from("users")
-                    .select("telegramID, userName, created_at, WindBalance")
+                    .select("telegramID, userName, created_at, WindBalance, rewardFromClicks")
                     .in("telegramID", allReferalIds);
 
                 
@@ -43,7 +43,7 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
                     if (user) {
                         result.push({
                             created_at: referalUsers.find(ru => ru.telegramID === id)?.created_at || new Date().toISOString(),
-                            amount: referalUsers.find(ru => ru.telegramID === id)?.WindBalance / 10 || 0,
+                            amount: referalUsers.find(ru => ru.telegramID === id)?.rewardFromClicks || 0,
                             user: {
                                 id: user.telegramID,
                                 username: user.userName || user.telegramID,
