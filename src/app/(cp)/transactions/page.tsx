@@ -7,6 +7,7 @@ import { DataTable } from "@/components/data-table/DataTable"
 import { FilterableColumn } from "@/types/table"
 import { fetchTransactionsApi } from "./_components/fetchTransactions"
 import { walletColumns } from "./_components/WalletColumns"
+import Sum from "@/components/Sum"
 
 export default function WalletsAdminPage() {
   const [transactions, setTransactions] = useState<any[]>([])
@@ -45,9 +46,7 @@ export default function WalletsAdminPage() {
     <>
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Поповнення</h1>
-        <h1 className="text-1xl m-1 bg-gray-900 p-2 font-semibold">
-          Загальна сумма: {(Math.round(sum * 100) / 100).toFixed(2)}{" "}
-        </h1>
+        <Sum label="Загальна сумма" sum={sum} />
 
         {!isLoading && aggregatedValue && (
           <Badge variant="indigo" className="px-3 py-1 text-base">

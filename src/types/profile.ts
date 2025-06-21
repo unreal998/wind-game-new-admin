@@ -6,6 +6,7 @@ type UserRow = Database["public"]["Tables"]["users"]["Row"]
 // Розширюємо тип для адмін панелі
 export type AdminProfile = UserRow & {
   telegramID?: string | null
+  referalCount?: number
 }
 
 export interface TransactionProfile {

@@ -11,6 +11,7 @@ import { fetchWithdrawalsApi } from "./_components/fetchWithdrawal"
 import { useAdminReferralsStore } from "@/stores/admin/useAdminReferralsStore"
 import { WithdrawalsDateFilter } from "./_components/WithdrawalsDateFilter"
 import { RangeDatePickerRef } from "@/components/DatePicker"
+import Sum from "@/components/Sum"
 
 export default function WithdrawalAdminPage() {
   const rangeRef = useRef<RangeDatePickerRef>(null)
@@ -142,9 +143,7 @@ export default function WithdrawalAdminPage() {
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Вивід</h1>
         <WithdrawalsDateFilter rangeRef={rangeRef} />
-        <h1 className="text-1xl m-1 bg-gray-900 p-2 font-semibold">
-          Загальна сумма: {(Math.round(sum * 100) / 100).toFixed(2)}
-        </h1>
+        <Sum label="Загальна сумма" sum={sum} />
 
         {!isLoading && !isWithdrawalsLoading && aggregatedValue && (
           <Badge variant="indigo" className="px-3 py-1 text-base">

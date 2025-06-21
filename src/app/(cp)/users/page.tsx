@@ -9,11 +9,31 @@ import { userColumns } from "./_components/UserColumns"
 import { UserSidebar } from "./_components/UserSidebar"
 import { fetchWithdrawals } from "./_components/fetchWithdrawals"
 import { withdrawalsColumns } from "./_components/withdrawalsColumns"
+import Sum from "@/components/Sum"
+import { AdminProfile } from "@/types/profile"
 
 export default function ReferralsAdminPage() {
   const { profiles, isLoading, updateUser } = useAdminReferralsStore()
   const [activeUser, setActiveUser] = useState<any | null>(null)
   const [withdrawals, setWithdrawals] = useState<any[]>()
+  const [totalTONSum, setTotalTONSum] = useState<number>(0)
+  const [totalTURXSum, setTotalTURXSum] = useState<number>(0)
+  const [usersColumnData, setUsersColumnData] = useState<AdminProfile[]>()
+
+  useEffect(() => {
+    setTotalTONSum(
+      profiles.reduce((acc, user) => {
+        if (!user?.TONBalance) return acc
+        return acc + user.TONBalance
+      }, 0),
+    )
+    setTotalTURXSum(
+      profiles.reduce((acc, user) => {
+        if (!user?.WindBalance) return acc
+        return acc + user.WindBalance
+      }, 0),
+    )
+  }, [profiles, isLoading])
 
   useEffect(() => {
     const loadWithdrawals = async () => {
@@ -76,10 +96,29 @@ export default function ReferralsAdminPage() {
     },
   ]
 
+  useEffect(() => {
+    setUsersColumnData(
+      profiles.map((user) => {
+        const referalUser = profiles.filter(
+          (anotherUser) => anotherUser.invitedBy === user.telegramID,
+        )
+        if (user.referalCount === undefined)
+          return { ...user, referalCount: referalUser ? referalUser.length : 0 }
+        return {
+          ...user,
+          referalCount:
+            user.referalCount + (referalUser ? referalUser.length : 0),
+        }
+      }),
+    )
+  }, [profiles])
+
   return (
     <>
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Користувачі</h1>
+        <Sum label="Загальна сумма TURX" sum={totalTURXSum} />
+        <Sum label="Загальна сумма TON" sum={totalTONSum} />
         {/* {!isLoading && aggregatedValue && (
           <Badge variant="indigo" className="px-3 py-1 text-base">
             {aggregatedValue}
@@ -89,7 +128,7 @@ export default function ReferralsAdminPage() {
 
       <Card className="p-0">
         <DataTable
-          data={profiles}
+          data={usersColumnData ?? profiles}
           columns={userColumns}
           filterableColumns={filterableColumns}
           isLoading={isLoading}
