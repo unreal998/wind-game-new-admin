@@ -5,16 +5,16 @@ import { Card } from "@/components/Card"
 import { TRANSACTION_STATUSES } from "@/components/data-table/constants"
 import { DataTable } from "@/components/data-table/DataTable"
 import { FilterableColumn } from "@/types/table"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { withdrawalColumns } from "./_components/WithdrawalColumns"
 import { fetchWithdrawalsApi } from "./_components/fetchWithdrawal"
 import { useAdminReferralsStore } from "@/stores/admin/useAdminReferralsStore"
 import { WithdrawalsDateFilter } from "./_components/WithdrawalsDateFilter"
-import { RangeDatePickerRef } from "@/components/DatePicker"
+import { DateRange } from "react-day-picker"
 import Sum from "@/components/Sum"
 
 export default function WithdrawalAdminPage() {
-  const rangeRef = useRef<RangeDatePickerRef>(null)
+  const [selectedDateRange, setSelectedDateRange] = useState<DateRange>()
 
   const [aggregatedValue] = useState<string | number | null>(null)
   const { profiles, isLoading } = useAdminReferralsStore()
@@ -132,16 +132,11 @@ export default function WithdrawalAdminPage() {
     loadWithdrawls()
   }, [profiles])
 
-  useEffect(() => {
-    const select = rangeRef.current?.getValue()
-    console.log("select?.to", select?.to)
-    console.log("select?.from", select?.from)
-  }, [rangeRef.current?.getValue()?.from])
-
   return (
     <>
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Вивід</h1>
+        <WithdrawalsDateFilter setSelectedDateRange={setSelectedDateRange} />
         <WithdrawalsDateFilter rangeRef={rangeRef} />
         <Sum label="Загальна сумма" sum={sum} />
 
@@ -158,6 +153,7 @@ export default function WithdrawalAdminPage() {
           columns={withdrawalColumns}
           filterableColumns={filterableColumns}
           isLoading={isLoading && isWithdrawalsLoading}
+          selectedDateRange={selectedDateRange}
         />
       </Card>
     </>

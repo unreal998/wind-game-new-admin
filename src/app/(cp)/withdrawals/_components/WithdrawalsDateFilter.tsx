@@ -14,14 +14,14 @@ import { TRANSLATIONS_DATEPICKER } from "@/components/data-table/constants"
 import { DateRangePicker, RangeDatePickerRef } from "@/components/DatePicker"
 import { RiSettings5Line } from "@remixicon/react"
 import { uk } from "date-fns/locale"
-import React from "react"
+import React, { Dispatch, SetStateAction } from "react"
 import { type DateRange } from "react-day-picker"
 import { subDays } from "date-fns"
 
 export function WithdrawalsDateFilter({
-  rangeRef,
+  setSelectedDateRange,
 }: {
-  rangeRef?: React.Ref<RangeDatePickerRef>
+  setSelectedDateRange?: Dispatch<SetStateAction<DateRange | undefined>>
 }) {
   const [selectedDates, setSelectedDates] = React.useState<
     DateRange | undefined
@@ -37,7 +37,7 @@ export function WithdrawalsDateFilter({
     <div className="flex w-full justify-between">
       <div className="w-full sm:flex sm:items-center sm:gap-2">
         <DateRangePicker
-          rangeRef={rangeRef}
+          setSelectedDateRange={setSelectedDateRange}
           value={selectedDates}
           onChange={(dates) => setSelectedDates(dates)}
           className="w-full sm:w-fit"
