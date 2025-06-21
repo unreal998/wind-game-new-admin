@@ -1,19 +1,32 @@
 import axios from "axios"
 
-export const updateUserBalance = async ({
+export const updateUserKWTBalance = async ({
   id,
-  TONBalance,
   WindBalance,
 }: {
   id: string
-  TONBalance: number
   WindBalance: number
 }) => {
   const response = await axios.post(
     `https://aedf-95-164-85-150.ngrok-free.app/user?uid=${id}`,
     {
-      TONBalance,
       WindBalance,
+    },
+  )
+  return response.data.data
+}
+
+export const updateUserTONBalance = async ({
+  id,
+  TONBalance,
+}: {
+  id: string
+  TONBalance: number
+}) => {
+  const response = await axios.post(
+    `https://aedf-95-164-85-150.ngrok-free.app/user?uid=${id}`,
+    {
+      TONBalance,
     },
   )
   return response.data.data
