@@ -11,7 +11,7 @@ import {
 
 import { Button } from "@/components/Button"
 import { TRANSLATIONS_DATEPICKER } from "@/components/data-table/constants"
-import { DateRangePicker, RangeDatePickerRef } from "@/components/DatePicker"
+import { DateRangePicker } from "@/components/DatePicker"
 import { RiSettings5Line } from "@remixicon/react"
 import { uk } from "date-fns/locale"
 import React, { Dispatch, SetStateAction } from "react"
