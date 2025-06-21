@@ -1,3 +1,4 @@
+import { createClient } from "@/utils/supabase/client"
 import axios from "axios"
 
 export const fetchTransactionsApi = async () => {
@@ -10,4 +11,21 @@ export const fetchTransactionsApi = async () => {
     },
   )
   return response.data.data
+}
+
+export async function getUsersByIds(user_ids: string[]) {
+  const supabase = createClient()
+  
+  try {
+    const { error, data } = await supabase
+      .from('users')
+      .select('*')
+      .in("id", user_ids);
+      
+    if (error) throw error
+    return data;
+  } catch (error) {
+    console.error('Error removing admin role:', error)
+    throw error
+  }
 }

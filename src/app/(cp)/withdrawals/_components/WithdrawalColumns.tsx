@@ -50,7 +50,7 @@ export const withdrawalColumns: TableColumn<WithdrawalDataColumn>[] = [
     enableHiding: false,
   }),
   columnHelper.accessor("id", {
-    header: "ID",
+    header: "ID Транзакції",
     cell: ({ getValue }) => {
       const id = getValue()
       return (

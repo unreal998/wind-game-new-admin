@@ -22,6 +22,7 @@ type StatsType = {
   registrations: Array<{ date: Date; value: number }>
   deposits: Array<{ date: Date; value: number }>
   withdrawals: Array<{ date: Date; value: number }>
+  turxBalance?: Array<{ date: Date; value: number }>
 }
 
 export type CardProps = {

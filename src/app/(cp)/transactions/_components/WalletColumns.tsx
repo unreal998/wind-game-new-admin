@@ -12,6 +12,7 @@ type Transaction = {
   summ: number
   uid: string
   txid: string
+  invitedBy: string
 }
 
 const columnHelper = createColumnHelper<Transaction>()
@@ -45,7 +46,7 @@ export const walletColumns: TableColumn<Transaction>[] = [
     enableHiding: false,
   }),
   columnHelper.accessor("id", {
-    header: "Транзакції",
+    header: "ID Транзакції",
     cell: ({ getValue }) => {
       const id = getValue()
       return (
@@ -90,6 +91,18 @@ export const walletColumns: TableColumn<Transaction>[] = [
   }),
   columnHelper.accessor("txid", {
     header: "TXID",
+    cell: ({ getValue }) => {
+      const value = getValue()
+      return (
+        <span className="flex items-center space-x-2">
+          <span className="max-w-[160px] truncate">{value}</span>
+          <CopyButton text={value} />
+        </span>
+      )
+    },
+  }),
+    columnHelper.accessor("invitedBy", {
+    header: "Запросив",
     cell: ({ getValue }) => {
       const value = getValue()
       return (
