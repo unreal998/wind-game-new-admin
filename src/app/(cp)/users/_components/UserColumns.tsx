@@ -112,7 +112,7 @@ export const userColumns: TableColumn<AdminProfile>[] = [
 
   columnHelper.accessor("TONBalance", {
     header: "TON Баланс",
-    cell: ({ getValue }) => formatAmount(getValue()),
+    cell: ({ getValue }) => formatAmount(getValue().toFixed(2)),
     enableSorting: true,
     filterFn: "number",
     meta: {
@@ -124,7 +124,7 @@ export const userColumns: TableColumn<AdminProfile>[] = [
 
   columnHelper.accessor("WindBalance", {
     header: "kwt",
-    cell: ({ getValue }) => formatAmount(getValue()),
+    cell: ({ getValue }) => formatAmount(getValue().toFixed(2)),
     enableSorting: true,
     filterFn: "number",
     meta: {
