@@ -96,6 +96,19 @@ export const userColumns: TableColumn<AdminProfile>[] = [
       exportValue: (row) => row.userName || "-",
     },
   }),
+  columnHelper.accessor("referalCount", {
+    header: "Referal Count",
+    cell: ({ getValue }) => {
+      const referalCount = getValue()
+      if (!referalCount) return "-"
+      return (
+        <span className="flex items-center space-x-2">
+          <span>{referalCount}</span>
+          <CopyButton text={referalCount} />
+        </span>
+      )
+    },
+  }),
 
   columnHelper.accessor("TONBalance", {
     header: "TON Баланс",

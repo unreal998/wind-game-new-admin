@@ -45,7 +45,7 @@ export const walletColumns: TableColumn<Transaction>[] = [
     enableHiding: false,
   }),
   columnHelper.accessor("id", {
-    header: "ID",
+    header: "Транзакції",
     cell: ({ getValue }) => {
       const id = getValue()
       return (

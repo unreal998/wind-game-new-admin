@@ -11,6 +11,7 @@ import { fetchWithdrawalsApi } from "./_components/fetchWithdrawal"
 import { useAdminReferralsStore } from "@/stores/admin/useAdminReferralsStore"
 import { WithdrawalsDateFilter } from "./_components/WithdrawalsDateFilter"
 import { DateRange } from "react-day-picker"
+import Sum from "@/components/Sum"
 
 export default function WithdrawalAdminPage() {
   const [selectedDateRange, setSelectedDateRange] = useState<DateRange>()
@@ -136,16 +137,8 @@ export default function WithdrawalAdminPage() {
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Вивід</h1>
         <WithdrawalsDateFilter setSelectedDateRange={setSelectedDateRange} />
-        <button
-          onClick={() => {
-            console.log(selectedDateRange)
-          }}
-        >
-          HFHJHLK
-        </button>
-        <h1 className="text-1xl m-1 bg-gray-900 p-2 font-semibold">
-          Загальна сумма: {sum}
-        </h1>
+        <WithdrawalsDateFilter rangeRef={rangeRef} />
+        <Sum label="Загальна сумма" sum={sum} />
 
         {!isLoading && !isWithdrawalsLoading && aggregatedValue && (
           <Badge variant="indigo" className="px-3 py-1 text-base">
