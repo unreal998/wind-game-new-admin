@@ -71,7 +71,7 @@ export default function ReferralsAdminPage() {
     },
     {
       id: "coin_balance",
-      title: "Wind Balance",
+      title: "kwt",
       type: "number",
     },
     {

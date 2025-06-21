@@ -97,7 +97,7 @@ export const userColumns: TableColumn<AdminProfile>[] = [
     },
   }),
   columnHelper.accessor("referalCount", {
-    header: "Referal Count",
+    header: "Кількість рефералів",
     cell: ({ getValue }) => {
       const referalCount = getValue()
       if (!referalCount) return "-"
@@ -123,7 +123,7 @@ export const userColumns: TableColumn<AdminProfile>[] = [
   }),
 
   columnHelper.accessor("WindBalance", {
-    header: "Wind Баланс",
+    header: "kwt",
     cell: ({ getValue }) => formatAmount(getValue()),
     enableSorting: true,
     filterFn: "number",

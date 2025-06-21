@@ -93,7 +93,7 @@ export const UserSidebar = ({
               ),
             },
             {
-              label: "Wind Баланс",
+              label: "kwt",
               value: (
                 <EditableBalanceField
                   value={user.WindBalance ?? 0}
@@ -160,7 +160,7 @@ export const UserSidebar = ({
           )}
           {user.modifiers && (
             <div>
-              <h3 className="mb-2 text-lg font-semibold">Модіфаери</h3>
+              <h3 className="mb-2 text-lg font-semibold">Модифікатори</h3>
               <div className="max-h-[400px] overflow-auto rounded border dark:border-gray-700">
                 <DataTable
                   data={user.modifiers}

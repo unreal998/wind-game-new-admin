@@ -45,7 +45,7 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
                             created_at: referalUsers.find(ru => ru.telegramID === id)?.created_at || new Date().toISOString(),
                             amount: referalUsers.find(ru => ru.telegramID === id)?.WindBalance / 10 || 0,
                             user: {
-                                id: user.id,
+                                id: user.telegramID,
                                 username: user.userName || user.telegramID,
                             },
                             referral_user: {

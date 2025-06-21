@@ -62,7 +62,7 @@ export const WindsModModal = ({ onClose }: { onClose: () => void }) => {
 
           <Input
             type="number"
-            placeholder="Wind Speed"
+            placeholder="kwt"
             value={form.windSpeed}
             onChange={(e) => handleChange("windSpeed", e.target.value)}
           />

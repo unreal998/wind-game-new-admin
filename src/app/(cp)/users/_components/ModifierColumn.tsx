@@ -23,7 +23,7 @@ export const modifiersColumns: TableColumn<
     },
   }),
   columnHelper.accessor("boughtModifier", {
-    header: "Куплені модіфаери",
+    header: "Куплені модифікатори",
     cell: ({ getValue }) => {
       const boughtModifier: Database["public"]["ComplicatedTypes"]["Modifiers"]["boughtModifier"] =
         getValue()
