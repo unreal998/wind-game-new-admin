@@ -137,7 +137,6 @@ export default function WithdrawalAdminPage() {
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Вивід</h1>
         <WithdrawalsDateFilter setSelectedDateRange={setSelectedDateRange} />
-        <WithdrawalsDateFilter rangeRef={rangeRef} />
         <Sum label="Загальна сумма" sum={sum} />
 
         {!isLoading && !isWithdrawalsLoading && aggregatedValue && (
