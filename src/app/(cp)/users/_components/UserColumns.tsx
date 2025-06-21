@@ -117,7 +117,7 @@ export const userColumns: TableColumn<AdminProfile>[] = [
     filterFn: "number",
     meta: {
       exportHeader: "TON баланс",
-      exportValue: (row) => row.TONBalance || 0,
+      exportValue: (row) => row.TONBalance?.toFixed(2) || 0,
       exportAlign: "right",
     },
   }),
@@ -129,7 +129,7 @@ export const userColumns: TableColumn<AdminProfile>[] = [
     filterFn: "number",
     meta: {
       exportHeader: "kw Balance",
-      exportValue: (row) => row.WindBalance || 0,
+      exportValue: (row) => row.WindBalance?.toFixed(2) || 0,
       exportAlign: "right",
     },
   }),

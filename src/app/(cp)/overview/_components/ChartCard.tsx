@@ -63,7 +63,7 @@ export function ChartCard({
   const registrationStats = useRegistrationStats()
   const { withdrawals, currentTotal, previousTotal } = useWithdrawalsStats()
   const { transactions, currentTotalTransactions, previousTotalTransactions } =
-    useTransactionStatsNew()
+    useTransactionStatsNew(selectedDates, selectedPeriod)
 
   // Вибираємо потрібний набір даних
   const stats: StatsType = {
@@ -77,14 +77,12 @@ export function ChartCard({
     selectedDates?.from && selectedDates?.to
       ? interval(selectedDates.from, selectedDates.to)
       : null
-  // console.log(`[${label}] Selected dates interval:`, selectedDatesInterval)
 
   const prevDates = getPeriod(selectedDates, selectedPeriod)
   const prevDatesInterval =
     prevDates?.from && prevDates?.to
       ? interval(prevDates.from, prevDates.to)
       : null
-  // console.log(`[${label}] Previous dates interval:`, prevDatesInterval)
 
   // Фільтруємо дані за інтервалами
   const data = (stats[title] || [])
@@ -95,7 +93,6 @@ export function ChartCard({
       return false
     })
     .sort((a, b) => a.date.getTime() - b.date.getTime())
-  // console.log(`[${label}] Filtered current data:`, data)
 
   // Фільтруємо дані для періоду порівняння
   const prevData =
@@ -109,7 +106,6 @@ export function ChartCard({
           })
           .sort((a, b) => a.date.getTime() - b.date.getTime())
       : []
-  // console.log(`[${label}] Filtered previous data:`, prevData)
 
   // Створюємо масиви дат для обох періодів
   const allDatesInInterval =
@@ -161,7 +157,6 @@ export function ChartCard({
           : undefined,
     }
   })
-  // console.log(`[${label}] Final chart data:`, chartData)
 
   const categories =
     selectedPeriod === "no-comparison" ? ["value"] : ["value", "previousValue"]
@@ -184,12 +179,6 @@ export function ChartCard({
     selectedPeriod !== "no-comparison" && value !== 0 && previousValue !== 0
       ? (value - previousValue) / previousValue
       : null
-
-  // console.log(`[${label}] Totals:`, {
-  //   value,
-  //   previousValue,
-  //   evolution,
-  // })
 
   return (
     <div className={cx("transition")}>

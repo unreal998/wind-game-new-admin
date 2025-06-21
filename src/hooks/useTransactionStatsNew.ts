@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react"
 import { startOfDay, interval, isWithinInterval, subDays } from "date-fns"
 import axios from "axios"
+import { DateRange } from "react-day-picker"
 
 type Transaction = {
   created_at: string
+  summ: number
 }
 
 type DateValue = { date: Date; value: number }
 
-export function useTransactionStatsNew() {
+export function useTransactionStatsNew(selectedPeriod: DateRange | undefined, selectedDates: string) {
   const [transactionData, setTransactionData] = useState<DateValue[]>([])
   const [currentTotalTransactions, setCurrentTotalTransactions] =
     useState<number>(0)
@@ -31,7 +33,7 @@ export function useTransactionStatsNew() {
 
         const grouped = rawData.reduce<Record<string, number>>((acc, item) => {
           const key = startOfDay(new Date(item.created_at)).toISOString()
-          acc[key] = (acc[key] || 0) + 1
+          acc[key] = (acc[key] || 0) + item.summ
           return acc
         }, {})
 
@@ -47,9 +49,15 @@ export function useTransactionStatsNew() {
         const today = new Date()
         const from = subDays(today, 30)
         const previousFrom = subDays(from, 30)
+        console.log("Selected Dates:", selectedDates, selectedPeriod)
+        let currentInterval = interval(from, today)
+        let previousInterval = interval(previousFrom, from)
+        if (selectedPeriod && selectedPeriod.from && selectedPeriod.to) {
+          currentInterval = interval(selectedPeriod.from, selectedPeriod.to)
+          const previousFrom = subDays(selectedPeriod.from, 30)
+          previousInterval = interval(previousFrom, selectedPeriod.from)
+        }
 
-        const currentInterval = interval(from, today)
-        const previousInterval = interval(previousFrom, from)
 
         const current = formatted
           .filter((item) => isWithinInterval(item.date, currentInterval))
@@ -67,7 +75,7 @@ export function useTransactionStatsNew() {
     }
 
     fetchTransactions()
-  }, [])
+  }, [selectedPeriod, selectedDates])
 
   return {
     transactions: transactionData,

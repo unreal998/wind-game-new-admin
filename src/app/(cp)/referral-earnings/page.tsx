@@ -15,7 +15,7 @@ export default function ReferralEarningsAdminPage() {
   const filterableColumns: FilterableColumn[] = [
     {
       id: "user.id",
-      title: "ID запрошувача",
+      title: "Telegram ID запрошувача",
       type: "text",
     },
     {
@@ -25,7 +25,7 @@ export default function ReferralEarningsAdminPage() {
     },
     {
       id: "referral_user.id",
-      title: "ID реферала",
+      title: "Telegram ID реферала",
       type: "text",
     },
     {

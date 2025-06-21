@@ -45,7 +45,7 @@ export default function WalletsAdminPage() {
   return (
     <>
       <div className="mb-4 flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Поповнення</h1>
+        <h1 className="text-2xl font-semibold">Поповнення TON</h1>
         <Sum label="Загальна сумма" sum={sum} />
 
         {!isLoading && aggregatedValue && (
