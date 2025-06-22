@@ -1,18 +1,5 @@
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/Dialog"
-
-import { Button } from "@/components/Button"
 import { TRANSLATIONS_DATEPICKER } from "@/components/data-table/constants"
-import { DateRangePicker, RangeDatePickerRef } from "@/components/DatePicker"
-import { RiSettings5Line } from "@remixicon/react"
+import { DateRangePicker } from "@/components/DatePicker"
 import { uk } from "date-fns/locale"
 import React, { Dispatch, SetStateAction } from "react"
 import { type DateRange } from "react-day-picker"
@@ -48,34 +35,6 @@ export function WithdrawalsDateFilter({
           translations={TRANSLATIONS_DATEPICKER}
         />
       </div>
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button variant="secondary" className="hidden px-2.5 py-1 sm:flex">
-            <RiSettings5Line className="size-4 shrink-0" aria-hidden="true" />
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="max-w-5xl">
-          <DialogHeader>
-            <DialogTitle>Налаштуйте графіки</DialogTitle>
-            <DialogDescription className="sr-only">
-              Додати або видалити графіки для панелі огляду.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter className="mt-6">
-            <DialogClose asChild>
-              <Button
-                className="mt-2 w-full sm:mt-0 sm:w-fit"
-                variant="secondary"
-              >
-                Скасувати
-              </Button>
-            </DialogClose>
-            <DialogClose asChild>
-              <Button className="w-full sm:w-fit">Застосувати</Button>
-            </DialogClose>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   )
 }
