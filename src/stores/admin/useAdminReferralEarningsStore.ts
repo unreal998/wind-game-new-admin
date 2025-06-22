@@ -1,16 +1,16 @@
-import { type ReferralEarning } from "@/types/referralEarning";
-import { createClient } from "@/utils/supabase/client";
-import { create } from "zustand";
+import { type ReferralEarning } from "@/types/referralEarning"
+import { createClient } from "@/utils/supabase/client"
+import { create } from "zustand"
 
 interface AdminReferralEarningsState {
-    referralEarnings: ReferralEarning[];
-    isLoading: boolean;
-    error: string | null;
-    fetchReferralEarnings: () => Promise<void>;
-    subscribeToReferralEarnings: () => Promise<() => void>;
+    referralEarnings: ReferralEarning[]
+    isLoading: boolean
+    error: string | null
+    fetchReferralEarnings: () => Promise<void>
+    subscribeToReferralEarnings: () => Promise<() => void>
 }
 
-const supabase = createClient();
+const supabase = createClient()
 
 export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
     (set) => ({
@@ -23,47 +23,53 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
                 const { data: users, error } = await supabase
                     .from("users")
                     .select("*")
-                    .filter("referals", "neq", "[]");
+                    .filter("referals", "neq", "[]")
+                console.log("users:", users)
 
-                if (error) throw error;
+                if (error) throw error
 
                 const allReferalIds = Array.from(
-                    new Set(users.flatMap((u) => u.referals))
-                );
+                    new Set(users.flatMap((u) => u.referals)),
+                )
                 const { data: referalUsers, error: refError } = await supabase
                     .from("users")
                     .select("telegramID, userName, created_at, WindBalance")
-                    .in("telegramID", allReferalIds);
+                    .in("telegramID", allReferalIds)
 
-                
-                if (refError) throw refError;
-                const result: ReferralEarning[] = [];
+                if (refError) throw refError
+                const result: ReferralEarning[] = []
                 allReferalIds.forEach((id) => {
-                    const user = users.find((u) => u.referals.includes(id));
+                    const user = users.find((u) => u.referals.includes(id))
                     if (user) {
                         result.push({
-                            created_at: referalUsers.find(ru => ru.telegramID === id)?.created_at || new Date().toISOString(),
-                            amount: referalUsers.find(ru => ru.telegramID === id)?.WindBalance / 10 || 0,
+                            created_at:
+                                referalUsers.find((ru) => ru.telegramID === id)?.created_at ||
+                                new Date().toISOString(),
+                            amount:
+                                referalUsers.find((ru) => ru.telegramID === id)?.WindBalance /
+                                10 || 0,
                             user: {
-                                id: user.id,
+                                id: user.telegramID,
                                 username: user.userName || user.telegramID,
                             },
                             referral_user: {
                                 id: id,
-                                username: referalUsers.find(ru => ru.telegramID === id)?.userName || id,
+                                username:
+                                    referalUsers.find((ru) => ru.telegramID === id)?.userName ||
+                                    id,
                                 first_name: "",
                                 last_name: "",
                             },
-                        });
+                        })
                     }
                 })
-                set({ referralEarnings: result || [], isLoading: false });
+                set({ referralEarnings: result || [], isLoading: false })
             } catch (error) {
-                console.error("Error fetching referral earnings:", error);
+                console.error("Error fetching referral earnings:", error)
                 set({
                     error: "Failed to load referral earnings",
                     isLoading: false,
-                });
+                })
             }
         },
 
@@ -79,16 +85,16 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
                     },
                     () => {
                         set((state) => {
-                            state.fetchReferralEarnings();
-                            return state;
-                        });
+                            state.fetchReferralEarnings()
+                            return state
+                        })
                     },
                 )
-                .subscribe();
+                .subscribe()
 
             return () => {
-                supabase.removeChannel(channel);
-            };
+                supabase.removeChannel(channel)
+            }
         },
-    })
-);
+    }),
+)
