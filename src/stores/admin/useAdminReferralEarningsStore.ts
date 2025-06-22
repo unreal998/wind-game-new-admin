@@ -24,7 +24,6 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
                     .from("users")
                     .select("*")
                     .filter("referals", "neq", "[]")
-                console.log("users:", users)
 
                 if (error) throw error
 

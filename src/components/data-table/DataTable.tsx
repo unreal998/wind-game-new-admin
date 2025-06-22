@@ -99,6 +99,7 @@ const formatSearchValue = (key: string, value: any): string => {
       if ("id" in value) profileData.push(value.id)
       if ("first_name" in value) profileData.push(value.first_name)
       if ("last_name" in value) profileData.push(value.last_name)
+      if ("username" in value) profileData.push(value.username)
 
       return profileData.filter(Boolean).join(" ").toLowerCase()
     }
