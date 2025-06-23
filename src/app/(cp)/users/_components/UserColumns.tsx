@@ -97,7 +97,7 @@ export const userColumns: TableColumn<AdminProfile>[] = [
     },
   }),
   columnHelper.accessor("referalCount", {
-    header: "Referal Count",
+    header: "Кількість рефералів",
     cell: ({ getValue }) => {
       const referalCount = getValue()
       if (!referalCount) return "-"
@@ -112,24 +112,24 @@ export const userColumns: TableColumn<AdminProfile>[] = [
 
   columnHelper.accessor("TONBalance", {
     header: "TON Баланс",
-    cell: ({ getValue }) => formatAmount(getValue()),
+    cell: ({ getValue }) => formatAmount(getValue().toFixed(2)),
     enableSorting: true,
     filterFn: "number",
     meta: {
       exportHeader: "TON баланс",
-      exportValue: (row) => row.TONBalance || 0,
+      exportValue: (row) => row.TONBalance?.toFixed(2) || 0,
       exportAlign: "right",
     },
   }),
 
   columnHelper.accessor("WindBalance", {
-    header: "Wind Баланс",
-    cell: ({ getValue }) => formatAmount(getValue()),
+    header: "kwt",
+    cell: ({ getValue }) => formatAmount(getValue().toFixed(2)),
     enableSorting: true,
     filterFn: "number",
     meta: {
       exportHeader: "kw Balance",
-      exportValue: (row) => row.WindBalance || 0,
+      exportValue: (row) => row.WindBalance?.toFixed(2) || 0,
       exportAlign: "right",
     },
   }),

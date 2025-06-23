@@ -8,12 +8,17 @@ export const categories = [
     },
     {
         title: "deposits",
-        label: "Поповнення",
+        label: "Поповнення TON",
         type: "currency" as const,
     },
     {
         title: "withdrawals",
-        label: "Вивід",
+        label: "Вивід TON",
+        type: "currency" as const,
+    },
+        {
+        title: "turxBalance",
+        label: "TURX Пропрозиція",
         type: "currency" as const,
     },
 ] as const;

@@ -41,7 +41,7 @@ export const referralEarningColumns: TableColumn<ReferralEarning>[] = [
 
   columnHelper.accessor((row) => row.user?.id, {
     id: "user.id",
-    header: "ID запрошувача",
+    header: "Telegram ID запрошувача",
     cell: ({ getValue }) => {
       const id = getValue()
       if (!id) return "-"
@@ -83,7 +83,7 @@ export const referralEarningColumns: TableColumn<ReferralEarning>[] = [
 
   columnHelper.accessor((row) => row.referral_user?.id, {
     id: "referral_user.id",
-    header: "ID реферала",
+    header: "Telegram ID реферала",
     cell: ({ getValue }) => {
       const id = getValue()
       if (!id) return "-"

@@ -50,7 +50,7 @@ export const withdrawalColumns: TableColumn<WithdrawalDataColumn>[] = [
     enableHiding: false,
   }),
   columnHelper.accessor("id", {
-    header: "ID",
+    header: "ID Транзакції",
     cell: ({ getValue }) => {
       const id = getValue()
       return (
@@ -66,7 +66,7 @@ export const withdrawalColumns: TableColumn<WithdrawalDataColumn>[] = [
     cell: ({ getValue }) => new Date(getValue()).toLocaleString("uk-UA"),
   }),
   columnHelper.accessor("inviter", {
-    header: "Inviter",
+    header: "Запросив",
     cell: ({ getValue }) => {
       const inviter = getValue()
       if (!inviter) return "-"

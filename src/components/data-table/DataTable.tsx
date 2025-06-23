@@ -249,7 +249,7 @@ export function DataTable<TData extends Record<string, any>>({
       boolean: (row, columnId, filterValue) => {
         if (!filterValue) return true
         const value = row.getValue(columnId)
-        // Конвертуємо обидва значення в boolean для коректного порівняння
+
         const booleanValue = value === true || value === "true"
         const filterBooleanValue = filterValue === "true"
         return booleanValue === filterBooleanValue

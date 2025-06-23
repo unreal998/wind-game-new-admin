@@ -17,7 +17,7 @@ export const statsMetrics: Metric[] = [
   },
   {
     key: "total_deposits",
-    label: "Поповнення",
+    label: "Поповнення TON",
     format: true,
     icon: CirclePlus,
     info: "Загальна сума поповнень",

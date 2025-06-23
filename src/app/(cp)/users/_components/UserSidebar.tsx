@@ -3,7 +3,7 @@
 import { DataTable } from "@/components/data-table/DataTable"
 import { FilterableColumn, TableColumn } from "@/types/table"
 import { useEffect, useState } from "react"
-import { updateUserBalance } from "./updateUserBalance"
+import { updateUserKWTBalance, updateUserTONBalance } from "./updateUserBalance"
 import { fetchTransactionsByUid } from "./fetchTransactionsByUid"
 import { transactionColumns } from "./transactionColumns"
 import { Loader2 } from "lucide-react"
@@ -82,10 +82,9 @@ export const UserSidebar = ({
                   value={user.TONBalance ?? 0}
                   onChange={async (val) => {
                     const updated = { ...user, TONBalance: val }
-                    await updateUserBalance({
+                    await updateUserTONBalance({
                       id: String(user.id),
                       TONBalance: updated.TONBalance,
-                      WindBalance: updated.WindBalance ?? 0,
                     })
                     onUpdate(updated)
                   }}
@@ -93,15 +92,14 @@ export const UserSidebar = ({
               ),
             },
             {
-              label: "Wind Баланс",
+              label: "kwt",
               value: (
                 <EditableBalanceField
                   value={user.WindBalance ?? 0}
                   onChange={async (val) => {
                     const updated = { ...user, WindBalance: val }
-                    await updateUserBalance({
+                    await updateUserKWTBalance({
                       id: String(user.id),
-                      TONBalance: updated.TONBalance ?? 0,
                       WindBalance: updated.WindBalance,
                     })
                     onUpdate(updated)
@@ -160,7 +158,7 @@ export const UserSidebar = ({
           )}
           {user.modifiers && (
             <div>
-              <h3 className="mb-2 text-lg font-semibold">Модіфаери</h3>
+              <h3 className="mb-2 text-lg font-semibold">Модифікатори</h3>
               <div className="max-h-[400px] overflow-auto rounded border dark:border-gray-700">
                 <DataTable
                   data={user.modifiers}

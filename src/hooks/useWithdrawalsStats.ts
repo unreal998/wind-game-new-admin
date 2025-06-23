@@ -4,6 +4,7 @@ import axios from "axios"
 
 type Withdrawal = {
   created_at: string
+  sum: number
 }
 
 type DateValue = { date: Date; value: number }
@@ -29,7 +30,7 @@ export function useWithdrawalsStats() {
 
         const grouped = rawData.reduce<Record<string, number>>((acc, item) => {
           const key = startOfDay(new Date(item.created_at)).toISOString()
-          acc[key] = (acc[key] || 0) + 1
+          acc[key] = (acc[key] || 0) + item.sum
           return acc
         }, {})
 
