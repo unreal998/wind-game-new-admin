@@ -57,6 +57,18 @@ export const referralEarningColumns: TableColumn<ReferralEarning>[] = [
       exportValue: (row) => (row.user?.id ? String(row.user.id) : "-"),
     },
   }),
+  columnHelper.accessor("referal_count", {
+    header: "Кількість рефералів",
+    cell: ({ getValue }) => {
+      const referal_count: number = getValue()
+      if (!referal_count) return "0"
+      return (
+        <span className="flex items-center space-x-2">
+          <span className="font-medium">{referal_count}</span>
+        </span>
+      )
+    },
+  }),
 
   columnHelper.accessor((row) => row.user?.username, {
     id: "user.username",
