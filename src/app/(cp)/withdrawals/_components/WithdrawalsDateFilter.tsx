@@ -1,6 +1,5 @@
 import { TRANSLATIONS_DATEPICKER } from "@/components/data-table/constants"
 import { DateRangePicker } from "@/components/DatePicker"
-import { RiSettings5Line } from "@remixicon/react"
 import { uk } from "date-fns/locale"
 import React, { Dispatch, SetStateAction } from "react"
 import { type DateRange } from "react-day-picker"
