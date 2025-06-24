@@ -7,10 +7,12 @@ import { useAdminLocationsStore } from "@/stores/admin/useAdminLocationsStore"
 import { FilterableColumn } from "@/types/table"
 import { useState } from "react"
 import { locationColumns } from "./_components/LocationColumns"
+import { LocationEditSidebar } from "./_components/LocationEditSidebar"
 
 export default function LocationsAdminPage() {
   const { locations, isLoading } = useAdminLocationsStore()
   const [aggregatedValue] = useState<string | number | null>(null)
+  const { activeLocation } = useAdminLocationsStore()
 
   const filterableColumns: FilterableColumn[] = [
     {
@@ -54,6 +56,8 @@ export default function LocationsAdminPage() {
           isLoading={isLoading}
         />
       </Card>
+      {activeLocation && <LocationEditSidebar />}
+
     </>
   )
 }
