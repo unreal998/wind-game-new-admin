@@ -7,6 +7,7 @@ import { type Location } from "@/types/location"
 import { type TableColumn } from "@/types/table"
 import { formatAmount } from "@/utils/amountFormatter"
 import { createColumnHelper } from "@tanstack/react-table"
+import LocationActionsCell from "./LocationActionsCell"
 
 const columnHelper = createColumnHelper<Location>()
 
@@ -84,6 +85,15 @@ export const locationColumns: TableColumn<Location>[] = [
       exportValue: (row) => row.unlockPrice || 0,
       exportAlign: "right",
     },
+  }),
+  columnHelper.display({
+    id: "actions",
+    header: "Дії",
+    cell: ({ row }: any) => (
+      <LocationActionsCell location={row.original} />
+    ),
+    enableSorting: false,
+    enableHiding: false,
   }),
 
   //   columnHelper.accessor("created_at", {
