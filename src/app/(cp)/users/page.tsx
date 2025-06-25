@@ -99,15 +99,19 @@ export default function ReferralsAdminPage() {
   useEffect(() => {
     setUsersColumnData(
       profiles.map((user) => {
-        const referalUser = profiles.filter(
+        const referalUsers = profiles.filter(
           (anotherUser) => anotherUser.invitedBy === user.telegramID,
         )
+
         if (user.referalCount === undefined)
-          return { ...user, referalCount: referalUser ? referalUser.length : 0 }
+          return {
+            ...user,
+            referalCount: referalUsers ? referalUsers.length : 0,
+          }
+
         return {
           ...user,
-          referalCount:
-            user.referalCount + (referalUser ? referalUser.length : 0),
+          referalCount: referalUsers ? referalUsers.length : 0,
         }
       }),
     )
