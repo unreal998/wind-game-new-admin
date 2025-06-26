@@ -3,7 +3,7 @@ import { createClient } from "@/utils/supabase/client"
 import { create } from "zustand"
 export type CountryCodes = "nl" | "dk" | "gr" | "usa"
 
-export const newcountryCodeMap: Record<CountryCodes, string> = {
+export const countryCodeToNameMap: Record<CountryCodes, string> = {
   nl: "Нідерланди",
   dk: "Данія",
   gr: "Німеччина",
@@ -47,8 +47,7 @@ export const useAdminWindModsStore = create<AdminWindModsState>((set) => ({
         .single()
 
       if (fetchError) throw fetchError
-      if (!data)
-        throw new Error(`No modifiers found for area: ${countryCode}`)
+      if (!data) throw new Error(`No modifiers found for area: ${countryCode}`)
 
       const updatedValues = (data.values as WindMod[]).map((mod) =>
         mod.price === payload.price ? { ...mod, ...payload } : mod,

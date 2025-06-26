@@ -10,7 +10,7 @@ import { windModColumns } from "./_components/WindModColumns"
 import WindsModModal from "./_components/WindsModModal"
 import {
   CountryCodes,
-  newcountryCodeMap,
+  countryCodeToNameMap,
   useAdminWindModsStore,
 } from "@/stores/admin/useAdminWindModsStore"
 import { ModEditSidebar } from "./_components/ModEditSidebar"
@@ -30,12 +30,6 @@ export default function WindModsAdminPage() {
   } = useAdminWindModsStore()
 
   const countries: CountryCodes[] = ["nl", "dk", "gr", "usa"]
-  const countryCodeMap: Record<string, CountryCodes> = {
-    Нідерланди: "nl",
-    Данія: "dk",
-    Німеччина: "gr",
-    США: "usa",
-  }
 
   const filterableColumns: FilterableColumn[] = [
     { id: "wind_speed", title: "Швидкість вітру", type: "number" },
@@ -68,7 +62,7 @@ export default function WindModsAdminPage() {
                   : "border border-indigo-500 bg-transparent text-indigo-500 hover:bg-indigo-50"
               }
             >
-              {newcountryCodeMap[country]}
+              {countryCodeToNameMap[country]}
             </Button>
           ))}
         </div>

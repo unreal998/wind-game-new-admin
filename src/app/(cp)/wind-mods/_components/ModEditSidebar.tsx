@@ -2,7 +2,7 @@ import { Button } from "@/components/Button"
 import { Input } from "@/components/Input"
 import { useState, useEffect } from "react"
 import {
-  newcountryCodeMap,
+  countryCodeToNameMap,
   useAdminWindModsStore,
 } from "@/stores/admin/useAdminWindModsStore"
 
@@ -56,7 +56,7 @@ export function ModEditSidebar() {
         <div className="flex h-full flex-col p-6">
           <div className="mb-6 flex items-center justify-between">
             <h2 className="text-lg font-semibold dark:text-white">
-              Редагувати локацію: {newcountryCodeMap[selectedCountry]}
+              Редагувати локацію: {countryCodeToNameMap[selectedCountry]}
             </h2>
             <button
               onClick={() => setActiveWindMod(null)}
