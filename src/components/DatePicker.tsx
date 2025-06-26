@@ -747,7 +747,7 @@ const RangeDatePicker = ({
 
   React.useEffect(() => {
     if (setSelectedDateRange) setSelectedDateRange(range)
-  }, [range])
+  }, [range, setSelectedDateRange])
 
   const initialRange = React.useMemo(() => {
     return range
