@@ -1,29 +1,35 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Badge } from "@/components/Badge"
 import { Button } from "@/components"
 import { Card } from "@/components/Card"
 import { DataTable } from "@/components/data-table/DataTable"
 import { FilterableColumn } from "@/types/table"
 import { windModColumns } from "./_components/WindModColumns"
-import { fetchMods } from "./_components/fetchMods"
 import WindsModModal from "./_components/WindsModModal"
+import {
+  CountryCodes,
+  countryCodeToNameMap,
+  useAdminWindModsStore,
+} from "@/stores/admin/useAdminWindModsStore"
+import { ModEditSidebar } from "./_components/ModEditSidebar"
+import { WindMod } from "@/types/windMod"
 
 export default function WindModsAdminPage() {
   const [aggregatedValue] = useState<string | number | null>(null)
-  const [activeCountry, setActiveCountry] = useState<string>("Нідерланди")
-  const [isLoading, setIsLoading] = useState(false)
-  const [mods, setMods] = useState<any[]>([])
+
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const countries = ["Нідерланди", "Данія", "Німеччина", "США"]
-  const countryCodeMap: Record<string, string> = {
-    Нідерланди: "nl",
-    Данія: "dk",
-    Німеччина: "gr",
-    США: "usa",
-  }
+  const {
+    windMods,
+    isLoading,
+    activeWindMod,
+    selectedCountry,
+    setSelectedCountry,
+  } = useAdminWindModsStore()
+
+  const countries: CountryCodes[] = ["nl", "dk", "gr", "usa"]
 
   const filterableColumns: FilterableColumn[] = [
     { id: "wind_speed", title: "Швидкість вітру", type: "number" },
@@ -31,25 +37,6 @@ export default function WindModsAdminPage() {
     { id: "price", title: "Ціна", type: "number" },
     { id: "required_pushes", title: "Необхідно пушів", type: "number" },
   ]
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => {
-    const loadMods = async () => {
-      try {
-        setIsLoading(true)
-        const code = countryCodeMap[activeCountry]
-        const result = await fetchMods(code)
-        console.log("Результат для:", code, result)
-        setMods(result)
-      } catch (error) {
-        console.error("Помилка при отриманні модів:", error)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    loadMods()
-  }, [activeCountry])
 
   return (
     <>
@@ -59,14 +46,14 @@ export default function WindModsAdminPage() {
           {countries.map((country) => (
             <Button
               key={country}
-              onClick={() => setActiveCountry(country)}
+              onClick={() => setSelectedCountry(country)}
               className={
-                activeCountry === country
+                selectedCountry === country
                   ? ""
                   : "border border-indigo-500 bg-transparent text-indigo-500 hover:bg-indigo-50"
               }
             >
-              {country}
+              {countryCodeToNameMap[country]}
             </Button>
           ))}
         </div>
@@ -80,7 +67,10 @@ export default function WindModsAdminPage() {
 
       <Card className="p-0">
         <DataTable
-          data={mods}
+          data={
+            windMods.find((mod) => mod.area === selectedCountry)?.values ??
+            ([] as WindMod[])
+          }
           columns={windModColumns}
           filterableColumns={filterableColumns}
           isLoading={isLoading}
@@ -88,6 +78,7 @@ export default function WindModsAdminPage() {
       </Card>
 
       {isModalOpen && <WindsModModal onClose={() => setIsModalOpen(false)} />}
+      {activeWindMod && <ModEditSidebar />}
     </>
   )
 }
