@@ -42,10 +42,6 @@ export default function ReferralEarningsAdminPage() {
     setReferralEarningsData(earningsWithReferalCount)
   }, [profiles, referralEarnings])
 
-  useEffect(() => {
-    console.log("Referral earnings data updated:", referralEarningsData)
-  }, [referralEarningsData])
-
   const [aggregatedValue] = useState<string | number | null>(null)
   const [selectedDateRange, setSelectedDateRange] = useState<DateRange>()
 
