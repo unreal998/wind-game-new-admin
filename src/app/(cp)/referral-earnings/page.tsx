@@ -23,22 +23,18 @@ export default function ReferralEarningsAdminPage() {
     setReferalSum(referralEarnings.length)
 
     const earningsWithReferalCount = referralEarnings.map((earning) => {
-      const user = profiles.find(
-        (u) => u.telegramID === earning.user?.telegramID,
+      const referralUser = profiles.find(
+        (u) => Number(u.telegramID) === Number(earning.referral_user?.id),
       )
       const referalCount = profiles.filter(
-        (anotherUser) => {
-
-          return anotherUser.invitedBy === user?.telegramID
-        }
+        (anotherUser) => anotherUser.invitedBy === referralUser?.telegramID,
       ).length
-
 
       return {
         ...earning,
         referalCount:
-          user?.referalCount !== undefined
-            ? user.referalCount + referalCount
+          referralUser?.referalCount !== undefined
+            ? referralUser.referalCount + referalCount
             : referalCount,
       }
     })
