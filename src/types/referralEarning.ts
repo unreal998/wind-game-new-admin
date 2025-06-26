@@ -6,6 +6,7 @@ export type ReferralEarning = {
     username?: string
     first_name?: string
     last_name?: string
+    telegramID: string
   }
   referral_user?: {
     id: number

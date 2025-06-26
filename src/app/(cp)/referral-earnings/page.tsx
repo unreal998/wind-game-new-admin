@@ -22,28 +22,24 @@ export default function ReferralEarningsAdminPage() {
   useEffect(() => {
     setReferalSum(referralEarnings.length)
 
-    const profilesWithReferalCount = profiles.map((user) => {
-      const referalUser = profiles.filter(
-        (anotherUser) => anotherUser.invitedBy === user.telegramID,
+    const earningsWithReferalCount = referralEarnings.map((earning) => {
+      const user = profiles.find(
+        (u) => u.telegramID === earning.user?.telegramID,
       )
-      if (user.referalCount === undefined)
-        return { ...user, referalCount: referalUser ? referalUser.length : 0 }
+      const referalCount = profiles.filter(
+        (anotherUser) => anotherUser.invitedBy === user?.telegramID,
+      ).length
+
       return {
-        ...user,
+        ...earning,
         referalCount:
-          user.referalCount + (referalUser ? referalUser.length : 0),
+          user?.referalCount !== undefined
+            ? user.referalCount + referalCount
+            : referalCount,
       }
     })
 
-    setReferralEarningsData(
-      referralEarnings.map((earningData) => {
-        const userSameTid = profilesWithReferalCount.find((user) => {
-          return Number(user.telegramID) === Number(earningData.user?.id)
-        })
-
-        return { ...earningData, referal_count: userSameTid?.referalCount }
-      }),
-    )
+    setReferralEarningsData(earningsWithReferalCount)
   }, [profiles, referralEarnings])
 
   const [aggregatedValue] = useState<string | number | null>(null)
