@@ -42,15 +42,6 @@ export default function WindModsAdminPage() {
     <>
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Моди</h1>
-        <button
-          onClick={() => {
-            console.log(
-              windMods.find((mod) => mod.area === selectedCountry)?.values,
-            )
-          }}
-        >
-          fk
-        </button>
         <div className="flex items-center gap-4">
           {countries.map((country) => (
             <Button
