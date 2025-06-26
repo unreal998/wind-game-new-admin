@@ -14,5 +14,5 @@ export type ReferralEarning = {
     first_name?: string
     last_name?: string
   }
-  referal_count?: number
+  referalCount?: number
 }
