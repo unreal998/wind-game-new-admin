@@ -7,20 +7,27 @@ import { DataTable } from "@/components/data-table/DataTable"
 import { FilterableColumn } from "@/types/table"
 import { useEffect, useState } from "react"
 import { withdrawalColumns } from "./_components/WithdrawalColumns"
-import { fetchWithdrawalsApi } from "./_components/fetchWithdrawal"
 import { useAdminReferralsStore } from "@/stores/admin/useAdminReferralsStore"
 import { WithdrawalsDateFilter } from "./_components/WithdrawalsDateFilter"
 import { DateRange } from "react-day-picker"
 import Sum from "@/components/Sum"
+import { useAdminWithdrawalsStore } from "@/stores/admin/useAdminWithdrawalsStore"
 
 export default function WithdrawalAdminPage() {
   const [selectedDateRange, setSelectedDateRange] = useState<DateRange>()
 
   const [aggregatedValue] = useState<string | number | null>(null)
+  const [withdrawalsData, setWithdrawalsData] = useState<any[]>([])
+  const [completedSum, setCompletedSum] = useState<number>(0)
+  const [pendingSum, setPendingSum] = useState<number>(0)
+
   const { profiles, isLoading } = useAdminReferralsStore()
-  const [withdrawals, setWithdrawals] = useState<any[]>([])
-  const [isWithdrawalsLoading, setIsWithdrawalsLoading] = useState(false)
-  const [sum, setSum] = useState<number>(0)
+  const {
+    withdrawals,
+    isLoadingWithDrawal,
+    fetchWithdrawals,
+    setNewWithdrawalsCount,
+  } = useAdminWithdrawalsStore()
 
   const filterableColumns: FilterableColumn[] = [
     // {
@@ -96,50 +103,52 @@ export default function WithdrawalAdminPage() {
   ]
 
   useEffect(() => {
-    const loadWithdrawls = async () => {
-      try {
-        setIsWithdrawalsLoading(true)
-        const withdrawalsData = await fetchWithdrawalsApi()
-        setWithdrawals(
-          withdrawalsData.map((withdrawal: any) => {
-            const user = profiles.find((user) => {
-              if (withdrawal.uid === user.id) {
-                return user
-              }
-              return
-            })
-            if (user) {
-              const withdrawalWithInviter = {
-                ...withdrawal,
-                inviter: user.invitedBy,
-              }
-              return withdrawalWithInviter
-            }
-            return withdrawal
-          }),
-        )
+    fetchWithdrawals()
+    setWithdrawalsData(
+      withdrawals.map((withdrawal) => {
+        const user = profiles.find((user) => {
+          if (withdrawal.uid === user.id) {
+            return user
+          }
+          return
+        })
+        if (user) {
+          const withdrawalWithInviter = {
+            ...withdrawal,
+            inviter: user.invitedBy,
+          }
+          return withdrawalWithInviter
+        }
+        return withdrawal
+      }),
+    )
 
-        setSum(
-          withdrawalsData.reduce((acc: number, next: any) => acc + next.sum, 0),
-        )
-      } catch (error) {
-        console.error("Помилка при отриманні транзакцій:", error)
-      } finally {
-        setIsWithdrawalsLoading(false)
-      }
-    }
+    setNewWithdrawalsCount(
+      withdrawalsData.filter((w) => w.status === "new").length,
+    )
 
-    loadWithdrawls()
-  }, [profiles])
+    setCompletedSum(
+      withdrawalsData.reduce((acc: number, next: any) => {
+        return next.status === "completed" ? acc + next.sum : acc
+      }, 0),
+    )
+
+    setPendingSum(
+      withdrawalsData.reduce((acc: number, next: any) => {
+        return next.status === "new" ? acc + next.sum : acc
+      }, 0),
+    )
+  }, [withdrawals, profiles])
 
   return (
     <>
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Вивід</h1>
         <WithdrawalsDateFilter setSelectedDateRange={setSelectedDateRange} />
-        <Sum label="Загальна сумма" sum={sum} />
+        <Sum label="Сумма в очікуванні" sum={pendingSum} />
+        <Sum label="Загальна сумма" sum={completedSum} />
 
-        {!isLoading && !isWithdrawalsLoading && aggregatedValue && (
+        {!isLoading && !isLoadingWithDrawal && aggregatedValue && (
           <Badge variant="indigo" className="px-3 py-1 text-base">
             {aggregatedValue}
           </Badge>
@@ -148,10 +157,10 @@ export default function WithdrawalAdminPage() {
 
       <Card className="p-0">
         <DataTable
-          data={withdrawals}
+          data={withdrawalsData}
           columns={withdrawalColumns}
           filterableColumns={filterableColumns}
-          isLoading={isLoading && isWithdrawalsLoading}
+          isLoading={isLoading && isLoadingWithDrawal}
           selectedDateRange={selectedDateRange}
         />
       </Card>
