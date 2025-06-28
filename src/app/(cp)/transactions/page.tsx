@@ -5,7 +5,10 @@ import { Badge } from "@/components/Badge"
 import { Card } from "@/components/Card"
 import { DataTable } from "@/components/data-table/DataTable"
 import { FilterableColumn } from "@/types/table"
-import { fetchTransactionsApi, getUsersByIds } from "./_components/fetchTransactions"
+import {
+  fetchTransactionsApi,
+  getUsersByIds,
+} from "./_components/fetchTransactions"
 import { walletColumns } from "./_components/WalletColumns"
 import Sum from "@/components/Sum"
 
@@ -31,15 +34,16 @@ export default function WalletsAdminPage() {
         setIsLoading(true)
         const data = await fetchTransactionsApi()
         const userIds: string[] = data.map((item: any) => item.uid)
-        const uniqueUserIds = Array.from(new Set(userIds));
-        const usersData = await getUsersByIds(uniqueUserIds);
+        const uniqueUserIds = Array.from(new Set(userIds))
+        const usersData = await getUsersByIds(uniqueUserIds)
         console.log("Fetched users data:", usersData)
         setSum(data.reduce((acc: number, next: any) => acc + next.summ, 0))
         const transactionsData = data.map((item: any) => {
           const user = usersData.find((user: any) => user.id === item.uid)
           return {
             ...item,
-            invitedBy: user?.invitedBy || ''
+            invitedBy: user?.invitedBy || "",
+            telegramID: user.telegramID ?? "",
           }
         })
         setTransactions(transactionsData)
