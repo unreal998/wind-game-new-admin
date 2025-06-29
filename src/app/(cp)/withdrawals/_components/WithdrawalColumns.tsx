@@ -3,9 +3,8 @@
 import { type TableColumn } from "@/types/table"
 import { createColumnHelper } from "@tanstack/react-table"
 import { CopyButton } from "@/components/CopyButton"
-import { Button } from "@/components"
-import { fetchUpdateWithDrawStatus } from "./fetchWithdrawal"
 import { Checkbox } from "@/components/Checkbox"
+import WithDrawalActions from "./WithDrawalActions"
 
 type WithdrawalDataColumn = {
   id: string
@@ -108,34 +107,7 @@ export const withdrawalColumns: TableColumn<WithdrawalDataColumn>[] = [
     cell: ({ row }) => {
       const { id } = row.original
 
-      const handleApprove = async () => {
-        try {
-          await fetchUpdateWithDrawStatus({ id, status: "completed" })
-          console.log(`✅ Погоджено ${id}`)
-        } catch (error) {
-          console.error("❌ Помилка при погодженні:", error)
-        }
-      }
-
-      const handleDecline = async () => {
-        try {
-          await fetchUpdateWithDrawStatus({ id, status: "declined" })
-          console.log(`❌ Відхилено ${id}`)
-        } catch (error) {
-          console.error("❌ Помилка при відхиленні:", error)
-        }
-      }
-
-      return (
-        <div className="flex gap-2">
-          <Button size="sm" className="bg-green-600" onClick={handleApprove}>
-            Погодити
-          </Button>
-          <Button size="sm" className="bg-red-600" onClick={handleDecline}>
-            Відмінити
-          </Button>
-        </div>
-      )
+      return <WithDrawalActions id={id} />
     },
   }),
 ]

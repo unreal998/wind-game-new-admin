@@ -12,6 +12,7 @@ import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { AdminProfileDesktop } from "./AdminProfile"
+import { useAdminWithdrawalsStore } from "@/stores/admin/useAdminWithdrawalsStore"
 
 interface AdminSidebarProps {
   isCollapsed: boolean
@@ -121,6 +122,7 @@ export function AdminSidebar({
   // const [userRole, setUserRole] = useState<AdminRoles | null>(null)
   const pathname = usePathname()
   const { getPendingTransactions } = useAdminTransactionsStore()
+  const { newWithdrawalsCount } = useAdminWithdrawalsStore()
   const [isMobile, setIsMobile] = useState(false)
   const router = useRouter()
 
@@ -306,6 +308,9 @@ export function AdminSidebar({
                       />
                       {config.title}
                       {badge}
+                      {config.title === "Вивід" && (
+                        <div>{newWithdrawalsCount ?? ""}</div>
+                      )}
                     </Link>
                   )}
                 </li>

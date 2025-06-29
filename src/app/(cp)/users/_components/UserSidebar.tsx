@@ -32,7 +32,6 @@ export const UserSidebar = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log("USER", user)
         const data = await fetchTransactionsByUid(user.id)
         setTransactions(data)
       } catch (error) {

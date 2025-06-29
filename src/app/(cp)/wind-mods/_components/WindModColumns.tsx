@@ -4,12 +4,8 @@ import { type TableColumn } from "@/types/table"
 import { createColumnHelper } from "@tanstack/react-table"
 import { formatAmount } from "@/utils/amountFormatter"
 import { Checkbox } from "@/components/Checkbox"
-
-type WindMod = {
-  price: number
-  tonValue: number
-  turxValue: number
-}
+import ModActionsCell from "./ModActionsCell"
+import { WindMod } from "@/types/windMod"
 
 const columnHelper = createColumnHelper<WindMod>()
 
@@ -72,5 +68,13 @@ export const windModColumns: TableColumn<WindMod>[] = [
       exportValue: (row) => row.tonValue,
       exportAlign: "right",
     },
+  }),
+
+  columnHelper.display({
+    id: "actions",
+    header: "Дії",
+    cell: ({ row }: any) => <ModActionsCell mod={row.original} />,
+    enableSorting: false,
+    enableHiding: false,
   }),
 ]

@@ -11,6 +11,7 @@ type Transaction = {
   wallet: string
   summ: number
   uid: string
+  telegramID: string
   txid: string
   invitedBy: string
 }
@@ -89,6 +90,19 @@ export const walletColumns: TableColumn<Transaction>[] = [
       )
     },
   }),
+  columnHelper.accessor("telegramID", {
+    header: "Телеграм ID",
+    cell: ({ getValue }) => {
+      const tid = getValue()
+      if (!tid) "-"
+      return (
+        <span className="flex items-center space-x-2">
+          <span>{tid}</span>
+          <CopyButton text={tid} />
+        </span>
+      )
+    },
+  }),
   columnHelper.accessor("txid", {
     header: "TXID",
     cell: ({ getValue }) => {
@@ -101,7 +115,7 @@ export const walletColumns: TableColumn<Transaction>[] = [
       )
     },
   }),
-    columnHelper.accessor("invitedBy", {
+  columnHelper.accessor("invitedBy", {
     header: "Запросив",
     cell: ({ getValue }) => {
       const value = getValue()
