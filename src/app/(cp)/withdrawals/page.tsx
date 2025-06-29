@@ -138,7 +138,15 @@ export default function WithdrawalAdminPage() {
         return next.status === "new" ? acc + next.sum : acc
       }, 0),
     )
-  }, [withdrawals, profiles])
+  }, [
+    withdrawals,
+    profiles,
+    setNewWithdrawalsCount,
+    setCompletedSum,
+    setPendingSum,
+    setWithdrawalsData,
+    fetchWithdrawals,
+  ])
 
   return (
     <>

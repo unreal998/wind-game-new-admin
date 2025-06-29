@@ -3,8 +3,6 @@
 import { type TableColumn } from "@/types/table"
 import { createColumnHelper } from "@tanstack/react-table"
 import { CopyButton } from "@/components/CopyButton"
-import { Button } from "@/components"
-import { fetchUpdateWithDrawStatus } from "./fetchWithdrawal"
 import { Checkbox } from "@/components/Checkbox"
 import WithDrawalActions from "./WithDrawalActions"
 
