@@ -19,14 +19,14 @@ const inputStyles = tv({
     // background color
     "bg-white dark:bg-gray-950",
     // disabled & readonly
-    "disabled:opacity-100 disabled:cursor-default disabled:bg-transparent read-only:opacity-100 read-only:cursor-default read-only:bg-transparent",
-    "disabled:hover:bg-transparent disabled:dark:hover:bg-transparent read-only:hover:bg-transparent read-only:dark:hover:bg-transparent",
-    "disabled:border-gray-300 disabled:dark:border-gray-800 read-only:border-gray-300 read-only:dark:border-gray-800",
-    "disabled:text-gray-900 disabled:dark:text-gray-50 read-only:text-gray-900 read-only:dark:text-gray-50",
+    "read-only:cursor-default read-only:bg-transparent read-only:opacity-100 disabled:cursor-default disabled:bg-transparent disabled:opacity-100",
+    "read-only:hover:bg-transparent disabled:hover:bg-transparent read-only:dark:hover:bg-transparent disabled:dark:hover:bg-transparent",
+    "read-only:border-gray-300 disabled:border-gray-300 read-only:dark:border-gray-800 disabled:dark:border-gray-800",
+    "read-only:text-gray-900 disabled:text-gray-900 read-only:dark:text-gray-50 disabled:dark:text-gray-50",
     // focus
     focusInput,
     // invalid (optional)
-    "aria-[invalid=true]:dark:ring-red-400/20 aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-red-200 aria-[invalid=true]:border-red-500 invalid:ring-2 invalid:ring-red-200 invalid:border-red-500",
+    "invalid:border-red-500 invalid:ring-2 invalid:ring-red-200 aria-[invalid=true]:border-red-500 aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-red-200 aria-[invalid=true]:dark:ring-red-400/20",
     // file
     [
       "file:-my-2 file:-ml-2.5 file:cursor-pointer file:rounded-l-[5px] file:rounded-r-none file:border-0 file:px-3 file:py-2 file:outline-none focus:outline-none disabled:pointer-events-none file:disabled:pointer-events-none",
@@ -75,8 +75,8 @@ interface InputProps
     VariantProps<typeof inputStyles> {
   inputClassName?: string
   copySuccessMessage?: string
-  // onPhoneChange?: (phone: string, data: any) => void
-  icon?: ReactNode 
+  icon?: ReactNode
+  value?: string | number // <-- allow both
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
@@ -90,11 +90,12 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       copySuccessMessage,
       // onPhoneChange,
       icon,
+      value,
       ...props
     }: InputProps,
     forwardedRef,
-    ) => {
-    const locale = 'uk'
+  ) => {
+    const locale = "uk"
 
     const [typeState, setTypeState] = React.useState(type)
     const [isCopied, setIsCopied] = useState(false)
@@ -105,8 +106,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const isPhone = type === "phone"
 
     const handleCopy = () => {
-      if (props.value) {
-        navigator.clipboard.writeText(props.value.toString())
+      if (value) {
+        navigator.clipboard.writeText(value.toString())
         setIsCopied(true)
         setTimeout(() => setIsCopied(false), 1000)
       }
@@ -122,29 +123,33 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           // disableDialCodePrefill={true}
           // disableDialCodeAndPrefix={true}
           // showDisabledDialCodeAndPrefix={true}
-          value={props.value as string}
+          value={value as string}
           onChange={(phone) => {
             // onPhoneChange?.(phone, data)
-            props.onChange?.(
-              { target: { value: phone } } as React.ChangeEvent<HTMLInputElement>
-            )
+            props.onChange?.({
+              target: { value: phone },
+            } as React.ChangeEvent<HTMLInputElement>)
           }}
           className={cx("relative", className)}
           dialCodePreviewStyleProps={{
-            className: "dark:!text-gray-50 dark:!bg-gray-950 dark:!border-gray-800 !border-l-0 !h-[42px] sm:!h-[38px] sm:!text-sm",
+            className:
+              "dark:!text-gray-50 dark:!bg-gray-950 dark:!border-gray-800 !border-l-0 !h-[42px] sm:!h-[38px] sm:!text-sm",
           }}
           inputClassName={cx(
-            "dark:!text-gray-50 dark:!bg-gray-950 dark:!border-gray-800 transition !h-[42px] sm:!h-[38px] !rounded-r-md !text-base sm:!text-sm",
+            "!h-[42px] !rounded-r-md !text-base transition sm:!h-[38px] sm:!text-sm dark:!border-gray-800 dark:!bg-gray-950 dark:!text-gray-50",
             inputClassName,
             inputStyles({ hasError }),
           )}
           countrySelectorStyleProps={{
             className: "!static",
-            buttonClassName: "dark:!text-gray-50 dark:!bg-gray-950 dark:!border-gray-800 !h-[42px] sm:!h-[38px] !rounded-l-md",
+            buttonClassName:
+              "dark:!text-gray-50 dark:!bg-gray-950 dark:!border-gray-800 !h-[42px] sm:!h-[38px] !rounded-l-md",
             dropdownStyleProps: {
-              className: "!w-full !shadow-xl rounded-md border border-gray-200 dark:!text-gray-50 dark:!bg-gray-950 dark:!border-gray-800",
-              listItemClassName: "transition-colors dark:!text-gray-50 dark:!bg-gray-950 dark:!border-gray-800 hover:dark:!bg-gray-900",
-            }
+              className:
+                "!w-full !shadow-xl rounded-md border border-gray-200 dark:!text-gray-50 dark:!bg-gray-950 dark:!border-gray-800",
+              listItemClassName:
+                "transition-colors dark:!text-gray-50 dark:!bg-gray-950 dark:!border-gray-800 hover:dark:!bg-gray-900",
+            },
           }}
         />
       )
@@ -157,13 +162,19 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           type={isPassword ? typeState : isCopy ? "text" : type}
           className={cx(
             {
-              "!pl-8": isSearch || icon, // Додаємо відступ зліва, якщо є іконка
+              "!pl-8": isSearch || icon,
               "!pr-10": isPassword || isCopy,
             },
             inputClassName,
-            inputStyles({ hasError, enableStepper })
+            inputStyles({ hasError, enableStepper }),
           )}
           readOnly={isCopy}
+          value={
+            typeof value === "number" && Number.isNaN(value)
+              ? ""
+              : (value ?? "")
+          }
+          // ^^^ always pass a string, empty if undefined or NaN
           {...props}
         />
         {icon && ( // Додаємо відображення користувацької іконки
@@ -176,16 +187,17 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             {icon}
           </div>
         )}
-        {isSearch && !icon && ( // Показуємо іконку пошуку, тільки якщо не встановлена користувацька іконка
-          <div
-            className={cx(
-              "pointer-events-none absolute bottom-0 left-2 flex h-full items-center justify-center",
-              "text-gray-400 dark:text-gray-600",
-            )}
-          >
-            <Search className="size-[1.125rem] shrink-0" aria-hidden="true" />
-          </div>
-        )}
+        {isSearch &&
+          !icon && ( // Показуємо іконку пошуку, тільки якщо не встановлена користувацька іконка
+            <div
+              className={cx(
+                "pointer-events-none absolute bottom-0 left-2 flex h-full items-center justify-center",
+                "text-gray-400 dark:text-gray-600",
+              )}
+            >
+              <Search className="size-[1.125rem] shrink-0" aria-hidden="true" />
+            </div>
+          )}
         {isPassword && (
           <div
             className={cx(

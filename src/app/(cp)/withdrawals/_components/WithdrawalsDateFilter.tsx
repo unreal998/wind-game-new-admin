@@ -13,7 +13,7 @@ export function WithdrawalsDateFilter({
   const [selectedDates, setSelectedDates] = React.useState<
     DateRange | undefined
   >({
-    from: subDays(new Date(), 30),
+    from: new Date("2025-01-01"),
     to: new Date(),
   })
 
