@@ -13,7 +13,7 @@ export const CreateMissionModal = ({ onClose }: { onClose: () => void }) => {
     img: "",
     title: { en: "", ru: "" },
     description: { en: "", ru: "" },
-    reward: 0,
+    reward: "",
     coin: "TURX",
     type: "quest",
     specType: "depposite",
@@ -86,12 +86,20 @@ export const CreateMissionModal = ({ onClose }: { onClose: () => void }) => {
 
   const handleSubmit = async () => {
     try {
-      await fetchAddMissions(form)
+      const rewardNumber = Number(form.reward)
+      if (form.reward !== "" || isNaN(rewardNumber) || rewardNumber <= 0) {
+        alert("Впишіть число в поле Нагороди")
+        return
+      }
+      await fetchAddMissions({
+        ...form,
+        reward: rewardNumber, // convert to number for API
+      })
       setForm({
         img: "",
         title: { en: "", ru: "" },
         description: { en: "", ru: "" },
-        reward: 0,
+        reward: "",
         coin: "TURX",
         type: "quest",
         specType: "depposite",
@@ -200,9 +208,9 @@ export const CreateMissionModal = ({ onClose }: { onClose: () => void }) => {
 
           <Input
             type="number"
-            placeholder="Reward"
+            placeholder="Нагорода"
             value={form.reward}
-            onChange={(e) => handleChange("reward", Number(e.target.value))}
+            onChange={(e) => handleChange("reward", e.target.value)}
           />
 
           <select

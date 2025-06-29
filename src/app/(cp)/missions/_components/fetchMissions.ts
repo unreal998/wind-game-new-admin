@@ -26,7 +26,7 @@ export type CreateMissionData = {
   img: string
   title: { [key: string]: string }
   description: { [key: string]: string }
-  reward: number
+  reward: number | string
   coin: string
   type: "daily" | "quest"
   specType: "depposite" | "countries" | "referrals" | "accumulation"
