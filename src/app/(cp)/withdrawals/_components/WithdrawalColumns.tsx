@@ -105,9 +105,9 @@ export const withdrawalColumns: TableColumn<WithdrawalDataColumn>[] = [
     id: "actions",
     header: "Дії",
     cell: ({ row }) => {
-      const { id } = row.original
+      const { id, status } = row.original
 
-      return <WithDrawalActions id={id} />
+      return status !== 'new' ? <></> : <WithDrawalActions id={id} />
     },
   }),
 ]
