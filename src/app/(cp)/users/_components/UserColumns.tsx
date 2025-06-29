@@ -174,8 +174,6 @@ export const userColumns: TableColumn<AdminProfile>[] = [
   columnHelper.display({
     header: "Посилання для запрошення",
     cell: ({ row }) => {
-      console.log("row", row.original.telegramID)
-
       if (!row.original.telegramID) return "-"
       return (
         <span className="flex items-center space-x-2">
