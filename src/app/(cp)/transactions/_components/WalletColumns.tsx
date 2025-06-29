@@ -10,10 +10,10 @@ type Transaction = {
   created_at: string
   wallet: string
   summ: number
-  uid: string
   telegramID: string
   txid: string
   invitedBy: string
+  userName: string
 }
 
 const columnHelper = createColumnHelper<Transaction>()
@@ -78,14 +78,15 @@ export const walletColumns: TableColumn<Transaction>[] = [
     header: "Сума",
     cell: ({ getValue }) => getValue().toFixed(2),
   }),
-  columnHelper.accessor("uid", {
-    header: "UID",
+  columnHelper.accessor("userName", {
+    header: "Ім'я користувача",
     cell: ({ getValue }) => {
-      const value = getValue()
+      const userName = getValue()
+      if (!userName) return "-"
       return (
         <span className="flex items-center space-x-2">
-          <span>{value}</span>
-          <CopyButton text={value} />
+          <span>{userName}</span>
+          <CopyButton text={userName} />
         </span>
       )
     },
