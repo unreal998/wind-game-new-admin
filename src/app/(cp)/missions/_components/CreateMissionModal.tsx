@@ -87,7 +87,7 @@ export const CreateMissionModal = ({ onClose }: { onClose: () => void }) => {
   const handleSubmit = async () => {
     try {
       const rewardNumber = Number(form.reward)
-      if (form.reward !== "" || isNaN(rewardNumber) || rewardNumber <= 0) {
+      if (form.reward === "" || isNaN(rewardNumber) || rewardNumber <= 0) {
         alert("Впишіть число в поле Нагороди")
         return
       }
