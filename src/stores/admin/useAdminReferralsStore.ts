@@ -68,3 +68,24 @@ export const useAdminReferralsStore = create<AdminReferralsState>(
     },
   }),
 )
+
+
+export async function fetchUserPermissions() {
+  const supabase = createClient()
+  const { data: { user } } = await supabase.auth.getUser();
+  const userEmail = user?.email || "";
+  try {
+    const {data, error } = await supabase
+      .from("permissions")
+      .select("*")
+      .eq("email", userEmail)
+      .single()
+
+    if (error) throw error
+    console.log("=======", data)
+    return data;
+  } catch (error) {
+    console.error("Error updating transaction:", error)
+    throw error
+  }
+}

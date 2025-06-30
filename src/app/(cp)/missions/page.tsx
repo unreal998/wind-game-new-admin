@@ -9,6 +9,7 @@ import { getMissionColumns } from "./_components/MissionColumns"
 import { fetchMissions } from "./_components/fetchMissions"
 import { Button } from "@/components"
 import { CreateMissionModal } from "./_components/CreateMissionModal"
+import { fetchUserPermissions } from "@/stores/admin/useAdminReferralsStore"
 
 export default function MissionAdminPage() {
   const [missions, setMissions] = useState<any[]>([])
@@ -16,6 +17,7 @@ export default function MissionAdminPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [aggregatedValue] = useState<string | number | null>(null)
   const [activeLang, setActiveLang] = useState<"ru" | "en">("ru")
+    const [isAvialableToWrite, setIsAvialableToWrite] = useState<boolean>(false);
 
   const filterableColumns: FilterableColumn[] = [
     { id: "id", title: "ID", type: "text" },
@@ -42,6 +44,19 @@ export default function MissionAdminPage() {
   useEffect(() => {
     loadMissions()
   }, [])
+
+  useEffect(() => {
+        const loadPermissions = async () => {
+          try {
+            const data = await fetchUserPermissions()
+            setIsAvialableToWrite(data.permissions.includes('write'))
+          } catch (error) {
+            console.error("Failed to fetch withdrawals", error)
+          }
+        }
+    
+        loadPermissions()
+      }, [])
 
   return (
     <>
@@ -75,7 +90,7 @@ export default function MissionAdminPage() {
               {aggregatedValue}
             </Badge>
           )}
-          <Button onClick={() => setIsCreateModalOpen(true)}>Додати</Button>
+          {isAvialableToWrite && <Button onClick={() => setIsCreateModalOpen(true)}>Додати</Button>}
         </div>
       </div>
 
@@ -83,7 +98,7 @@ export default function MissionAdminPage() {
         <DataTable
           key={activeLang}
           data={missions}
-          columns={getMissionColumns(activeLang)}
+          columns={getMissionColumns(activeLang, isAvialableToWrite)}
           filterableColumns={filterableColumns}
           isLoading={isLoading}
           onRefetch={loadMissions}

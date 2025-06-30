@@ -15,6 +15,7 @@ interface UserSidebarProps {
   user: Database["public"]["Tables"]["users"]["Row"]
   onClose: () => void
   onUpdate: (user: any) => void
+  isAvialableToWrite: boolean
   tableData?: any
   tableColumns?: TableColumn<any>[]
   filterableColumns?: FilterableColumn[]
@@ -26,6 +27,7 @@ export const UserSidebar = ({
   onUpdate,
   tableData,
   tableColumns,
+  isAvialableToWrite
 }: UserSidebarProps) => {
   const [transactions, setTransactions] = useState<any[] | null>(null)
 
@@ -79,6 +81,7 @@ export const UserSidebar = ({
               value: (
                 <EditableBalanceField
                   value={user.TONBalance ?? 0}
+                  isAvialableToWrite={isAvialableToWrite}
                   onChange={async (val) => {
                     const updated = { ...user, TONBalance: val }
                     await updateUserTONBalance({
@@ -95,6 +98,7 @@ export const UserSidebar = ({
               value: (
                 <EditableBalanceField
                   value={user.WindBalance ?? 0}
+                  isAvialableToWrite={isAvialableToWrite}
                   onChange={async (val) => {
                     const updated = { ...user, WindBalance: val }
                     await updateUserKWTBalance({
@@ -177,9 +181,11 @@ export const UserSidebar = ({
 const EditableBalanceField = ({
   value,
   onChange,
+  isAvialableToWrite
 }: {
   value: number
   onChange: (val: number) => Promise<void>
+  isAvialableToWrite: boolean
 }) => {
   const [input, setInput] = useState(value)
   const [isLoading, setIsLoading] = useState(false)
@@ -206,14 +212,14 @@ const EditableBalanceField = ({
         onChange={(e) => setInput(parseFloat(e.target.value))}
         disabled={isLoading}
       />
-      <button
+      {isAvialableToWrite && <button
         onClick={handleSave}
         disabled={isLoading}
         className="ml-auto flex items-center justify-center rounded bg-indigo-600 px-3 py-1 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
         style={{ minWidth: "84px" }}
       >
         {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Зберегти"}
-      </button>
+      </button>}
     </div>
   )
 }
