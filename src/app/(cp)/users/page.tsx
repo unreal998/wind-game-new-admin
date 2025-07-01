@@ -135,7 +135,7 @@ export default function ReferralsAdminPage() {
     <>
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Користувачі</h1>
-        <Sum label="Загальна сумма TURX" sum={totalTURXSum} />
+        <Sum label="Загальна сумма кВт" sum={totalTURXSum} />
         <Sum label="Загальна сумма TON" sum={totalTONSum} />
         {/* {!isLoading && aggregatedValue && (
           <Badge variant="indigo" className="px-3 py-1 text-base">

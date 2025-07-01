@@ -17,6 +17,12 @@ export default function MissionAdminPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [aggregatedValue] = useState<string | number | null>(null)
   const [activeLang, setActiveLang] = useState<"ru" | "en">("ru")
+  const [newMission, setNewMission] = useState<any | null>(null)
+
+  useEffect(() => {
+    if (newMission === null) return
+    setMissions((prev) => [...prev, newMission])
+  }, [newMission])
     const [isAvialableToWrite, setIsAvialableToWrite] = useState<boolean>(false);
 
   const filterableColumns: FilterableColumn[] = [
@@ -105,7 +111,10 @@ export default function MissionAdminPage() {
         />
       </Card>
       {isCreateModalOpen && (
-        <CreateMissionModal onClose={() => setIsCreateModalOpen(false)} />
+        <CreateMissionModal
+          setNewMission={setNewMission}
+          onClose={() => setIsCreateModalOpen(false)}
+        />
       )}
     </>
   )

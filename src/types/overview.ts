@@ -16,9 +16,9 @@ export const categories = [
         label: "Вивід TON",
         type: "currency" as const,
     },
-        {
+    {
         title: "turxBalance",
-        label: "TURX Пропрозиція",
+        label: "кВт Пропрозиція",
         type: "currency" as const,
     },
 ] as const;
