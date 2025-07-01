@@ -6,8 +6,8 @@ import { TRANSACTION_STATUSES } from "@/components/data-table/constants"
 import { DataTable } from "@/components/data-table/DataTable"
 import { FilterableColumn } from "@/types/table"
 import { useEffect, useState } from "react"
-import { withdrawalColumns } from "./_components/WithdrawalColumns"
-import { useAdminReferralsStore } from "@/stores/admin/useAdminReferralsStore"
+import { getWithdrawalColumns } from "./_components/WithdrawalColumns"
+import { fetchUserPermissions, useAdminReferralsStore } from "@/stores/admin/useAdminReferralsStore"
 import { WithdrawalsDateFilter } from "./_components/WithdrawalsDateFilter"
 import { DateRange } from "react-day-picker"
 import Sum from "@/components/Sum"
@@ -20,6 +20,7 @@ export default function WithdrawalAdminPage() {
   const [withdrawalsData, setWithdrawalsData] = useState<any[]>([])
   const [completedSum, setCompletedSum] = useState<number>(0)
   const [pendingSum, setPendingSum] = useState<number>(0)
+  const [isAvialableToWrite, setIsAvialableToWrite] = useState<boolean>(false);
 
   const { profiles, isLoading } = useAdminReferralsStore()
   const {
@@ -30,30 +31,11 @@ export default function WithdrawalAdminPage() {
   } = useAdminWithdrawalsStore()
 
   const filterableColumns: FilterableColumn[] = [
-    // {
-    //   id: "type",
-    //   title: "Тип",
-    //   type: "select",
-    //   options: [
-    //     { value: "deposit", label: "Поповнення" },
-    //     { value: "withdrawal", label: "Вивід" },
-    //   ],
-    // },
     {
       id: "processed_at",
       title: "Дата обробки",
       type: "dateRange",
     },
-    // {
-    //   id: "created_at",
-    //   title: "Дата створення",
-    //   type: "dateRange",
-    // },
-    // {
-    //   id: "processed_at",
-    //   title: "Дата обробки",
-    //   type: "dateRange",
-    // },
     {
       id: "amount",
       title: "Зарахована сума",
@@ -64,11 +46,6 @@ export default function WithdrawalAdminPage() {
       title: "Сума транзакції",
       type: "number",
     },
-    // {
-    //   id: "currency",
-    //   title: "Валюта",
-    //   type: "text",
-    // },
     {
       id: "status",
       title: "Статус",
@@ -101,6 +78,18 @@ export default function WithdrawalAdminPage() {
       type: "text",
     },
   ]
+
+  useEffect(() => {
+    const loadPermissions = async () => {
+      try {
+        const data = await fetchUserPermissions()
+        setIsAvialableToWrite(data.permissions.includes('write'))
+      } catch (error) {
+        console.error("Failed to fetch withdrawals", error)
+      }
+    }  
+    loadPermissions()
+  }, [])
 
   useEffect(() => {
     fetchWithdrawals()
@@ -166,7 +155,7 @@ export default function WithdrawalAdminPage() {
       <Card className="p-0">
         <DataTable
           data={withdrawalsData}
-          columns={withdrawalColumns}
+          columns={getWithdrawalColumns(isAvialableToWrite)}
           filterableColumns={filterableColumns}
           isLoading={isLoading && isLoadingWithDrawal}
           selectedDateRange={selectedDateRange}
