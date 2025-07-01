@@ -19,7 +19,6 @@ import { getPeriod } from "./FilterBar"
 import { LineChart } from "./LineChart"
 import { useWithdrawalsStats } from "@/hooks/useWithdrawalsStats"
 import { useTransactionStatsNew } from "@/hooks/useTransactionStatsNew"
-import { useEffect } from "react"
 
 type StatsType = {
   registrations: Array<{ date: Date; value: number }>
