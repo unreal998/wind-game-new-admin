@@ -3,6 +3,7 @@
 import { Badge } from "@/components/Badge"
 import { useRegistrationStats } from "@/hooks/useRegistrationStats"
 import { useReferalsStats } from "@/hooks/useReferalsStats"
+import { useTonBalanceStats } from "@/hooks/useTonBalanceStats"
 
 import { cx, formatters } from "@/lib/utils"
 import { type PeriodValue } from "@/types/overview"
@@ -26,6 +27,7 @@ type StatsType = {
   withdrawals: Array<{ date: Date; value: number }>
   referals: Array<{ date: Date; value: number }>
   turxBalance?: Array<{ date: Date; value: number }>
+  tonBalance: Array<{ date: Date; value: number }>
 }
 
 export type CardProps = {
@@ -69,6 +71,7 @@ export function ChartCard({
   const { transactions, currentTotalTransactions, previousTotalTransactions } =
     useTransactionStatsNew(selectedDates, selectedPeriod)
   const { referals } = useReferalsStats()
+  const { tonBalance } = useTonBalanceStats(selectedDates)
 
   // Вибираємо потрібний набір даних
   const stats: StatsType = {
@@ -76,6 +79,7 @@ export function ChartCard({
     deposits: transactions,
     withdrawals: withdrawals,
     referals: referals,
+    tonBalance: tonBalance,
   }
 
   // Створюємо інтервали для фільтрації

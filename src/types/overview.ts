@@ -26,6 +26,11 @@ export const categories = [
     label: "Реферальні",
     type: "currency" as const,
   },
+  {
+    title: "tonBalance",
+    label: "TON Баланс",
+    type: "currency" as const,
+  }
 ] as const
 
 export type PeriodValue =

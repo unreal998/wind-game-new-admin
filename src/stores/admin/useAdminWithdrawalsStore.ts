@@ -6,7 +6,7 @@ import { create } from "zustand"
 
 type WithdrawalRequestStatus = "new" | "completed" | "declined"
 
-type Withdrawal = {
+export type Withdrawal = {
   id: string
   uid: string
   tid: number
@@ -14,7 +14,7 @@ type Withdrawal = {
   status: WithdrawalRequestStatus
   sum: number
   wallet: string
-  memo: number | string | null
+  MEMO: number | string | null
 }
 
 interface AdminWithdrawalsState {
@@ -62,6 +62,6 @@ export const useAdminWithdrawalsStore = create<AdminWithdrawalsState>(
       }))
     },
 
-    updateWithdrawals: async () => {},
+    updateWithdrawals: async () => { },
   }),
 )
