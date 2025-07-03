@@ -47,9 +47,9 @@ export function useTonBalanceStats(selectedDates: DateRange | undefined) {
       const filteredTx = transactions.filter((tx) =>
         isInRange(startOfDay(new Date(tx.created_at))),
       )
-      const filteredWd = apiWithdrawals.filter((wd) =>
-        isInRange(startOfDay(new Date(wd.created_at))),
-      )
+      const filteredWd = apiWithdrawals
+        .filter((wd) => isInRange(startOfDay(new Date(wd.created_at))))
+        .filter((wd) => wd.status === "completed")
 
       // Group by day
       const txByDay: Record<string, number> = {}
