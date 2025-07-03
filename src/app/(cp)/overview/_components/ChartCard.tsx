@@ -70,7 +70,7 @@ export function ChartCard({
   const { transactions, currentTotalTransactions, previousTotalTransactions } =
     useTransactionStatsNew(selectedDates, selectedPeriod)
   const { referals } = useReferalsStats()
-  const { tonBalance } = useTonBalanceStats(selectedDates)
+  const { tonBalance, currentTotalTonBalance, previousTotalTonBalance } = useTonBalanceStats(selectedDates)
 
   // Вибираємо потрібний набір даних
   const stats: StatsType = {
@@ -175,14 +175,18 @@ export function ChartCard({
       ? currentTotal
       : title === "deposits"
         ? currentTotalTransactions
-        : chartData.reduce((acc, item) => acc + (item.value || 0), 0)
+        : title === "tonBalance"
+          ? currentTotalTonBalance
+          : chartData.reduce((acc, item) => acc + (item.value || 0), 0)
 
   const previousValue =
     title === "withdrawals"
       ? previousTotal
       : title === "deposits"
         ? previousTotalTransactions
-        : chartData.reduce((acc, item) => acc + (item.previousValue || 0), 0)
+        : title === "tonBalance"
+          ? previousTotalTonBalance
+          : chartData.reduce((acc, item) => acc + (item.previousValue || 0), 0)
 
   const evolution =
     selectedPeriod !== "no-comparison" && value !== 0 && previousValue !== 0

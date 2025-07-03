@@ -18,6 +18,8 @@ type DateValue = { date: Date; value: number }
 
 export function useTonBalanceStats(selectedDates: DateRange | undefined) {
   const [tonBalance, setTonBalance] = useState<DateValue[]>([])
+  const [currentTotalTonBalance, setCurrentTotalTonBalance] = useState<number>(0)
+  const [previousTotalTonBalance, setPreviousTotalTonBalance] = useState<number>(0)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -73,10 +75,30 @@ export function useTonBalanceStats(selectedDates: DateRange | undefined) {
       })
 
       setTonBalance(result)
+
+      const intervalLength = days.length > 0 ? days.length : 1
+      const prevTo = from
+      const prevFrom = new Date(from.getTime() - (intervalLength * 24 * 60 * 60 * 1000))
+      const prevDays = eachDayOfInterval({ start: prevFrom, end: new Date(prevTo.getTime() - 24 * 60 * 60 * 1000) })
+
+      const currentTotal =
+        result.length > 0 ? result[result.length - 1].value : 0
+
+      let prevRunningBalance = 0
+      const prevResult: DateValue[] = prevDays.map((date) => {
+        const key = startOfDay(date).toISOString()
+        prevRunningBalance += (txByDay[key] || 0) - (wdByDay[key] || 0)
+        return { date, value: prevRunningBalance }
+      })
+      const previousTotal =
+        prevResult.length > 0 ? prevResult[prevResult.length - 1].value : 0
+
+      setCurrentTotalTonBalance(currentTotal)
+      setPreviousTotalTonBalance(previousTotal)
     }
 
     fetchData()
   }, [selectedDates])
 
-  return { tonBalance }
+  return { tonBalance, currentTotalTonBalance, previousTotalTonBalance }
 }
