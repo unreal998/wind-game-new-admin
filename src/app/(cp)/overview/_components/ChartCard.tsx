@@ -19,13 +19,14 @@ import { getPeriod } from "./FilterBar"
 import { LineChart } from "./LineChart"
 import { useWithdrawalsStats } from "@/hooks/useWithdrawalsStats"
 import { useTransactionStatsNew } from "@/hooks/useTransactionStatsNew"
+import { useTurxBalance } from "@/hooks/useTurxBalance"
 
 type StatsType = {
   registrations: Array<{ date: Date; value: number }>
   deposits: Array<{ date: Date; value: number }>
   withdrawals: Array<{ date: Date; value: number }>
   referals: Array<{ date: Date; value: number }>
-  turxBalance?: Array<{ date: Date; value: number }>
+  turxBalance: Array<{ date: Date; value: number }>
   tonBalance: Array<{ date: Date; value: number }>
 }
 
@@ -70,7 +71,10 @@ export function ChartCard({
   const { transactions, currentTotalTransactions, previousTotalTransactions } =
     useTransactionStatsNew(selectedDates, selectedPeriod)
   const { referals } = useReferalsStats()
-  const { tonBalance, currentTotalTonBalance, previousTotalTonBalance } = useTonBalanceStats(selectedDates)
+  const { tonBalance, currentTotalTonBalance, previousTotalTonBalance } =
+    useTonBalanceStats(selectedDates)
+  const { turxBalance, currentTotalTurxBalance, previousTotalTurxBalance } =
+    useTurxBalance(selectedDates)
 
   // Вибираємо потрібний набір даних
   const stats: StatsType = {
@@ -79,6 +83,7 @@ export function ChartCard({
     withdrawals: withdrawals,
     referals: referals,
     tonBalance: tonBalance,
+    turxBalance: turxBalance,
   }
 
   // Створюємо інтервали для фільтрації
@@ -107,13 +112,13 @@ export function ChartCard({
   const prevData =
     selectedPeriod !== "no-comparison"
       ? (stats[title] || [])
-        .filter((item) => {
-          if (prevDatesInterval) {
-            return isWithinInterval(item.date, prevDatesInterval)
-          }
-          return false
-        })
-        .sort((a, b) => a.date.getTime() - b.date.getTime())
+          .filter((item) => {
+            if (prevDatesInterval) {
+              return isWithinInterval(item.date, prevDatesInterval)
+            }
+            return false
+          })
+          .sort((a, b) => a.date.getTime() - b.date.getTime())
       : []
 
   // Створюємо масиви дат для обох періодів
@@ -141,10 +146,10 @@ export function ChartCard({
     const prevOverview =
       selectedPeriod !== "no-comparison" && compareDate
         ? prevData.find(
-          (d) =>
-            startOfDay(d.date).getTime() ===
-            startOfDay(compareDate).getTime(),
-        )
+            (d) =>
+              startOfDay(d.date).getTime() ===
+              startOfDay(compareDate).getTime(),
+          )
         : null
 
     return {
@@ -160,8 +165,8 @@ export function ChartCard({
         selectedPeriod !== "no-comparison" ? (prevOverview?.value ?? 0) : null,
       evolution:
         selectedPeriod !== "no-comparison" &&
-          overview?.value &&
-          prevOverview?.value
+        overview?.value &&
+        prevOverview?.value
           ? (overview.value - prevOverview.value) / prevOverview.value
           : undefined,
     }
@@ -177,7 +182,9 @@ export function ChartCard({
         ? currentTotalTransactions
         : title === "tonBalance"
           ? currentTotalTonBalance
-          : chartData.reduce((acc, item) => acc + (item.value || 0), 0)
+          : title === "turxBalance"
+            ? currentTotalTurxBalance
+            : chartData.reduce((acc, item) => acc + (item.value || 0), 0)
 
   const previousValue =
     title === "withdrawals"
@@ -186,7 +193,12 @@ export function ChartCard({
         ? previousTotalTransactions
         : title === "tonBalance"
           ? previousTotalTonBalance
-          : chartData.reduce((acc, item) => acc + (item.previousValue || 0), 0)
+          : title === "turxBalance"
+            ? previousTotalTurxBalance
+            : chartData.reduce(
+                (acc, item) => acc + (item.previousValue || 0),
+                0,
+              )
 
   const evolution =
     selectedPeriod !== "no-comparison" && value !== 0 && previousValue !== 0

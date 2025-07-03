@@ -7,7 +7,7 @@ type Withdrawal = {
   sum: number
 }
 
-type DateValue = { date: Date; value: number }
+export type DateValue = { date: Date; value: number }
 
 export function useWithdrawalsStats() {
   const [data, setData] = useState<DateValue[]>([])
