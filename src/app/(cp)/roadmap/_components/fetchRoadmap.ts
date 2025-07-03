@@ -9,7 +9,7 @@ export type RewriteRoadmapRequest = {
 
 export const fetchGetRoadmap = async (lng: lng) => {
   const response = await axios.get(
-    `https://aedf-95-164-85-150.ngrok-free.app/roadmap?lng=${lng}`,
+    `https://2565-95-164-85-150.ngrok-free.app/roadmap?lng=${lng}`,
     {
       headers: {
         "ngrok-skip-browser-warning": true,
@@ -24,7 +24,7 @@ export const fetchRewriteRoadmap = async ({
   lng,
 }: RewriteRoadmapRequest) => {
   const response = await axios.put(
-    `https://aedf-95-164-85-150.ngrok-free.app/roadmap?lng=${lng}`,
+    `https://2565-95-164-85-150.ngrok-free.app/roadmap?lng=${lng}`,
     { data: newRoadmapText },
     {
       headers: {

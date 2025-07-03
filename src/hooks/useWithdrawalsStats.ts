@@ -18,7 +18,7 @@ export function useWithdrawalsStats() {
     const fetchWithdrawals = async () => {
       try {
         const response = await axios.get(
-          "https://aedf-95-164-85-150.ngrok-free.app/withdraw/all",
+          "https://2565-95-164-85-150.ngrok-free.app/withdraw/all",
           {
             headers: {
               "ngrok-skip-browser-warning": true,

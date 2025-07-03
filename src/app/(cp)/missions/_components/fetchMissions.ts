@@ -35,7 +35,7 @@ export type CreateMissionData = {
 
 export async function fetchMissions() {
   const missionsDataRequest = await axios.get(
-    `https://aedf-95-164-85-150.ngrok-free.app/missions`,
+    `https://2565-95-164-85-150.ngrok-free.app/missions`,
     {
       headers: {
         "ngrok-skip-browser-warning": true,
@@ -47,7 +47,7 @@ export async function fetchMissions() {
 
 export async function fetchAddMissions(createMissionData: CreateMissionData) {
   const missionsDataRequest = await axios.put(
-    `https://aedf-95-164-85-150.ngrok-free.app/missions`,
+    `https://2565-95-164-85-150.ngrok-free.app/missions`,
     createMissionData,
     {
       headers: {
@@ -60,7 +60,7 @@ export async function fetchAddMissions(createMissionData: CreateMissionData) {
 
 export async function fetchDeleteMission(id: MissionsData["id"]) {
   const response = await axios.delete(
-    `https://aedf-95-164-85-150.ngrok-free.app/missions?id=${id}`,
+    `https://2565-95-164-85-150.ngrok-free.app/missions?id=${id}`,
     {
       headers: {
         "ngrok-skip-browser-warning": true,
