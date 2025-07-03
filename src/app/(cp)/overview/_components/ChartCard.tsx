@@ -2,6 +2,8 @@
 
 import { Badge } from "@/components/Badge"
 import { useRegistrationStats } from "@/hooks/useRegistrationStats"
+import { useReferalsStats } from "@/hooks/useReferalsStats"
+import { useTonBalanceStats } from "@/hooks/useTonBalanceStats"
 
 import { cx, formatters } from "@/lib/utils"
 import { type PeriodValue } from "@/types/overview"
@@ -22,7 +24,9 @@ type StatsType = {
   registrations: Array<{ date: Date; value: number }>
   deposits: Array<{ date: Date; value: number }>
   withdrawals: Array<{ date: Date; value: number }>
+  referals: Array<{ date: Date; value: number }>
   turxBalance?: Array<{ date: Date; value: number }>
+  tonBalance: Array<{ date: Date; value: number }>
 }
 
 export type CardProps = {
@@ -60,17 +64,21 @@ export function ChartCard({
 }: CardProps) {
   const formatter = formattingMap[type]
 
-  // Отримуємо дані транзакцій та реєстрацій
+  // Отримуємо дані транзакцій, реєстрацій та рефералів
   const registrationStats = useRegistrationStats()
   const { withdrawals, currentTotal, previousTotal } = useWithdrawalsStats()
   const { transactions, currentTotalTransactions, previousTotalTransactions } =
     useTransactionStatsNew(selectedDates, selectedPeriod)
+  const { referals } = useReferalsStats()
+  const { tonBalance } = useTonBalanceStats(selectedDates)
 
   // Вибираємо потрібний набір даних
   const stats: StatsType = {
     registrations: registrationStats.registrations,
     deposits: transactions,
     withdrawals: withdrawals,
+    referals: referals,
+    tonBalance: tonBalance,
   }
 
   // Створюємо інтервали для фільтрації
@@ -99,13 +107,13 @@ export function ChartCard({
   const prevData =
     selectedPeriod !== "no-comparison"
       ? (stats[title] || [])
-          .filter((item) => {
-            if (prevDatesInterval) {
-              return isWithinInterval(item.date, prevDatesInterval)
-            }
-            return false
-          })
-          .sort((a, b) => a.date.getTime() - b.date.getTime())
+        .filter((item) => {
+          if (prevDatesInterval) {
+            return isWithinInterval(item.date, prevDatesInterval)
+          }
+          return false
+        })
+        .sort((a, b) => a.date.getTime() - b.date.getTime())
       : []
 
   // Створюємо масиви дат для обох періодів
@@ -133,10 +141,10 @@ export function ChartCard({
     const prevOverview =
       selectedPeriod !== "no-comparison" && compareDate
         ? prevData.find(
-            (d) =>
-              startOfDay(d.date).getTime() ===
-              startOfDay(compareDate).getTime(),
-          )
+          (d) =>
+            startOfDay(d.date).getTime() ===
+            startOfDay(compareDate).getTime(),
+        )
         : null
 
     return {
@@ -152,8 +160,8 @@ export function ChartCard({
         selectedPeriod !== "no-comparison" ? (prevOverview?.value ?? 0) : null,
       evolution:
         selectedPeriod !== "no-comparison" &&
-        overview?.value &&
-        prevOverview?.value
+          overview?.value &&
+          prevOverview?.value
           ? (overview.value - prevOverview.value) / prevOverview.value
           : undefined,
     }
