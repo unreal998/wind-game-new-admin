@@ -5,14 +5,16 @@ import { Card } from "@/components/Card"
 import { DataTable } from "@/components/data-table/DataTable"
 import { useAdminLocationsStore } from "@/stores/admin/useAdminLocationsStore"
 import { FilterableColumn } from "@/types/table"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { locationColumns } from "./_components/LocationColumns"
 import { LocationEditSidebar } from "./_components/LocationEditSidebar"
+import { fetchUserPermissions } from "@/stores/admin/useAdminReferralsStore"
 
 export default function LocationsAdminPage() {
   const { locations, isLoading } = useAdminLocationsStore()
   const [aggregatedValue] = useState<string | number | null>(null)
   const { activeLocation } = useAdminLocationsStore()
+  const [isAvialableToWrite, setIsAvialableToWrite] = useState<boolean>(false);
 
   const filterableColumns: FilterableColumn[] = [
     {
@@ -37,6 +39,18 @@ export default function LocationsAdminPage() {
     },
   ]
 
+  useEffect(() => {
+      const loadPermissions = async () => {
+        try {
+          const data = await fetchUserPermissions()
+          setIsAvialableToWrite(data.permissions.includes('write'))
+        } catch (error) {
+          console.error("Failed to fetch withdrawals", error)
+        }
+      }  
+      loadPermissions()
+    }, [])
+
   return (
     <>
       <div className="mb-4 flex items-center justify-between">
@@ -51,7 +65,7 @@ export default function LocationsAdminPage() {
       <Card className="p-0">
         <DataTable
           data={locations}
-          columns={locationColumns}
+          columns={locationColumns(isAvialableToWrite)}
           filterableColumns={filterableColumns}
           isLoading={isLoading}
         />

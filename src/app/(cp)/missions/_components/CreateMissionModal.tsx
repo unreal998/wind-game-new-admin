@@ -6,7 +6,13 @@ import { Button, Input } from "@/components"
 import { cx, focusInput } from "@/lib/utils"
 import { CreateMissionData, fetchAddMissions } from "./fetchMissions"
 
-export const CreateMissionModal = ({ onClose }: { onClose: () => void }) => {
+export const CreateMissionModal = ({
+  onClose,
+  setNewMission,
+}: {
+  onClose: () => void
+  setNewMission: (mission: any) => void
+}) => {
   const [language, setLanguage] = useState<"ru" | "en">("ru")
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [form, setForm] = useState<CreateMissionData>({
@@ -106,6 +112,7 @@ export const CreateMissionModal = ({ onClose }: { onClose: () => void }) => {
         specValue: "0",
       })
       onClose()
+      setNewMission({ ...form, created_at: new Date().toISOString() })
     } catch (error) {
       console.error("Помилка при створенні місії:", error)
     }

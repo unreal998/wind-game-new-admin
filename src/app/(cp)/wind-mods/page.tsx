@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Badge } from "@/components/Badge"
 import { Button } from "@/components"
 import { Card } from "@/components/Card"
@@ -15,11 +15,13 @@ import {
 } from "@/stores/admin/useAdminWindModsStore"
 import { ModEditSidebar } from "./_components/ModEditSidebar"
 import { WindMod } from "@/types/windMod"
+import { fetchUserPermissions } from "@/stores/admin/useAdminReferralsStore"
 
 export default function WindModsAdminPage() {
   const [aggregatedValue] = useState<string | number | null>(null)
 
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isAvialableToWrite, setIsAvialableToWrite] = useState<boolean>(false);
 
   const {
     windMods,
@@ -28,6 +30,18 @@ export default function WindModsAdminPage() {
     selectedCountry,
     setSelectedCountry,
   } = useAdminWindModsStore()
+
+  useEffect(() => {
+    const loadPermissions = async () => {
+    try {
+        const data = await fetchUserPermissions()
+        setIsAvialableToWrite(data.permissions.includes('write'))
+      } catch (error) {
+        console.error("Failed to fetch withdrawals", error)
+      }
+    }  
+    loadPermissions()
+  }, [])
 
   const countries: CountryCodes[] = ["nl", "dk", "gr", "usa"]
 
@@ -57,7 +71,7 @@ export default function WindModsAdminPage() {
             </Button>
           ))}
         </div>
-        <Button onClick={() => setIsModalOpen(true)}>Додати нову</Button>
+        {isAvialableToWrite && <Button onClick={() => setIsModalOpen(true)}>Додати нову</Button>}
         {!isLoading && aggregatedValue && (
           <Badge variant="indigo" className="px-3 py-1 text-base">
             {aggregatedValue}
@@ -71,7 +85,7 @@ export default function WindModsAdminPage() {
             windMods.find((mod) => mod.area === selectedCountry)?.values ??
             ([] as WindMod[])
           }
-          columns={windModColumns}
+          columns={windModColumns(isAvialableToWrite)}
           filterableColumns={filterableColumns}
           isLoading={isLoading}
         />

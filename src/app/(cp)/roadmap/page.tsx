@@ -9,12 +9,14 @@ import {
   fetchRewriteRoadmap,
   lng,
 } from "./_components/fetchRoadmap"
+import { fetchUserPermissions } from "@/stores/admin/useAdminReferralsStore"
 
 export default function WalletsAdminPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [aggregatedValue] = useState<string | number | null>(null)
   const [roadmapText, setRoadmapText] = useState("")
   const [language, setLanguage] = useState<lng>("ru")
+  const [isAvialableToWrite, setIsAvialableToWrite] = useState<boolean>(false);
 
   const loadRoadmap = async (lng: lng) => {
     setIsLoading(true)
@@ -27,6 +29,19 @@ export default function WalletsAdminPage() {
       setIsLoading(false)
     }
   }
+
+    useEffect(() => {
+      const loadPermissions = async () => {
+        try {
+          const data = await fetchUserPermissions()
+          setIsAvialableToWrite(data.permissions.includes('write'))
+        } catch (error) {
+          console.error("Failed to fetch withdrawals", error)
+        }
+      }
+  
+      loadPermissions()
+    }, [])
 
   const handleRewrite = async () => {
     setIsLoading(true)
@@ -58,9 +73,9 @@ export default function WalletsAdminPage() {
 
       <Card className="p-4">
         <div className="mb-2 flex items-center justify-between">
-          <Button onClick={handleRewrite} disabled={isLoading}>
+          {isAvialableToWrite && <Button onClick={handleRewrite} disabled={isLoading}>
             {isLoading ? "Завантаження..." : "Переписати дорожню карту"}
-          </Button>
+          </Button>}
 
           <div className="flex items-center gap-2">
             <button

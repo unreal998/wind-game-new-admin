@@ -2,7 +2,7 @@
 
 import { Card } from "@/components/Card"
 import { DataTable } from "@/components/data-table/DataTable"
-import { useAdminReferralsStore } from "@/stores/admin/useAdminReferralsStore"
+import { fetchUserPermissions, useAdminReferralsStore } from "@/stores/admin/useAdminReferralsStore"
 import { FilterableColumn } from "@/types/table"
 import { useEffect, useState } from "react"
 import { userColumns } from "./_components/UserColumns"
@@ -19,6 +19,7 @@ export default function ReferralsAdminPage() {
   const [totalTONSum, setTotalTONSum] = useState<number>(0)
   const [totalTURXSum, setTotalTURXSum] = useState<number>(0)
   const [usersColumnData, setUsersColumnData] = useState<AdminProfile[]>()
+  const [isAvialableToWrite, setIsAvialableToWrite] = useState<boolean>(false);
 
   useEffect(() => {
     setTotalTONSum(
@@ -46,6 +47,19 @@ export default function ReferralsAdminPage() {
     }
 
     loadWithdrawals()
+  }, [])
+
+  useEffect(() => {
+    const loadPermissions = async () => {
+      try {
+        const data = await fetchUserPermissions()
+        setIsAvialableToWrite(data.permissions.includes('write'))
+      } catch (error) {
+        console.error("Failed to fetch withdrawals", error)
+      }
+    }
+
+    loadPermissions()
   }, [])
 
   const filterableColumns: FilterableColumn[] = [
@@ -121,7 +135,7 @@ export default function ReferralsAdminPage() {
     <>
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Користувачі</h1>
-        <Sum label="Загальна сумма TURX" sum={totalTURXSum} />
+        <Sum label="Загальна сумма кВт" sum={totalTURXSum} />
         <Sum label="Загальна сумма TON" sum={totalTONSum} />
         {/* {!isLoading && aggregatedValue && (
           <Badge variant="indigo" className="px-3 py-1 text-base">
@@ -164,6 +178,7 @@ export default function ReferralsAdminPage() {
               tableData={userWithdrawals}
               tableColumns={withdrawalsColumns}
               filterableColumns={filterableColumns}
+              isAvialableToWrite={isAvialableToWrite}
             />
           )
         })()}

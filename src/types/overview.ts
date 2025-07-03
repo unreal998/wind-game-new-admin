@@ -17,9 +17,9 @@ export const categories = [
     type: "currency" as const,
   },
   {
-    title: "turxBalance",
-    label: "TURX Пропрозиція",
-    type: "currency" as const,
+        title: "turxBalance",
+        label: "кВт Пропрозиція",
+        type: "currency" as const,
   },
   {
     title: "referals",
