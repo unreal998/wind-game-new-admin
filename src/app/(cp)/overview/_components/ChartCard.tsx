@@ -67,7 +67,8 @@ export function ChartCard({
 
   // Отримуємо дані транзакцій, реєстрацій та рефералів
   const registrationStats = useRegistrationStats()
-  const { withdrawals, currentTotal, previousTotal } = useWithdrawalsStats()
+  const { withdrawals, currentTotal, previousTotal } =
+    useWithdrawalsStats(selectedDates)
   const { transactions, currentTotalTransactions, previousTotalTransactions } =
     useTransactionStatsNew(selectedDates, selectedPeriod)
   const { referals } = useReferalsStats()

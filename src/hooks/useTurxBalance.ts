@@ -27,7 +27,6 @@ export function useTurxBalance(selectedDates: DateRange | undefined) {
       }
 
       const turxBalances = data as TurxBalance[]
-      console.log("turxBalances:", turxBalances)
 
       let from: Date, to: Date
       if (selectedDates?.from && selectedDates?.to) {
@@ -63,7 +62,7 @@ export function useTurxBalance(selectedDates: DateRange | undefined) {
       let runningBalance = 0
       const result: DateValue[] = days.map((date) => {
         const key = startOfDay(date).toISOString()
-        runningBalance += tbByDay[key] || 0
+        runningBalance = tbByDay[key] || 0
         return { date, value: runningBalance }
       })
 
@@ -85,7 +84,7 @@ export function useTurxBalance(selectedDates: DateRange | undefined) {
       let prevRunningBalance = 0
       const prevResult: DateValue[] = prevDays.map((date) => {
         const key = startOfDay(date).toISOString()
-        prevRunningBalance += tbByDay[key] || 0
+        prevRunningBalance = tbByDay[key] || 0
         return { date, value: prevRunningBalance }
       })
       const previousTotal =

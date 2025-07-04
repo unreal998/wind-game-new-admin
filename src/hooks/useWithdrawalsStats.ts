@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { startOfDay, interval, isWithinInterval, subDays } from "date-fns"
 import axios from "axios"
+import { DateRange } from "react-day-picker"
 
 type Withdrawal = {
   created_at: string
@@ -9,7 +10,7 @@ type Withdrawal = {
 
 export type DateValue = { date: Date; value: number }
 
-export function useWithdrawalsStats() {
+export function useWithdrawalsStats(selectedDates: DateRange | undefined) {
   const [data, setData] = useState<DateValue[]>([])
   const [currentTotal, setCurrentTotal] = useState<number>(0)
   const [previousTotal, setPreviousTotal] = useState<number>(0)
@@ -43,11 +44,11 @@ export function useWithdrawalsStats() {
 
         setData(formatted)
 
-        const today = new Date()
-        const from = subDays(today, 30)
+        const to = selectedDates?.to ?? new Date()
+        const from = selectedDates?.from ?? new Date()
         const previousFrom = subDays(from, 30)
 
-        const currentInterval = interval(from, today)
+        const currentInterval = interval(from, to)
         const previousInterval = interval(previousFrom, from)
 
         const current = formatted
@@ -66,7 +67,7 @@ export function useWithdrawalsStats() {
     }
 
     fetchWithdrawals()
-  }, [])
+  }, [selectedDates])
 
   return {
     withdrawals: data,

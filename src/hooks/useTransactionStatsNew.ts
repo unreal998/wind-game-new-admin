@@ -10,7 +10,10 @@ type Transaction = {
 
 type DateValue = { date: Date; value: number }
 
-export function useTransactionStatsNew(selectedPeriod: DateRange | undefined, selectedDates: string) {
+export function useTransactionStatsNew(
+  selectedPeriod: DateRange | undefined,
+  selectedDates: string,
+) {
   const [transactionData, setTransactionData] = useState<DateValue[]>([])
   const [currentTotalTransactions, setCurrentTotalTransactions] =
     useState<number>(0)
@@ -49,7 +52,6 @@ export function useTransactionStatsNew(selectedPeriod: DateRange | undefined, se
         const today = new Date()
         const from = subDays(today, 30)
         const previousFrom = subDays(from, 30)
-        console.log("Selected Dates:", selectedDates, selectedPeriod)
         let currentInterval = interval(from, today)
         let previousInterval = interval(previousFrom, from)
         if (selectedPeriod && selectedPeriod.from && selectedPeriod.to) {
@@ -57,7 +59,6 @@ export function useTransactionStatsNew(selectedPeriod: DateRange | undefined, se
           const previousFrom = subDays(selectedPeriod.from, 30)
           previousInterval = interval(previousFrom, selectedPeriod.from)
         }
-
 
         const current = formatted
           .filter((item) => isWithinInterval(item.date, currentInterval))
