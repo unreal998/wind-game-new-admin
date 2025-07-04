@@ -17,9 +17,9 @@ export const categories = [
     type: "currency" as const,
   },
   {
-        title: "turxBalance",
-        label: "кВт Пропрозиція",
-        type: "currency" as const,
+    title: "turxBalance",
+    label: "кВт Пропрозиція",
+    type: "currency" as const,
   },
   {
     title: "referals",
@@ -30,7 +30,7 @@ export const categories = [
     title: "tonBalance",
     label: "TON Баланс",
     type: "currency" as const,
-  }
+  },
 ] as const
 
 export type PeriodValue =
