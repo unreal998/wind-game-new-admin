@@ -115,7 +115,7 @@ const sectionConfigs: Record<AdminLinkKeys, SectionConfig> = {
   },
   permissions: {
     title: "Дозволи",
-    icon: "solar:users-group-rounded-bold",
+    icon: "solar:crown-minimalistic-bold",
     href: siteConfig.adminLinks.permissions,
   },
 } as const
