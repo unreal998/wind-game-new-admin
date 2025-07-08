@@ -113,6 +113,11 @@ const sectionConfigs: Record<AdminLinkKeys, SectionConfig> = {
     icon: "solar:users-group-rounded-bold",
     href: siteConfig.adminLinks.referralEarnings,
   },
+  permissions: {
+    title: "Дозволи",
+    icon: "solar:users-group-rounded-bold",
+    href: siteConfig.adminLinks.permissions,
+  },
 } as const
 
 export function AdminSidebar({

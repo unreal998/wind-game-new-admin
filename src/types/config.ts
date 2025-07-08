@@ -15,6 +15,7 @@ export type AdminLinksConfig = {
   // userMods: string
   // pushes: string;
   referralEarnings: string
+  permissions: string
 }
 
 export type AdminAccessConfig = {
