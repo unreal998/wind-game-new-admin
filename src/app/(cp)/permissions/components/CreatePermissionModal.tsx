@@ -1,26 +1,20 @@
 import { useState } from "react"
 import { X } from "lucide-react"
-import {
-  fetchCreatePermission,
-  CreatePermissionDto,
-  AdminPermissions,
-} from "./permissionsApi"
 import { cx } from "@/lib/utils"
 import { Button, Input } from "@/components"
+import {
+  AdminPermissions,
+  CreatePermissionDto,
+  useAdminPermissionsStore,
+} from "@/stores/admin/useAdminPermissionsStore"
 
-export const CreatePermissionModal = ({
-  onClose,
-  setNewPermission,
-}: {
-  onClose: () => void
-  setNewPermission: (permission: any) => void
-}) => {
+export const CreatePermissionModal = ({ onClose }: { onClose: () => void }) => {
   const [form, setForm] = useState<CreatePermissionDto>({
     email: "",
     type: "admin",
     permissions: ["read"],
   })
-  const [name, setName] = useState("")
+  const { createPermission } = useAdminPermissionsStore()
 
   const handleChange = (field: keyof CreatePermissionDto, value: any) => {
     setForm((prev) => ({
@@ -42,29 +36,18 @@ export const CreatePermissionModal = ({
   }
 
   const handleSubmit = async () => {
-    if (!name.trim()) {
-      alert("Вкажіть ім'я")
-      return
-    }
     if (!form.email.trim()) {
       alert("Вкажіть email")
       return
     }
     try {
-      const result = await fetchCreatePermission(form)
+      await createPermission(form)
       setForm({
         email: "",
         type: "admin",
         permissions: ["read"],
       })
-      setName("")
       onClose()
-      setNewPermission({
-        ...form,
-        name,
-        created_at: new Date().toISOString(),
-        ...result,
-      })
     } catch (error) {
       alert("Помилка при створенні користувача")
     }
@@ -92,12 +75,6 @@ export const CreatePermissionModal = ({
         </div>
 
         <div className="space-y-4">
-          <Input
-            type="text"
-            placeholder="Ім'я"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
           <Input
             type="email"
             placeholder="Email"
