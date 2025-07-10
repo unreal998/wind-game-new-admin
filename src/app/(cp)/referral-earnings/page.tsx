@@ -11,6 +11,8 @@ import { DateRange } from "react-day-picker"
 import Sum from "@/components/Sum"
 import { useAdminReferralsStore } from "@/stores/admin/useAdminReferralsStore"
 import { ReferralEarning } from "@/types/referralEarning"
+import { roleSelector, useUserStore } from "@/stores/useUserStore"
+import NotAllowed from "@/components/NotAllowed"
 
 export default function ReferralEarningsAdminPage() {
   const { referralEarnings, isLoading } = useAdminReferralEarningsStore()
@@ -18,6 +20,7 @@ export default function ReferralEarningsAdminPage() {
   const [referalSum, setReferalSum] = useState<number>()
   const [referralEarningsData, setReferralEarningsData] =
     useState<ReferralEarning[]>()
+  const userRole = useUserStore(roleSelector)
 
   useEffect(() => {
     setReferalSum(referralEarnings.length)
@@ -77,6 +80,7 @@ export default function ReferralEarningsAdminPage() {
       type: "dateRange",
     },
   ]
+  if (userRole !== "admin") return <NotAllowed />
 
   return (
     <>

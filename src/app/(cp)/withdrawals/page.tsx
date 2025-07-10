@@ -7,11 +7,15 @@ import { DataTable } from "@/components/data-table/DataTable"
 import { FilterableColumn } from "@/types/table"
 import { useEffect, useState } from "react"
 import { getWithdrawalColumns } from "./_components/WithdrawalColumns"
-import { fetchUserPermissions, useAdminReferralsStore } from "@/stores/admin/useAdminReferralsStore"
+import {
+  fetchUserPermissions,
+  useAdminReferralsStore,
+} from "@/stores/admin/useAdminReferralsStore"
 import { WithdrawalsDateFilter } from "./_components/WithdrawalsDateFilter"
 import { DateRange } from "react-day-picker"
 import Sum from "@/components/Sum"
 import { useAdminWithdrawalsStore } from "@/stores/admin/useAdminWithdrawalsStore"
+import { roleSelector, useUserStore } from "@/stores/useUserStore"
 
 export default function WithdrawalAdminPage() {
   const [selectedDateRange, setSelectedDateRange] = useState<DateRange>()
@@ -20,7 +24,8 @@ export default function WithdrawalAdminPage() {
   const [withdrawalsData, setWithdrawalsData] = useState<any[]>([])
   const [completedSum, setCompletedSum] = useState<number>(0)
   const [pendingSum, setPendingSum] = useState<number>(0)
-  const [isAvialableToWrite, setIsAvialableToWrite] = useState<boolean>(false);
+  const [isAvialableToWrite, setIsAvialableToWrite] = useState<boolean>(false)
+  const userRole = useUserStore(roleSelector)
 
   const { profiles, isLoading } = useAdminReferralsStore()
   const {
@@ -83,13 +88,16 @@ export default function WithdrawalAdminPage() {
     const loadPermissions = async () => {
       try {
         const data = await fetchUserPermissions()
-        setIsAvialableToWrite(data.permissions.includes('write'))
+        setIsAvialableToWrite(
+          data.permissions.includes("write") &&
+            (userRole === "admin" || userRole === "teamlead"),
+        )
       } catch (error) {
         console.error("Failed to fetch withdrawals", error)
       }
-    }  
+    }
     loadPermissions()
-  }, [])
+  }, [userRole])
 
   useEffect(() => {
     fetchWithdrawals()

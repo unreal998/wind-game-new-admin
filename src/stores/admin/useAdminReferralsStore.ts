@@ -1,6 +1,7 @@
 import { AdminProfile } from "@/types/profile"
 import { createClient } from "@/utils/supabase/client"
 import { create } from "zustand"
+import { GetPermissionsDto } from "./useAdminPermissionsStore"
 
 interface AdminReferralsState {
   profiles: AdminProfile[]
@@ -69,13 +70,14 @@ export const useAdminReferralsStore = create<AdminReferralsState>(
   }),
 )
 
-
-export async function fetchUserPermissions() {
+export async function fetchUserPermissions(): Promise<GetPermissionsDto> {
   const supabase = createClient()
-  const { data: { user } } = await supabase.auth.getUser();
-  const userEmail = user?.email || "";
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  const userEmail = user?.email || ""
   try {
-    const {data, error } = await supabase
+    const { data, error } = await supabase
       .from("permissions")
       .select("*")
       .eq("email", userEmail)
@@ -83,9 +85,9 @@ export async function fetchUserPermissions() {
 
     if (error) throw error
     console.log("=======", data)
-    return data;
+    return data
   } catch (error) {
-    console.error("Error updating transaction:", error)
+    console.error("Error fetching user permissions:", error)
     throw error
   }
 }

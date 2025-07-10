@@ -16,12 +16,15 @@ import {
 import { ModEditSidebar } from "./_components/ModEditSidebar"
 import { WindMod } from "@/types/windMod"
 import { fetchUserPermissions } from "@/stores/admin/useAdminReferralsStore"
+import { roleSelector, useUserStore } from "@/stores/useUserStore"
+import NotAllowed from "@/components/NotAllowed"
 
 export default function WindModsAdminPage() {
   const [aggregatedValue] = useState<string | number | null>(null)
 
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isAvialableToWrite, setIsAvialableToWrite] = useState<boolean>(false);
+  const [isAvialableToWrite, setIsAvialableToWrite] = useState<boolean>(false)
+  const userRole = useUserStore(roleSelector)
 
   const {
     windMods,
@@ -33,15 +36,18 @@ export default function WindModsAdminPage() {
 
   useEffect(() => {
     const loadPermissions = async () => {
-    try {
+      try {
         const data = await fetchUserPermissions()
-        setIsAvialableToWrite(data.permissions.includes('write'))
+        setIsAvialableToWrite(
+          data.permissions.includes("write") &&
+            (userRole === "admin" || userRole === "teamlead"),
+        )
       } catch (error) {
         console.error("Failed to fetch withdrawals", error)
       }
-    }  
+    }
     loadPermissions()
-  }, [])
+  }, [userRole])
 
   const countries: CountryCodes[] = ["nl", "dk", "gr", "usa"]
 
@@ -51,6 +57,8 @@ export default function WindModsAdminPage() {
     { id: "price", title: "Ціна", type: "number" },
     { id: "required_pushes", title: "Необхідно пушів", type: "number" },
   ]
+
+  if (!(userRole === "admin" || userRole === "teamlead")) return <NotAllowed />
 
   return (
     <>
@@ -71,7 +79,9 @@ export default function WindModsAdminPage() {
             </Button>
           ))}
         </div>
-        {isAvialableToWrite && <Button onClick={() => setIsModalOpen(true)}>Додати нову</Button>}
+        {isAvialableToWrite && (
+          <Button onClick={() => setIsModalOpen(true)}>Додати нову</Button>
+        )}
         {!isLoading && aggregatedValue && (
           <Badge variant="indigo" className="px-3 py-1 text-base">
             {aggregatedValue}

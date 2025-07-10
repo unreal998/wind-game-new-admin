@@ -9,12 +9,15 @@ import { useEffect, useState } from "react"
 import { locationColumns } from "./_components/LocationColumns"
 import { LocationEditSidebar } from "./_components/LocationEditSidebar"
 import { fetchUserPermissions } from "@/stores/admin/useAdminReferralsStore"
+import { roleSelector, useUserStore } from "@/stores/useUserStore"
+import NotAllowed from "@/components/NotAllowed"
 
 export default function LocationsAdminPage() {
   const { locations, isLoading } = useAdminLocationsStore()
   const [aggregatedValue] = useState<string | number | null>(null)
   const { activeLocation } = useAdminLocationsStore()
-  const [isAvialableToWrite, setIsAvialableToWrite] = useState<boolean>(false);
+  const [isAvialableToWrite, setIsAvialableToWrite] = useState<boolean>(false)
+  const userRole = useUserStore(roleSelector)
 
   const filterableColumns: FilterableColumn[] = [
     {
@@ -40,16 +43,21 @@ export default function LocationsAdminPage() {
   ]
 
   useEffect(() => {
-      const loadPermissions = async () => {
-        try {
-          const data = await fetchUserPermissions()
-          setIsAvialableToWrite(data.permissions.includes('write'))
-        } catch (error) {
-          console.error("Failed to fetch withdrawals", error)
-        }
-      }  
-      loadPermissions()
-    }, [])
+    const loadPermissions = async () => {
+      try {
+        const data = await fetchUserPermissions()
+        setIsAvialableToWrite(
+          data.permissions.includes("write") &&
+            (userRole === "admin" || userRole === "teamlead"),
+        )
+      } catch (error) {
+        console.error("Failed to fetch withdrawals", error)
+      }
+    }
+    loadPermissions()
+  }, [userRole])
+
+  if (!(userRole === "admin" || userRole === "teamlead")) return <NotAllowed />
 
   return (
     <>
@@ -71,7 +79,6 @@ export default function LocationsAdminPage() {
         />
       </Card>
       {activeLocation && <LocationEditSidebar />}
-
     </>
   )
 }

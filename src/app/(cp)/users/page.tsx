@@ -2,7 +2,10 @@
 
 import { Card } from "@/components/Card"
 import { DataTable } from "@/components/data-table/DataTable"
-import { fetchUserPermissions, useAdminReferralsStore } from "@/stores/admin/useAdminReferralsStore"
+import {
+  fetchUserPermissions,
+  useAdminReferralsStore,
+} from "@/stores/admin/useAdminReferralsStore"
 import { FilterableColumn } from "@/types/table"
 import { useEffect, useState } from "react"
 import { userColumns } from "./_components/UserColumns"
@@ -11,15 +14,17 @@ import { fetchWithdrawals } from "./_components/fetchWithdrawals"
 import { withdrawalsColumns } from "./_components/withdrawalsColumns"
 import Sum from "@/components/Sum"
 import { AdminProfile } from "@/types/profile"
+import { roleSelector, useUserStore } from "@/stores/useUserStore"
 
 export default function ReferralsAdminPage() {
   const { profiles, isLoading, updateUser } = useAdminReferralsStore()
+  const userRole = useUserStore(roleSelector)
   const [activeUser, setActiveUser] = useState<any | null>(null)
   const [withdrawals, setWithdrawals] = useState<any[]>()
   const [totalTONSum, setTotalTONSum] = useState<number>(0)
   const [totalTURXSum, setTotalTURXSum] = useState<number>(0)
   const [usersColumnData, setUsersColumnData] = useState<AdminProfile[]>()
-  const [isAvialableToWrite, setIsAvialableToWrite] = useState<boolean>(false);
+  const [isAvialableToWrite, setIsAvialableToWrite] = useState<boolean>(false)
 
   useEffect(() => {
     setTotalTONSum(
@@ -53,14 +58,16 @@ export default function ReferralsAdminPage() {
     const loadPermissions = async () => {
       try {
         const data = await fetchUserPermissions()
-        setIsAvialableToWrite(data.permissions.includes('write'))
+        setIsAvialableToWrite(
+          data.permissions.includes("write") && userRole === "admin",
+        )
       } catch (error) {
         console.error("Failed to fetch withdrawals", error)
       }
     }
 
     loadPermissions()
-  }, [])
+  }, [userRole])
 
   const filterableColumns: FilterableColumn[] = [
     {
