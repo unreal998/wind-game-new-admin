@@ -28,10 +28,8 @@ const supabase = createClient()
 
 const roles: { value: AdminRoles; label: string }[] = [
   { value: "admin", label: "Адміністратор" },
-  { value: "manager", label: "Менеджер" },
-  { value: "withdrawal", label: "Вивід" },
-  { value: "support", label: "Підтримка" },
-  { value: "viewer", label: "Перегляд" },
+  { value: "teamlead", label: "Тім лід" },
+  { value: "guest", label: "Гість" },
 ]
 
 interface User {

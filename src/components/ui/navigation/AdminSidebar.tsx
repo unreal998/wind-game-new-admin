@@ -1,20 +1,17 @@
 "use client"
 
-import { AdminLinkKeys, AdminRoles, siteConfig } from "@/app/siteConfig"
+import { AdminLinkKeys, siteConfig } from "@/app/siteConfig"
 import { Badge } from "@/components/Badge"
 import { Tooltip } from "@/components/Tooltip"
 import { cx, focusRing } from "@/lib/utils"
 import { useAdminTransactionsStore } from "@/stores/admin/useAdminTransactionsStore"
 import { TransactionType } from "@/types/transaction"
-import { createClient } from "@/utils/supabase/client"
 import { Icon } from "@iconify/react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { AdminProfileDesktop } from "./AdminProfile"
 import { useAdminWithdrawalsStore } from "@/stores/admin/useAdminWithdrawalsStore"
-import { SiteConfig } from "@/types/config"
-import { fetchUserPermissions } from "@/stores/admin/useAdminReferralsStore"
 import { useUserStore } from "@/stores/useUserStore"
 
 interface AdminSidebarProps {
