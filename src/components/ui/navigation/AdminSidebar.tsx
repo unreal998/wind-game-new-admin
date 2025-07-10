@@ -125,7 +125,7 @@ export function AdminSidebar({
   toggleSidebar,
 }: AdminSidebarProps) {
   const pathname = usePathname()
-  const { setUserRole, getUserPermissions, role } = useUserStore()
+  const { getUserPermissions, role } = useUserStore()
   const { getPendingTransactions } = useAdminTransactionsStore()
   const { newWithdrawalsCount } = useAdminWithdrawalsStore()
   const [isMobile, setIsMobile] = useState(false)
@@ -197,13 +197,6 @@ export function AdminSidebar({
         "ease transform-gpu transition-all duration-100 will-change-transform",
       )}
     >
-      <button
-        onClick={() => {
-          setUserRole("guest")
-        }}
-      >
-        change role to ...
-      </button>
       <aside className="flex grow flex-col gap-y-4 overflow-y-auto whitespace-nowrap border-r border-gray-200 px-3 py-4 dark:border-gray-800">
         <div>
           <div className="flex items-center gap-x-3">
