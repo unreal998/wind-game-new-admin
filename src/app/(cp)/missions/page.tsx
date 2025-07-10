@@ -10,6 +10,8 @@ import { fetchMissions } from "./_components/fetchMissions"
 import { Button } from "@/components"
 import { CreateMissionModal } from "./_components/CreateMissionModal"
 import { fetchUserPermissions } from "@/stores/admin/useAdminReferralsStore"
+import { roleSelector, useUserStore } from "@/stores/useUserStore"
+import NotAllowed from "@/components/NotAllowed"
 
 export default function MissionAdminPage() {
   const [missions, setMissions] = useState<any[]>([])
@@ -18,12 +20,13 @@ export default function MissionAdminPage() {
   const [aggregatedValue] = useState<string | number | null>(null)
   const [activeLang, setActiveLang] = useState<"ru" | "en">("ru")
   const [newMission, setNewMission] = useState<any | null>(null)
+  const [isAvialableToWrite, setIsAvialableToWrite] = useState<boolean>(false)
+  const userRole = useUserStore(roleSelector)
 
   useEffect(() => {
     if (newMission === null) return
     setMissions((prev) => [...prev, newMission])
   }, [newMission])
-    const [isAvialableToWrite, setIsAvialableToWrite] = useState<boolean>(false);
 
   const filterableColumns: FilterableColumn[] = [
     { id: "id", title: "ID", type: "text" },
@@ -52,17 +55,21 @@ export default function MissionAdminPage() {
   }, [])
 
   useEffect(() => {
-        const loadPermissions = async () => {
-          try {
-            const data = await fetchUserPermissions()
-            setIsAvialableToWrite(data.permissions.includes('write'))
-          } catch (error) {
-            console.error("Failed to fetch withdrawals", error)
-          }
-        }
-    
-        loadPermissions()
-      }, [])
+    const loadPermissions = async () => {
+      try {
+        const data = await fetchUserPermissions()
+        setIsAvialableToWrite(
+          data.permissions.includes("write") &&
+            (userRole === "admin" || userRole === "teamlead"),
+        )
+      } catch (error) {
+        console.error("Failed to fetch withdrawals", error)
+      }
+    }
+
+    loadPermissions()
+  }, [userRole])
+  if (!(userRole === "admin" || userRole === "teamlead")) return <NotAllowed />
 
   return (
     <>
@@ -96,7 +103,9 @@ export default function MissionAdminPage() {
               {aggregatedValue}
             </Badge>
           )}
-          {isAvialableToWrite && <Button onClick={() => setIsCreateModalOpen(true)}>Додати</Button>}
+          {isAvialableToWrite && (
+            <Button onClick={() => setIsCreateModalOpen(true)}>Додати</Button>
+          )}
         </div>
       </div>
 

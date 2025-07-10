@@ -6,13 +6,13 @@ import { Tooltip } from "@/components/Tooltip"
 import { cx, focusRing } from "@/lib/utils"
 import { useAdminTransactionsStore } from "@/stores/admin/useAdminTransactionsStore"
 import { TransactionType } from "@/types/transaction"
-import { createClient } from "@/utils/supabase/client"
 import { Icon } from "@iconify/react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { AdminProfileDesktop } from "./AdminProfile"
 import { useAdminWithdrawalsStore } from "@/stores/admin/useAdminWithdrawalsStore"
+import { useUserStore } from "@/stores/useUserStore"
 
 interface AdminSidebarProps {
   isCollapsed: boolean
@@ -124,8 +124,8 @@ export function AdminSidebar({
   isCollapsed,
   toggleSidebar,
 }: AdminSidebarProps) {
-  // const [userRole, setUserRole] = useState<AdminRoles | null>(null)
   const pathname = usePathname()
+  const { setUserRole, getUserPermissions, role } = useUserStore()
   const { getPendingTransactions } = useAdminTransactionsStore()
   const { newWithdrawalsCount } = useAdminWithdrawalsStore()
   const [isMobile, setIsMobile] = useState(false)
@@ -174,23 +174,15 @@ export function AdminSidebar({
   }
 
   useEffect(() => {
-    const fetchUserRole = async () => {
-      const supabase = createClient()
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-      if (user?.user_metadata?.role) {
-        // setUserRole(user.user_metadata.role as AdminRoles)
-      }
-    }
-    fetchUserRole()
+    getUserPermissions()
   }, [])
 
-  const availableSections = siteConfig.adminAccess["admin"].map((section) => {
-    const link = siteConfig.adminLinks[section]
-    return link
-  })
-  // : []
+  const availableSections = siteConfig.adminAccess[role ?? "guest"].map(
+    (section) => {
+      const link = siteConfig.adminLinks[section]
+      return link
+    },
+  )
 
   const isActive = (itemHref: string) => {
     if (!pathname) return false
@@ -205,6 +197,13 @@ export function AdminSidebar({
         "ease transform-gpu transition-all duration-100 will-change-transform",
       )}
     >
+      <button
+        onClick={() => {
+          setUserRole("guest")
+        }}
+      >
+        change role to ...
+      </button>
       <aside className="flex grow flex-col gap-y-4 overflow-y-auto whitespace-nowrap border-r border-gray-200 px-3 py-4 dark:border-gray-800">
         <div>
           <div className="flex items-center gap-x-3">

@@ -8,16 +8,20 @@ import { DataTable } from "@/components/data-table/DataTable"
 import { permissionColumns } from "./components/permissionsColumnData"
 import { Button } from "@/components"
 import useIsAvailableToWrite from "@/hooks/useIsAvailableToWrite"
+import { roleSelector, useUserStore } from "@/stores/useUserStore"
+import NotAllowed from "@/components/NotAllowed"
 
 export default function PermissionsPage() {
   const [modalOpen, setModalOpen] = useState<boolean>(false)
   const { isLoading, permissions, fetchPermissions } =
     useAdminPermissionsStore()
   const { isAvialableToWrite } = useIsAvailableToWrite()
+  const userRole = useUserStore(roleSelector)
 
   useEffect(() => {
     fetchPermissions()
   }, [])
+  if (userRole !== "admin") return <NotAllowed />
 
   return (
     <>
