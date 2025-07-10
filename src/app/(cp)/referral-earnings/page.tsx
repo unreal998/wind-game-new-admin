@@ -23,8 +23,7 @@ export default function ReferralEarningsAdminPage() {
   const userRole = useUserStore(roleSelector)
 
   useEffect(() => {
-    setReferalSum(referralEarnings.length)
-
+    setReferalSum(referralEarnings.reduce((sum, item) => sum + item.amount, 0))
     const earningsWithReferalCount = referralEarnings.map((earning) => {
       const referralUser = profiles.find(
         (u) => Number(u.telegramID) === Number(earning.referral_user?.id),
@@ -87,7 +86,7 @@ export default function ReferralEarningsAdminPage() {
       <div className="mb-4 flex items-center justify-between">
         <h1 className="mr-1 text-2xl font-semibold">Реферальні</h1>
         <WithdrawalsDateFilter setSelectedDateRange={setSelectedDateRange} />
-        <Sum label="Загальна кількість рефералів" sum={referalSum ?? 0} />
+        <Sum label="Загальна сума в ТОН" sum={referalSum ?? 0} />
         {!isLoading && aggregatedValue && (
           <Badge variant="indigo" className="px-3 py-1 text-base">
             {aggregatedValue}
