@@ -5,6 +5,19 @@ import { create } from "zustand"
 
 const client = createClient()
 
+export type SignUpDto = {
+  email: string;
+  password: string;
+  options?: {
+    data?: {
+      first_name?: string;
+      last_name?: string;
+      phone?: string;
+    };
+    emailRedirectTo?: string;
+  }
+}
+
 type AuthAction = {
   resetPasswordAsync(email: string): Promise<{ error: string } | void>
   resetPasswordVerifyAsync(
