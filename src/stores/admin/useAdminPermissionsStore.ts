@@ -1,4 +1,5 @@
 import { createClient } from "@/utils/supabase/client"
+import axios from "axios"
 import { create } from "zustand"
 
 export type AdminPermissions = "read" | "write"
@@ -22,9 +23,14 @@ interface AdminPermissionsState {
   error: string | null
   fetchPermissions: () => Promise<void>
   createPermission: (permissionData: CreatePermissionDto) => Promise<void>
+  updatePermission: (
+    permissionData: UpdatePermissionDto,
+    id: GetPermissionsDto["id"],
+  ) => Promise<void>
 }
 
 const supabase = createClient()
+const SERVER_URL = process.env.SERVER_URL
 
 export const useAdminPermissionsStore = create<AdminPermissionsState>(
   (set) => ({
@@ -62,6 +68,36 @@ export const useAdminPermissionsStore = create<AdminPermissionsState>(
         set({ permissions: permissionsData, isLoading: false })
       } catch (e) {
         set({ error: "Error when fetching permissions", isLoading: false })
+      }
+    },
+    updatePermission: async (
+      permissionData: UpdatePermissionDto,
+      id: GetPermissionsDto["id"],
+    ) => {
+      try {
+        const { data } = await axios.put(
+          `${SERVER_URL}/permissions?id=${id}`,
+          permissionData,
+        )
+        if (data.error) {
+          set({ error: data.error })
+        }
+
+        set((state) => {
+          return {
+            permissions: state.permissions.map((perm) => {
+              if (perm.id === id) {
+                return { ...perm, ...permissionData }
+              }
+              return perm
+            }),
+          }
+        })
+      } catch (e: any) {
+        console.log("UPDATING PERMISSION ERROR", e)
+        set({ error: `error when updating permission with id:${id}` })
+      } finally {
+        set({ isLoading: false })
       }
     },
   }),

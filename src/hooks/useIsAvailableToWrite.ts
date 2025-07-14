@@ -20,7 +20,7 @@ export default function useIsAvailableToWrite() {
     }
 
     loadPermissions()
-  }, [])
+  }, [userRole])
 
   return { isAvialableToWrite }
 }
