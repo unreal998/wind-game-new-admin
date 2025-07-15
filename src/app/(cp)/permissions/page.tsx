@@ -5,7 +5,7 @@ import { CreatePermissionModal } from "./components/CreatePermissionModal"
 import { useAdminPermissionsStore } from "@/stores/admin/useAdminPermissionsStore"
 import { Card } from "@/components"
 import { DataTable } from "@/components/data-table/DataTable"
-import { permissionColumns } from "./components/permissionsColumnData"
+import { getPermissionColumns } from "./components/permissionsColumnData"
 import { Button } from "@/components"
 import useIsAvailableToWrite from "@/hooks/useIsAvailableToWrite"
 import { roleSelector, useUserStore } from "@/stores/useUserStore"
@@ -44,7 +44,7 @@ export default function PermissionsPage() {
         <DataTable
           selectedDateRange={selectedDateRange}
           data={permissions}
-          columns={permissionColumns}
+          columns={getPermissionColumns(isAvialableToWrite ?? false)}
           isLoading={isLoading}
           openSidebarOnRowClick={true}
         />
