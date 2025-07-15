@@ -16,9 +16,11 @@ import { DateRange } from "react-day-picker"
 import Sum from "@/components/Sum"
 import { useAdminWithdrawalsStore } from "@/stores/admin/useAdminWithdrawalsStore"
 import { roleSelector, useUserStore } from "@/stores/useUserStore"
+import { interval, isWithinInterval } from "date-fns"
 
 export default function WithdrawalAdminPage() {
   const [selectedDateRange, setSelectedDateRange] = useState<DateRange>()
+  const [selectedDateRangeSum, setSelectedDateRangeSum] = useState<number>(0)
 
   const [aggregatedValue] = useState<string | number | null>(null)
   const [withdrawalsData, setWithdrawalsData] = useState<any[]>([])
@@ -28,12 +30,8 @@ export default function WithdrawalAdminPage() {
   const userRole = useUserStore(roleSelector)
 
   const { profiles, isLoading } = useAdminReferralsStore()
-  const {
-    withdrawals,
-    isLoadingWithDrawal,
-    fetchWithdrawals,
-    setNewWithdrawalsCount,
-  } = useAdminWithdrawalsStore()
+  const { withdrawals, isLoadingWithDrawal, fetchWithdrawals } =
+    useAdminWithdrawalsStore()
 
   const filterableColumns: FilterableColumn[] = [
     {
@@ -85,12 +83,16 @@ export default function WithdrawalAdminPage() {
   ]
 
   useEffect(() => {
+    console.log(withdrawals) // THIS IS TRIGGERING NON STOP
+  }, [withdrawals])
+
+  useEffect(() => {
     const loadPermissions = async () => {
       try {
         const data = await fetchUserPermissions()
         setIsAvialableToWrite(
           data.permissions.includes("write") &&
-          (userRole === "admin" || userRole === "teamlead"),
+            (userRole === "admin" || userRole === "teamlead"),
         )
       } catch (error) {
         console.error("Failed to fetch withdrawals", error)
@@ -101,6 +103,10 @@ export default function WithdrawalAdminPage() {
 
   useEffect(() => {
     fetchWithdrawals()
+  }, [fetchWithdrawals])
+
+  useEffect(() => {
+    if (!withdrawals.length || !profiles.length) return
     setWithdrawalsData(
       withdrawals.map((withdrawal) => {
         const user = profiles.find((user) => {
@@ -119,11 +125,9 @@ export default function WithdrawalAdminPage() {
         return withdrawal
       }),
     )
+  }, [withdrawals, profiles])
 
-    setNewWithdrawalsCount(
-      withdrawalsData.filter((w) => w.status === "new").length,
-    )
-
+  useEffect(() => {
     setCompletedSum(
       withdrawalsData.reduce((acc: number, next: any) => {
         return next.status === "completed" ? acc + next.sum : acc
@@ -135,23 +139,34 @@ export default function WithdrawalAdminPage() {
         return next.status === "new" ? acc + next.sum : acc
       }, 0),
     )
-  }, [
-    withdrawals,
-    profiles,
-    setNewWithdrawalsCount,
-    setCompletedSum,
-    setPendingSum,
-    setWithdrawalsData,
-    fetchWithdrawals,
-  ])
+    setSelectedDateRangeSum(
+      withdrawalsData
+        .filter((item) =>
+          isWithinInterval(
+            item.created_at,
+            interval(
+              selectedDateRange?.to ?? new Date(),
+              selectedDateRange?.from ?? new Date(),
+            ),
+          ),
+        )
+        .reduce((acc: number, next: any) => {
+          return next.status === "new" ? acc + next.sum : acc
+        }, 0),
+    )
+  }, [withdrawalsData, selectedDateRange])
 
   return (
     <>
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Вивід</h1>
         <EnhancedDatePicker setSelectedDateRange={setSelectedDateRange} />
+        <Sum
+          label="Сумма в очікуванні в обранному періоду"
+          sum={selectedDateRangeSum}
+        />
         <Sum label="Сумма в очікуванні" sum={pendingSum} />
-        <Sum label="Загальна сумма" sum={completedSum} />
+        <Sum label="Підтверджена сума" sum={completedSum} />
 
         {!isLoading && !isLoadingWithDrawal && aggregatedValue && (
           <Badge variant="indigo" className="px-3 py-1 text-base">
