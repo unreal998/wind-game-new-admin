@@ -1,10 +1,8 @@
 "use client"
 
-import { Badge } from "@/components/Badge"
 import { Checkbox } from "@/components/Checkbox"
 import { DateWithDistance } from "@/components/data-table/DateWithDistance"
 import { formatTimestamp } from "@/hooks/formatTimestamp"
-import { LOCATION_TYPES } from "@/types/location"
 import { type TableColumn } from "@/types/table"
 import { type UserMod } from "@/types/userMod"
 import { formatAmount } from "@/utils/amountFormatter"
@@ -73,48 +71,11 @@ export const userModColumns: TableColumn<UserMod>[] = [
 
   columnHelper.accessor("location_id", {
     header: "Локація",
-    cell: ({ getValue }) => {
-      const type = getValue()
-      return LOCATION_TYPES.find((t) => t.value === type)?.label || type
-    },
+    cell: ({ getValue }) => getValue() || "-",
     enableSorting: true,
-    filterFn: "select",
+    filterFn: "text",
     meta: {
-      exportValue: (row) =>
-        LOCATION_TYPES.find((t) => t.value === row.location_id)?.label ||
-        row.location_id,
-    },
-  }),
-
-  columnHelper.accessor("is_active", {
-    header: "Статус",
-    cell: ({ getValue }) => {
-      const isActive = getValue()
-      return (
-        <Badge
-          variant={isActive ? "success" : "neutral"}
-          className="px-2 py-0.5"
-        >
-          {isActive ? "Активний" : "Неактивний"}
-        </Badge>
-      )
-    },
-    enableSorting: true,
-    filterFn: "equals",
-    meta: {
-      exportValue: (row) => (row.is_active ? "Активний" : "Неактивний"),
-    },
-  }),
-
-  columnHelper.accessor("energy_per_hour", {
-    header: "Енергія за годину",
-    cell: ({ getValue }) => `${getValue()} ENRG`,
-    enableSorting: true,
-    filterFn: "number",
-    meta: {
-      exportHeader: "Енергія за годину (ENRG)",
-      exportValue: (row) => row.energy_per_hour || 0,
-      exportAlign: "right",
+      exportValue: (row) => row.locationName || "-",
     },
   }),
 
@@ -130,21 +91,8 @@ export const userModColumns: TableColumn<UserMod>[] = [
     },
   }),
 
-  // columnHelper.accessor((row) => row.price * row.profit_multiplier, {
-  //   id: "final_profit",
-  //   header: "Фінальний прибуток",
-  //   cell: ({ getValue }) => formatAmount(getValue()),
-  //   enableSorting: true,
-  //   filterFn: "number",
-  //   meta: {
-  //     exportHeader: "Фінальний прибуток (TON)",
-  //     exportValue: (row) => row.price * row.profit_multiplier || 0,
-  //     exportAlign: "right",
-  //   },
-  // }),
-
   columnHelper.accessor("required_pushes", {
-    header: "Необхідно пушів",
+    header: "Залишилось пушів",
     cell: ({ getValue }) => getValue(),
     enableSorting: true,
     filterFn: "number",
@@ -166,12 +114,12 @@ export const userModColumns: TableColumn<UserMod>[] = [
   }),
 
   columnHelper.accessor("coins_earned", {
-    header: "Зароблено ENRG",
-    cell: ({ getValue }) => `${getValue()} ENRG`,
+    header: "Зароблено KWT",
+    cell: ({ getValue }) => `${getValue()} KWT`,
     enableSorting: true,
     filterFn: "number",
     meta: {
-      exportHeader: "Зароблено (ENRG)",
+      exportHeader: "Зароблено (KWT)",
       exportValue: (row) => row.coins_earned || 0,
       exportAlign: "right",
     },

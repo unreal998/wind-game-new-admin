@@ -152,6 +152,7 @@ export function DataTable<TData extends Record<string, any>>({
   const [preparedData, setPreparedData] =
     useState<(TData & { _searchable?: string })[]>(data)
   const [, setActiveRow] = useState<TData | null>(null)
+  
   useEffect(() => {
     const prepared = data.map((item) => ({
       ...item,
@@ -309,12 +310,7 @@ export function DataTable<TData extends Record<string, any>>({
       const matches = searchTerms.every((term) => searchable.includes(term))
 
       if (matches) {
-        console.group("Знайдено співпадіння:")
-        console.log("Пошуковий запит:", searchTerms)
-        console.log("Рядок для пошуку:", searchable)
-        console.log("Оригінальні дані:", row.original)
 
-        // Показуємо, де саме знайдено кожен терм
         searchTerms.forEach((term) => {
           const index = searchable.indexOf(term)
           if (index > -1) {

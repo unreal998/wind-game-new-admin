@@ -10,9 +10,9 @@ export type AdminLinksConfig = {
   withdrawals: string
   // wallets: string
   locations: string
-  // userLocations: string
+  userLocations: string
   windMods: string
-  // userMods: string
+  userMods: string
   // pushes: string;
   referralEarnings: string
   permissions: string

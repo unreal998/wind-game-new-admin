@@ -103,7 +103,7 @@ export const useAdminPermissionsStore = create<AdminPermissionsState>(
     },
     deletePermission: async (id: GetPermissionsDto["id"]) => {
       try {
-        const {  error } = await supabase.from("permissions").delete().eq("id", id)
+        await supabase.from("permissions").delete().eq("id", id)
       } catch (e: any) {
         console.log("DELETING PERMISSION ERROR", e)
         set({ error: `error when deleting permission with id:${id}` })

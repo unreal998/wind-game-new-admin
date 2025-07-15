@@ -6,12 +6,61 @@ import { DataTable } from "@/components/data-table/DataTable"
 import { useAdminUserModsStore } from "@/stores/admin/useAdminUserModsStore"
 import { LOCATION_TYPES } from "@/types/location"
 import { FilterableColumn } from "@/types/table"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { userModColumns } from "./_components/UserModColumns"
+import { UserMod } from "@/types/userMod"
+import { createClient } from "@/utils/supabase/client"
 
 export default function UserModsAdminPage() {
   const { userMods, isLoading } = useAdminUserModsStore()
   const [aggregatedValue] = useState<string | number | null>(null)
+  const formatUserMod = [] as UserMod[];
+  const [modifiersData, setModifiers] = useState<any[]>([])
+
+  useEffect(() => {
+    const fetchModsData = async () => {
+      const supabase = createClient()
+      const { data, error } = await supabase.from("modifiers").select("*")
+      if (error) {
+        console.error(`ERROR FETCHING TURX BALANCE: ${error}`)
+        return
+      }
+      setModifiers(data || [])
+    }
+    fetchModsData()
+  }, [])
+
+  userMods.forEach((mod) => {
+    const modData = mod as any;
+    modData.modifiers.forEach((modifier: any) => {
+      if (modifier.boughtModifier.length) {
+
+        const selectedMod = modifiersData.find(
+          (m) => m.area === modifier.areaName
+        )
+
+        modifier.boughtModifier.forEach((modifierData: any) => {
+          const selectedModValue = selectedMod?.values[modifierData.speed - 1];
+          const userMod = {
+            user: { 
+              id: modData.id,
+              username: modData.userName || modData.telegramID,
+              first_name: modData.firstName || "Unknown",
+              last_name: modData.lastName || "Unknown"
+            },
+            pushes_done: 128 - modifierData.clicksRemaining,
+            required_pushes: modifierData.clicksRemaining,
+            ton_earned: selectedModValue?.tonValue ? ((selectedModValue.tonValue / 128) * (128 - modifierData.clicksRemaining)).toFixed(2) : 0,
+            coins_earned: selectedModValue?.turxValue ? (selectedModValue.turxValue / 128) * (128 - modifierData.clicksRemaining) : 0,
+            price: selectedModValue.price || 0,
+            purchased_at: modifierData.boughtDate,
+            location_id: modifier.areaName || "",
+          }
+          formatUserMod.push(userMod as UserMod);
+        })
+      }
+    })
+  })
 
   const filterableColumns: FilterableColumn[] = [
     {
@@ -79,7 +128,7 @@ export default function UserModsAdminPage() {
 
       <Card className="p-0">
         <DataTable
-          data={userMods}
+          data={formatUserMod}
           columns={userModColumns}
           filterableColumns={filterableColumns}
           isLoading={isLoading}

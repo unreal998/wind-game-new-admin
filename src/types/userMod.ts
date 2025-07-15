@@ -1,5 +1,4 @@
 import { type Database } from "@/utils/supabase/database.types";
-import { type LocationType } from "./location";
 import { type WindMod } from "./windMod";
 
 export type UserMod =
@@ -13,9 +12,11 @@ export type UserMod =
         };
         mod?: WindMod;
         location?: {
-            id: LocationType;
+            id: string;
             base_wind_speed: number;
             base_energy_per_hour: number;
             profit_multiplier: number;
         };
+        locationName?: string;
+        location_id?: string;
     };

@@ -88,21 +88,21 @@ const sectionConfigs: Record<AdminLinkKeys, SectionConfig> = {
     icon: "solar:map-point-bold",
     href: siteConfig.adminLinks.locations,
   },
-  // userLocations: {
-  //   title: "Локації користувачів",
-  //   icon: "solar:map-arrow-square-bold",
-  //   href: siteConfig.adminLinks.userLocations,
-  // },
+  userLocations: {
+    title: "Локації користувачів",
+    icon: "solar:map-arrow-square-bold",
+    href: siteConfig.adminLinks.userLocations,
+  },
   windMods: {
     title: "Моди",
     icon: "solar:wind-bold",
     href: siteConfig.adminLinks.windMods,
   },
-  // userMods: {
-  //   title: "Моди придбані",
-  //   icon: "solar:inbox-out-bold",
-  //   href: siteConfig.adminLinks.userMods,
-  // },
+  userMods: {
+    title: "Моди придбані",
+    icon: "solar:inbox-out-bold",
+    href: siteConfig.adminLinks.userMods,
+  },
   // pushes: {
   //   title: "Пуші",
   //   icon: "solar:archive-minimalistic-bold",
