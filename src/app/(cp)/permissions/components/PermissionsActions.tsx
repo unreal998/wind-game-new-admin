@@ -16,7 +16,7 @@ export default function PermissionsActions({
   permission: GetPermissionsDto
 }) {
   const [open, setOpen] = useState<boolean>(false)
-  const { updatePermission } = useAdminPermissionsStore()
+  const { updatePermission, deletePermission, fetchPermissions } = useAdminPermissionsStore()
   const [form, setForm] = useState<UpdatePermissionDto>({
     email: permission.email,
     type: permission.type,
@@ -54,9 +54,18 @@ export default function PermissionsActions({
     onClose()
   }
 
+  const handleRemove = async () => {
+    await deletePermission(permission.id)
+    await fetchPermissions()
+    onClose()
+  }
+
   return (
     <>
       <Button onClick={() => setOpen(true)}>Редагувати</Button>
+      <Button style={{
+        marginLeft: "8px"
+      }} onClick={handleRemove}>Видалити</Button>
       {open && (
         <div
           onClick={onClose}

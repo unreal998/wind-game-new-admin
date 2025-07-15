@@ -27,6 +27,7 @@ interface AdminPermissionsState {
     permissionData: UpdatePermissionDto,
     id: GetPermissionsDto["id"],
   ) => Promise<void>
+  deletePermission: (id: GetPermissionsDto["id"]) => Promise<void>
 }
 
 const supabase = createClient()
@@ -100,5 +101,13 @@ export const useAdminPermissionsStore = create<AdminPermissionsState>(
         set({ isLoading: false })
       }
     },
+    deletePermission: async (id: GetPermissionsDto["id"]) => {
+      try {
+        const {  error } = await supabase.from("permissions").delete().eq("id", id)
+      } catch (e: any) {
+        console.log("DELETING PERMISSION ERROR", e)
+        set({ error: `error when deleting permission with id:${id}` })
+      }
+    }
   }),
 )
