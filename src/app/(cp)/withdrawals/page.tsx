@@ -83,10 +83,6 @@ export default function WithdrawalAdminPage() {
   ]
 
   useEffect(() => {
-    console.log(withdrawals) // THIS IS TRIGGERING NON STOP
-  }, [withdrawals])
-
-  useEffect(() => {
     const loadPermissions = async () => {
       try {
         const data = await fetchUserPermissions()
