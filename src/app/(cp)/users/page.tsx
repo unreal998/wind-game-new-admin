@@ -15,6 +15,8 @@ import { withdrawalsColumns } from "./_components/withdrawalsColumns"
 import Sum from "@/components/Sum"
 import { AdminProfile } from "@/types/profile"
 import { roleSelector, useUserStore } from "@/stores/useUserStore"
+import { EnhancedDatePicker } from "@/components/EnhancedDatePicker"
+import { DateRange } from "react-day-picker"
 
 export default function ReferralsAdminPage() {
   const { profiles, isLoading, updateUser } = useAdminReferralsStore()
@@ -137,11 +139,13 @@ export default function ReferralsAdminPage() {
       }),
     )
   }, [profiles])
+  const [selectedDateRange, setSelectedDateRange] = useState<DateRange>()
 
   return (
     <>
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Користувачі</h1>
+        <EnhancedDatePicker setSelectedDateRange={setSelectedDateRange} />
         <Sum label="Загальна сумма кВт" sum={totalTURXSum} />
         <Sum label="Загальна сумма TON" sum={totalTONSum} />
         {/* {!isLoading && aggregatedValue && (
@@ -153,6 +157,7 @@ export default function ReferralsAdminPage() {
 
       <Card className="p-0">
         <DataTable
+          selectedDateRange={selectedDateRange}
           data={usersColumnData ?? profiles}
           columns={userColumns}
           filterableColumns={filterableColumns}

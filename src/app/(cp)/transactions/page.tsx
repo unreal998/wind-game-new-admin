@@ -11,10 +11,13 @@ import {
 } from "./_components/fetchTransactions"
 import { walletColumns } from "./_components/WalletColumns"
 import Sum from "@/components/Sum"
+import { EnhancedDatePicker } from "@/components/EnhancedDatePicker"
+import { DateRange } from "react-day-picker"
 
 export default function WalletsAdminPage() {
   const [transactions, setTransactions] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const [selectedDateRange, setSelectedDateRange] = useState<DateRange>()
   const [aggregatedValue] = useState<string | number | null>(null)
   const [sum, setSum] = useState<number>(0)
 
@@ -62,6 +65,7 @@ export default function WalletsAdminPage() {
     <>
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Поповнення TON</h1>
+        <EnhancedDatePicker setSelectedDateRange={setSelectedDateRange} />
         <Sum label="Загальна сумма" sum={sum} />
 
         {!isLoading && aggregatedValue && (
@@ -73,6 +77,7 @@ export default function WalletsAdminPage() {
 
       <Card className="p-0">
         <DataTable
+          selectedDateRange={selectedDateRange}
           data={transactions}
           columns={walletColumns}
           filterableColumns={filterableColumns}
