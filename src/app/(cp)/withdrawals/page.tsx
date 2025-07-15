@@ -11,7 +11,7 @@ import {
   fetchUserPermissions,
   useAdminReferralsStore,
 } from "@/stores/admin/useAdminReferralsStore"
-import { WithdrawalsDateFilter } from "./_components/WithdrawalsDateFilter"
+import { EnhancedDatePicker } from "@/components/EnhancedDatePicker"
 import { DateRange } from "react-day-picker"
 import Sum from "@/components/Sum"
 import { useAdminWithdrawalsStore } from "@/stores/admin/useAdminWithdrawalsStore"
@@ -90,7 +90,7 @@ export default function WithdrawalAdminPage() {
         const data = await fetchUserPermissions()
         setIsAvialableToWrite(
           data.permissions.includes("write") &&
-            (userRole === "admin" || userRole === "teamlead"),
+          (userRole === "admin" || userRole === "teamlead"),
         )
       } catch (error) {
         console.error("Failed to fetch withdrawals", error)
@@ -149,7 +149,7 @@ export default function WithdrawalAdminPage() {
     <>
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Вивід</h1>
-        <WithdrawalsDateFilter setSelectedDateRange={setSelectedDateRange} />
+        <EnhancedDatePicker setSelectedDateRange={setSelectedDateRange} />
         <Sum label="Сумма в очікуванні" sum={pendingSum} />
         <Sum label="Загальна сумма" sum={completedSum} />
 

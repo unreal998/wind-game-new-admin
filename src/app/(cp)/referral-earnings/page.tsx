@@ -6,7 +6,7 @@ import { useAdminReferralEarningsStore } from "@/stores/admin/useAdminReferralEa
 import { FilterableColumn } from "@/types/table"
 import { useEffect, useState } from "react"
 import { referralEarningColumns } from "./_components/ReferralEarningColumns"
-import { WithdrawalsDateFilter } from "../withdrawals/_components/WithdrawalsDateFilter"
+import { EnhancedDatePicker } from "@/components/EnhancedDatePicker"
 import { DateRange } from "react-day-picker"
 import Sum from "@/components/Sum"
 import { useAdminReferralsStore } from "@/stores/admin/useAdminReferralsStore"
@@ -85,7 +85,7 @@ export default function ReferralEarningsAdminPage() {
     <>
       <div className="mb-4 flex items-center justify-between">
         <h1 className="mr-1 text-2xl font-semibold">Реферальні</h1>
-        <WithdrawalsDateFilter setSelectedDateRange={setSelectedDateRange} />
+        <EnhancedDatePicker setSelectedDateRange={setSelectedDateRange} />
         <Sum label="Загальна сума в ТОН" sum={referalSum ?? 0} />
         {!isLoading && aggregatedValue && (
           <Badge variant="indigo" className="px-3 py-1 text-base">

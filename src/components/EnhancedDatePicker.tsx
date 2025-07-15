@@ -5,7 +5,7 @@ import React, { Dispatch, SetStateAction } from "react"
 import { type DateRange } from "react-day-picker"
 import { subDays } from "date-fns"
 
-export function WithdrawalsDateFilter({
+export function EnhancedDatePicker({
   setSelectedDateRange,
 }: {
   setSelectedDateRange?: Dispatch<SetStateAction<DateRange | undefined>>
