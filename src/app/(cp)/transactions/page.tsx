@@ -13,6 +13,7 @@ import { walletColumns } from "./_components/WalletColumns"
 import Sum from "@/components/Sum"
 import { EnhancedDatePicker } from "@/components/EnhancedDatePicker"
 import { DateRange } from "react-day-picker"
+import { interval, isWithinInterval } from "date-fns"
 
 export default function WalletsAdminPage() {
   const [transactions, setTransactions] = useState<any[]>([])
@@ -20,6 +21,24 @@ export default function WalletsAdminPage() {
   const [selectedDateRange, setSelectedDateRange] = useState<DateRange>()
   const [aggregatedValue] = useState<string | number | null>(null)
   const [sum, setSum] = useState<number>(0)
+  const [selectedDateRangeSum, setSelectedDateRangeSum] = useState<number>(0)
+
+  useEffect(() => {
+    setSum(transactions.reduce((acc: number, next: any) => acc + next.summ, 0))
+    setSelectedDateRangeSum(
+      transactions
+        .filter((item: any) =>
+          isWithinInterval(
+            item.created_at,
+            interval(
+              selectedDateRange?.to ?? new Date(),
+              selectedDateRange?.from ?? new Date(),
+            ),
+          ),
+        )
+        .reduce((acc: number, next: any) => acc + next.summ, 0),
+    )
+  }, [transactions, selectedDateRange])
 
   const filterableColumns: FilterableColumn[] = [
     { id: "id", title: "ID", type: "text" },
@@ -39,8 +58,6 @@ export default function WalletsAdminPage() {
         const userIds: string[] = data.map((item: any) => item.uid)
         const uniqueUserIds = Array.from(new Set(userIds))
         const usersData = await getUsersByIds(uniqueUserIds)
-        console.log("Fetched users data:", usersData)
-        setSum(data.reduce((acc: number, next: any) => acc + next.summ, 0))
         const transactionsData = data.map((item: any) => {
           const user = usersData.find((user: any) => user.id === item.uid)
           return {
@@ -66,7 +83,11 @@ export default function WalletsAdminPage() {
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Поповнення TON</h1>
         <EnhancedDatePicker setSelectedDateRange={setSelectedDateRange} />
-        <Sum label="Загальна сумма" sum={sum} />
+        <Sum
+          label="Загальна сума в обранному періоду"
+          sum={selectedDateRangeSum}
+        />
+        <Sum label="Загальна сума" sum={sum} />
 
         {!isLoading && aggregatedValue && (
           <Badge variant="indigo" className="px-3 py-1 text-base">

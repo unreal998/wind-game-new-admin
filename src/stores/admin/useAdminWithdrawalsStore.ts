@@ -22,7 +22,6 @@ interface AdminWithdrawalsState {
   isLoadingWithDrawal: boolean
   error: string | null
   newWithdrawalsCount: number | null
-  setNewWithdrawalsCount: (newCount: number) => void
   fetchWithdrawals: () => Promise<void>
   updateWithdrawals: () => Promise<void>
   updateWithDrawStatus: (
@@ -37,16 +36,19 @@ export const useAdminWithdrawalsStore = create<AdminWithdrawalsState>(
     newWithdrawalsCount: null,
     isLoadingWithDrawal: true,
     error: null,
-    setNewWithdrawalsCount: (newCount: number) =>
-      set({ newWithdrawalsCount: newCount }),
     fetchWithdrawals: async () => {
       set({ isLoadingWithDrawal: true })
       try {
         const withdrawals: Withdrawal[] = await fetchWithdrawalsApi()
-        set({ withdrawals: withdrawals || [], isLoadingWithDrawal: false })
+        set({
+          withdrawals: withdrawals || [],
+          newWithdrawalsCount: withdrawals.filter((w) => w.status === "new")
+            .length,
+          isLoadingWithDrawal: false,
+        })
       } catch (error) {
-        console.error("Error fetching locations:", error)
-        set({ error: "Failed to load locations", isLoadingWithDrawal: false })
+        console.error("Error fetching withdrawals:", error)
+        set({ error: "Failed to load withdrawals", isLoadingWithDrawal: false })
       }
     },
 
@@ -62,6 +64,6 @@ export const useAdminWithdrawalsStore = create<AdminWithdrawalsState>(
       }))
     },
 
-    updateWithdrawals: async () => { },
+    updateWithdrawals: async () => {},
   }),
 )

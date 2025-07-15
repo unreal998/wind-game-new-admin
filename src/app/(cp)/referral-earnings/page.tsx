@@ -13,17 +13,34 @@ import { useAdminReferralsStore } from "@/stores/admin/useAdminReferralsStore"
 import { ReferralEarning } from "@/types/referralEarning"
 import { roleSelector, useUserStore } from "@/stores/useUserStore"
 import NotAllowed from "@/components/NotAllowed"
+import { interval, isWithinInterval } from "date-fns"
 
 export default function ReferralEarningsAdminPage() {
   const { referralEarnings, isLoading } = useAdminReferralEarningsStore()
   const { profiles } = useAdminReferralsStore()
   const [referalSum, setReferalSum] = useState<number>()
+  const [selectedDateRangeSum, setSelectedDateRangeSum] = useState<number>(0)
   const [referralEarningsData, setReferralEarningsData] =
     useState<ReferralEarning[]>()
   const userRole = useUserStore(roleSelector)
+  const [aggregatedValue] = useState<string | number | null>(null)
+  const [selectedDateRange, setSelectedDateRange] = useState<DateRange>()
 
   useEffect(() => {
     setReferalSum(referralEarnings.reduce((sum, item) => sum + item.amount, 0))
+    setSelectedDateRangeSum(
+      referralEarnings
+        .filter((item) =>
+          isWithinInterval(
+            item.created_at,
+            interval(
+              selectedDateRange?.to ?? new Date(),
+              selectedDateRange?.from ?? new Date(),
+            ),
+          ),
+        )
+        .reduce((sum, item) => sum + item.amount, 0),
+    )
     const earningsWithReferalCount = referralEarnings.map((earning) => {
       const referralUser = profiles.find(
         (u) => Number(u.telegramID) === Number(earning.referral_user?.id),
@@ -42,10 +59,7 @@ export default function ReferralEarningsAdminPage() {
     })
 
     setReferralEarningsData(earningsWithReferalCount)
-  }, [profiles, referralEarnings])
-
-  const [aggregatedValue] = useState<string | number | null>(null)
-  const [selectedDateRange, setSelectedDateRange] = useState<DateRange>()
+  }, [profiles, referralEarnings, selectedDateRange])
 
   const filterableColumns: FilterableColumn[] = [
     {
@@ -79,6 +93,7 @@ export default function ReferralEarningsAdminPage() {
       type: "dateRange",
     },
   ]
+
   if (userRole !== "admin") return <NotAllowed />
 
   return (
@@ -86,6 +101,10 @@ export default function ReferralEarningsAdminPage() {
       <div className="mb-4 flex items-center justify-between">
         <h1 className="mr-1 text-2xl font-semibold">Реферальні</h1>
         <EnhancedDatePicker setSelectedDateRange={setSelectedDateRange} />
+        <Sum
+          label="Загальна сума в ТОН в обранному періоду"
+          sum={selectedDateRangeSum}
+        />
         <Sum label="Загальна сума в ТОН" sum={referalSum ?? 0} />
         {!isLoading && aggregatedValue && (
           <Badge variant="indigo" className="px-3 py-1 text-base">

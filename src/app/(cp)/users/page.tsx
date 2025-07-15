@@ -17,6 +17,7 @@ import { AdminProfile } from "@/types/profile"
 import { roleSelector, useUserStore } from "@/stores/useUserStore"
 import { EnhancedDatePicker } from "@/components/EnhancedDatePicker"
 import { DateRange } from "react-day-picker"
+import { interval, isWithinInterval } from "date-fns"
 
 export default function ReferralsAdminPage() {
   const { profiles, isLoading, updateUser } = useAdminReferralsStore()
@@ -27,6 +28,11 @@ export default function ReferralsAdminPage() {
   const [totalTURXSum, setTotalTURXSum] = useState<number>(0)
   const [usersColumnData, setUsersColumnData] = useState<AdminProfile[]>()
   const [isAvialableToWrite, setIsAvialableToWrite] = useState<boolean>(false)
+  const [selectedDateRange, setSelectedDateRange] = useState<DateRange>()
+  const [selectedDateRangeTONSum, setSelectedDateRangeTONSum] =
+    useState<number>(0)
+  const [selectedDateRangeKwtSum, setSelectedDateRangeKwtSum] =
+    useState<number>(0)
 
   useEffect(() => {
     setTotalTONSum(
@@ -41,7 +47,40 @@ export default function ReferralsAdminPage() {
         return acc + user.WindBalance
       }, 0),
     )
-  }, [profiles, isLoading])
+
+    setSelectedDateRangeTONSum(
+      profiles
+        .filter((user) =>
+          isWithinInterval(
+            new Date(user.created_at ?? new Date().toISOString()),
+            interval(
+              selectedDateRange?.to ?? new Date(),
+              selectedDateRange?.from ?? new Date(),
+            ),
+          ),
+        )
+        .reduce((acc, user) => {
+          if (!user?.TONBalance) return acc
+          return acc + user.TONBalance
+        }, 0),
+    )
+    setSelectedDateRangeKwtSum(
+      profiles
+        .filter((user) =>
+          isWithinInterval(
+            new Date(user.created_at ?? new Date().toISOString()),
+            interval(
+              selectedDateRange?.to ?? new Date(),
+              selectedDateRange?.from ?? new Date(),
+            ),
+          ),
+        )
+        .reduce((acc, user) => {
+          if (!user?.WindBalance) return acc
+          return acc + user.WindBalance
+        }, 0),
+    )
+  }, [profiles, isLoading, selectedDateRange])
 
   useEffect(() => {
     const loadWithdrawals = async () => {
@@ -139,15 +178,24 @@ export default function ReferralsAdminPage() {
       }),
     )
   }, [profiles])
-  const [selectedDateRange, setSelectedDateRange] = useState<DateRange>()
 
   return (
     <>
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Користувачі</h1>
         <EnhancedDatePicker setSelectedDateRange={setSelectedDateRange} />
-        <Sum label="Загальна сумма кВт" sum={totalTURXSum} />
-        <Sum label="Загальна сумма TON" sum={totalTONSum} />
+        <div className="flex gap-10">
+          <div className="text-1xl m-1 w-72 border-2 bg-gray-400 p-2 font-semibold text-gray-900 dark:border-gray-800 dark:bg-gray-925 dark:text-gray-50">
+            <h1>Загальна сума в обранному періоду</h1>
+            <Sum label="Kwt" sum={selectedDateRangeKwtSum} />
+            <Sum label="TON" sum={selectedDateRangeTONSum} />
+          </div>
+          <div className="text-1xl m-1 border bg-gray-400 p-2 font-semibold text-gray-900 dark:border-gray-800 dark:bg-gray-925 dark:text-gray-50">
+            <h1>Загальна сума</h1>
+            <Sum label="кВт" sum={totalTURXSum} />
+            <Sum label="TON" sum={totalTONSum} />
+          </div>
+        </div>
         {/* {!isLoading && aggregatedValue && (
           <Badge variant="indigo" className="px-3 py-1 text-base">
             {aggregatedValue}
