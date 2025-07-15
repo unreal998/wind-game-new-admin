@@ -52,7 +52,7 @@ export default function UserModsAdminPage() {
             required_pushes: modifierData.clicksRemaining,
             ton_earned: selectedModValue?.tonValue ? ((selectedModValue.tonValue / 128) * (128 - modifierData.clicksRemaining)).toFixed(2) : 0,
             coins_earned: selectedModValue?.turxValue ? (selectedModValue.turxValue / 128) * (128 - modifierData.clicksRemaining) : 0,
-            price: selectedModValue.price || 0,
+            price: selectedModValue?.price || 0,
             purchased_at: modifierData.boughtDate,
             location_id: modifier.areaName || "",
           }

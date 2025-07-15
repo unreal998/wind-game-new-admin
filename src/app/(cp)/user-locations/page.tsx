@@ -6,12 +6,15 @@ import { DataTable } from "@/components/data-table/DataTable"
 import { useAdminUserLocationsStore } from "@/stores/admin/useAdminUserLocationsStore"
 import { LOCATION_TYPES } from "@/types/location"
 import { FilterableColumn } from "@/types/table"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { userLocationColumns } from "./_components/UserLocationColumns"
+import { UserLocation } from "@/types/userLocation"
+import { createClient } from "@/utils/supabase/client"
 
 export default function UserLocationsAdminPage() {
   const { userLocations, isLoading } = useAdminUserLocationsStore()
   const [aggregatedValue] = useState<string | number | null>(null)
+  const [countries, setCountries] = useState<any[]>([])
 
   const filterableColumns: FilterableColumn[] = [
     {
@@ -32,7 +35,7 @@ export default function UserLocationsAdminPage() {
     },
     {
       id: "total_coins_earned",
-      title: "Всього зароблено ENRG",
+      title: "Всього зароблено KWT",
       type: "number",
     },
     {
@@ -52,6 +55,47 @@ export default function UserLocationsAdminPage() {
     },
   ]
 
+    useEffect(() => {
+      const fetchModsData = async () => {
+        const supabase = createClient()
+        const { data, error } = await supabase.from("countries").select("*")
+        if (error) {
+          console.error(`ERROR FETCHING TURX BALANCE: ${error}`)
+          return
+        }
+
+        setCountries(data || [])
+      }
+      fetchModsData()
+    }, [])
+
+    const formatUserLocations = [] as UserLocation[];
+    userLocations.forEach((location: any) => {
+      const locationData = location as any;
+      locationData.areas.forEach((area: any) => {
+
+        const selectedCountire = countries.find(
+          (c) => c.shortName === area.name
+        )
+                console.log("area", area.name, selectedCountire, countries)
+          const userMod = {
+            user: { 
+              id: locationData.id,
+              username: locationData.userName || locationData.telegramID,
+              first_name: locationData.firstName || "Unknown",
+              last_name: locationData.lastName || "Unknown"
+            },
+            location: {
+              base_energy_per_hour: selectedCountire?.basicBonusPerClick || 0,
+            },
+            location_id: area.name || "",
+            last_push_at: area.lastButtonPress || "",
+
+          }
+          formatUserLocations.push(userMod as UserLocation);
+      })
+    })
+
   return (
     <>
       <div className="mb-4 flex items-center justify-between">
@@ -65,7 +109,7 @@ export default function UserLocationsAdminPage() {
 
       <Card className="p-0">
         <DataTable
-          data={userLocations}
+          data={formatUserLocations}
           columns={userLocationColumns}
           filterableColumns={filterableColumns}
           isLoading={isLoading}

@@ -16,4 +16,5 @@ export type UserLocation =
             base_energy_per_hour: number;
             profit_multiplier: number;
         };
+        locationName?: string;
     };

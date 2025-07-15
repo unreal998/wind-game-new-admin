@@ -3,7 +3,6 @@
 import { Checkbox } from "@/components/Checkbox"
 import { DateWithDistance } from "@/components/data-table/DateWithDistance"
 import { formatTimestamp } from "@/hooks/formatTimestamp"
-import { LOCATION_TYPES } from "@/types/location"
 import { type TableColumn } from "@/types/table"
 import { type UserLocation } from "@/types/userLocation"
 import { formatAmount } from "@/utils/amountFormatter"
@@ -72,48 +71,26 @@ export const userLocationColumns: TableColumn<UserLocation>[] = [
 
   columnHelper.accessor("location_id", {
     header: "Локація",
-    cell: ({ getValue }) => {
-      const type = getValue()
-      return LOCATION_TYPES.find((t) => t.value === type)?.label || type
-    },
+    cell: ({ getValue }) => getValue() || "-",
     enableSorting: true,
-    filterFn: "select",
+    filterFn: "text",
     meta: {
-      exportValue: (row) =>
-        LOCATION_TYPES.find((t) => t.value === row.location_id)?.label ||
-        row.location_id,
-    },
-  }),
-
-  columnHelper.accessor((row) => row.location?.base_wind_speed, {
-    id: "location.base_wind_speed",
-    header: "Базова швидкість вітру",
-    cell: ({ getValue }) => {
-      const speed = getValue()
-      if (!speed) return "-"
-      return `${speed} м/с`
-    },
-    enableSorting: true,
-    filterFn: "number",
-    meta: {
-      exportHeader: "Базова швидкість вітру (м/с)",
-      exportValue: (row) => row.location?.base_wind_speed || 0,
-      exportAlign: "right",
+      exportValue: (row) => row.locationName || "-",
     },
   }),
 
   columnHelper.accessor((row) => row.location?.base_energy_per_hour, {
     id: "location.base_energy_per_hour",
-    header: "Базова енергія за годину",
+    header: "Базово квт за клік",
     cell: ({ getValue }) => {
       const energy = getValue()
       if (!energy) return "-"
-      return `${energy} ENRG`
+      return `${energy} КВТ`
     },
     enableSorting: true,
     filterFn: "number",
     meta: {
-      exportHeader: "Базова енергія за годину (ENRG)",
+      exportHeader: "Базово квт за клік",
       exportValue: (row) => row.location?.base_energy_per_hour || 0,
       exportAlign: "right",
     },
@@ -137,12 +114,12 @@ export const userLocationColumns: TableColumn<UserLocation>[] = [
   }),
 
   columnHelper.accessor("total_coins_earned", {
-    header: "Всього зароблено ENRG",
-    cell: ({ getValue }) => `${getValue() || 0} ENRG`,
+    header: "Всього зароблено KWT",
+    cell: ({ getValue }) => `${getValue() || 0} KWT`,
     enableSorting: true,
     filterFn: "number",
     meta: {
-      exportHeader: "Всього зароблено (ENRG)",
+      exportHeader: "Всього зароблено (KWT)",
       exportValue: (row) => row.total_coins_earned || 0,
       exportAlign: "right",
     },

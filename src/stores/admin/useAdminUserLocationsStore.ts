@@ -22,23 +22,10 @@ export const useAdminUserLocationsStore = create<AdminUserLocationsState>((
     fetchUserLocations: async () => {
         try {
             const { data, error } = await supabase
-                .from("user_locations")
+                .from("users")
                 .select(`
-                    *,
-                    user:users!user_locations_user_id_fkey (
-                        id,
-                        username,
-                        first_name,
-                        last_name
-                    ),
-                    location:locations!user_locations_location_id_fkey (
-                        id,
-                        base_wind_speed,
-                        base_energy_per_hour,
-                        profit_multiplier
-                    )
+                    *
                 `)
-                .order("unlocked_at", { ascending: false });
 
             if (error) throw error;
 
