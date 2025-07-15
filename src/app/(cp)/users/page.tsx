@@ -18,7 +18,6 @@ import { roleSelector, useUserStore } from "@/stores/useUserStore"
 import { EnhancedDatePicker } from "@/components/EnhancedDatePicker"
 import { DateRange } from "react-day-picker"
 import { interval, isWithinInterval } from "date-fns"
-import { Span } from "next/dist/trace"
 
 export default function ReferralsAdminPage() {
   const { profiles, isLoading, updateUser } = useAdminReferralsStore()
