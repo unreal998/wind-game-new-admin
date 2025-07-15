@@ -14,21 +14,21 @@ export const getPermissionColumns = (
 ): TableColumn<GetPermissionsDto>[] => {
   let permissionColumns: TableColumn<GetPermissionsDto>[] = [
     columnHelper.accessor("created_at", {
-      header: "created at",
+      header: "Час створення",
       cell: ({ getValue }) => {
         const created_at = getValue()
         if (!created_at) return "-"
         return (
           <span className="flex items-center space-x-2">
-            <span>{created_at}</span>
-            <CopyButton text={created_at} />
+            <span>{new Date(getValue()).toLocaleString("uk-UA")}</span>
+            <CopyButton text={new Date(getValue()).toLocaleString("uk-UA")} />
           </span>
         )
       },
     }),
 
     columnHelper.accessor("type", {
-      header: "type",
+      header: "Тип",
       cell: ({ getValue }) => {
         const type = getValue()
         if (!type) return "-"
@@ -41,7 +41,7 @@ export const getPermissionColumns = (
       },
     }),
     columnHelper.accessor("email", {
-      header: "email",
+      header: "Пошта",
       cell: ({ getValue }) => {
         const email = getValue()
         if (!email) return "-"
@@ -54,7 +54,7 @@ export const getPermissionColumns = (
       },
     }),
     columnHelper.accessor("permissions", {
-      header: "permissions",
+      header: "Дозволи",
       cell: ({ getValue }) => {
         const permissions: AdminPermissions[] = getValue()
         if (!permissions) return "-"

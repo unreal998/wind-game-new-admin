@@ -56,7 +56,7 @@ export default function PermissionsActions({
 
   return (
     <>
-      <Button onClick={() => setOpen(true)}>Edit</Button>
+      <Button onClick={() => setOpen(true)}>Редагувати</Button>
       {open && (
         <div
           onClick={onClose}
@@ -68,7 +68,7 @@ export default function PermissionsActions({
           >
             <div className="mb-4 flex items-center justify-between">
               <h2 className="w-full text-center text-2xl font-bold text-gray-900 dark:text-white">
-                Edit Permission
+                Редагувати Дозволи
               </h2>
               <button
                 onClick={onClose}
@@ -96,9 +96,9 @@ export default function PermissionsActions({
                 }
                 className="w-full rounded-md border border-gray-300 bg-white px-2.5 py-2 text-gray-900 shadow-sm outline-none transition sm:text-sm dark:border-gray-800 dark:bg-gray-950 dark:text-gray-50"
               >
-                <option value="admin">Admin</option>
-                <option value="teamlead">Teamlead</option>
-                <option value="guest">Guest</option>
+                <option value="admin">Адмін</option>
+                <option value="teamlead">Тімлід</option>
+                <option value="guest">Гість</option>
               </select>
 
               <div className="space-y-2">
@@ -119,7 +119,7 @@ export default function PermissionsActions({
               </div>
 
               <Button className="w-full" onClick={handleSubmit}>
-                Update
+                Оновити
               </Button>
             </div>
           </div>
