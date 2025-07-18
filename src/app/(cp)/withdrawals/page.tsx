@@ -16,11 +16,9 @@ import { DateRange } from "react-day-picker"
 import Sum from "@/components/Sum"
 import { useAdminWithdrawalsStore } from "@/stores/admin/useAdminWithdrawalsStore"
 import { roleSelector, useUserStore } from "@/stores/useUserStore"
-import { interval, isWithinInterval } from "date-fns"
 
 export default function WithdrawalAdminPage() {
   const [selectedDateRange, setSelectedDateRange] = useState<DateRange>()
-  const [selectedDateRangeSum, setSelectedDateRangeSum] = useState<number>(0)
 
   const [aggregatedValue] = useState<string | number | null>(null)
   const [withdrawalsData, setWithdrawalsData] = useState<any[]>([])
@@ -135,21 +133,6 @@ export default function WithdrawalAdminPage() {
         return next.status === "new" ? acc + next.sum : acc
       }, 0),
     )
-    setSelectedDateRangeSum(
-      withdrawalsData
-        .filter((item) =>
-          isWithinInterval(
-            item.created_at,
-            interval(
-              selectedDateRange?.to ?? new Date(),
-              selectedDateRange?.from ?? new Date(),
-            ),
-          ),
-        )
-        .reduce((acc: number, next: any) => {
-          return next.status === "new" ? acc + next.sum : acc
-        }, 0),
-    )
   }, [withdrawalsData, selectedDateRange])
 
   return (
@@ -157,10 +140,6 @@ export default function WithdrawalAdminPage() {
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Вивід</h1>
         <EnhancedDatePicker setSelectedDateRange={setSelectedDateRange} />
-        <Sum
-          label="Сумма в очікуванні в обранному періоду"
-          sum={selectedDateRangeSum}
-        />
         <Sum label="Сумма в очікуванні" sum={pendingSum} />
         <Sum label="Підтверджена сума" sum={completedSum} />
 
