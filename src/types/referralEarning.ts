@@ -15,4 +15,5 @@ export type ReferralEarning = {
     last_name?: string
   }
   referalCount?: number
+  windBalance?: number
 }
