@@ -6,6 +6,7 @@ import { DateRange } from "react-day-picker"
 type Withdrawal = {
   created_at: string
   sum: number
+  status: string
 }
 
 export type DateValue = { date: Date; value: number }
@@ -31,7 +32,9 @@ export function useWithdrawalsStats(selectedDates: DateRange | undefined) {
 
         const grouped = rawData.reduce<Record<string, number>>((acc, item) => {
           const key = startOfDay(new Date(item.created_at)).toISOString()
-          acc[key] = (acc[key] || 0) + item.sum
+          if (item.status === 'new') {
+            acc[key] = (acc[key] || 0) + item.sum
+          }
           return acc
         }, {})
 

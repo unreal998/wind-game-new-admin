@@ -1,15 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
-  // redirects: async () => {
-  //   return [
-  //     {
-  //       source: "/",
-  //       destination: "/overview",
-  //       permanent: true,
-  //     },
-  //   ]
-  // },
   images: {
     remotePatterns: [
       {
@@ -22,7 +13,6 @@ const nextConfig = {
         protocol: "https",
         hostname: "wind-tap-cp.vercel.app",
         port: "",
-        // pathname: "/storage/v1/object/public/**",
         pathname: "/**",
       },
       {
