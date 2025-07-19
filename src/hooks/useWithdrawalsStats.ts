@@ -32,7 +32,7 @@ export function useWithdrawalsStats(selectedDates: DateRange | undefined) {
 
         const grouped = rawData.reduce<Record<string, number>>((acc, item) => {
           const key = startOfDay(new Date(item.created_at)).toISOString()
-          if (item.status === 'new') {
+          if (item.status === 'completed') {
             acc[key] = (acc[key] || 0) + item.sum
           }
           return acc
