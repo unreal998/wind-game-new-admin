@@ -25,7 +25,7 @@ export const CreatePermissionModal = ({ onClose }: { onClose: () => void }) => {
     },
   })
   const { createPermission } = useAdminPermissionsStore()
-  const { signUpAsync } = useAuthStore()
+  const { createNewUser } = useAuthStore()
 
   const handleChange = (field: keyof (CreatePermissionDto & SignUpDto), value: any) => {
     setForm((prev) => ({
@@ -56,14 +56,14 @@ export const CreatePermissionModal = ({ onClose }: { onClose: () => void }) => {
       return
     }
     try {
-      const signUpError = await signUpAsync({
+      const result = await createNewUser({
         email: form.email,
         password: form.password,
         options: form.options,
       })
 
-      if (signUpError) {
-        alert("Помилка при створенні користувача: " + signUpError.error)
+      if (result.error) {
+        alert("Помилка при створенні користувача: " + result.error)
         return
       }
 

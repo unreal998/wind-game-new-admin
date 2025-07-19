@@ -1,10 +1,6 @@
 "use client"
 
 import { Badge } from "@/components/Badge"
-import { useRegistrationStats } from "@/hooks/useRegistrationStats"
-import { useReferalsStats } from "@/hooks/useReferalsStats"
-import { useTonBalanceStats } from "@/hooks/useTonBalanceStats"
-
 import { cx, formatters } from "@/lib/utils"
 import { type PeriodValue } from "@/types/overview"
 import {
@@ -20,6 +16,9 @@ import { LineChart } from "./LineChart"
 import { useWithdrawalsStats } from "@/hooks/useWithdrawalsStats"
 import { useTransactionStatsNew } from "@/hooks/useTransactionStatsNew"
 import { useTurxBalance } from "@/hooks/useTurxBalance"
+import { useRegistrationStats } from "@/hooks/useRegistrationStats"
+import { useReferalsStats } from "@/hooks/useReferalsStats"
+import { useTonBalanceStats } from "@/hooks/useTonBalanceStats"
 
 type StatsType = {
   registrations: Array<{ date: Date; value: number }>
@@ -113,13 +112,13 @@ export function ChartCard({
   const prevData =
     selectedPeriod !== "no-comparison"
       ? (stats[title] || [])
-          .filter((item) => {
-            if (prevDatesInterval) {
-              return isWithinInterval(item.date, prevDatesInterval)
-            }
-            return false
-          })
-          .sort((a, b) => a.date.getTime() - b.date.getTime())
+        .filter((item) => {
+          if (prevDatesInterval) {
+            return isWithinInterval(item.date, prevDatesInterval)
+          }
+          return false
+        })
+        .sort((a, b) => a.date.getTime() - b.date.getTime())
       : []
 
   // Створюємо масиви дат для обох періодів
@@ -147,10 +146,10 @@ export function ChartCard({
     const prevOverview =
       selectedPeriod !== "no-comparison" && compareDate
         ? prevData.find(
-            (d) =>
-              startOfDay(d.date).getTime() ===
-              startOfDay(compareDate).getTime(),
-          )
+          (d) =>
+            startOfDay(d.date).getTime() ===
+            startOfDay(compareDate).getTime(),
+        )
         : null
 
     return {
@@ -166,8 +165,8 @@ export function ChartCard({
         selectedPeriod !== "no-comparison" ? (prevOverview?.value ?? 0) : null,
       evolution:
         selectedPeriod !== "no-comparison" &&
-        overview?.value &&
-        prevOverview?.value
+          overview?.value &&
+          prevOverview?.value
           ? (overview.value - prevOverview.value) / prevOverview.value
           : undefined,
     }
@@ -197,9 +196,9 @@ export function ChartCard({
           : title === "turxBalance"
             ? previousTotalTurxBalance
             : chartData.reduce(
-                (acc, item) => acc + (item.previousValue || 0),
-                0,
-              )
+              (acc, item) => acc + (item.previousValue || 0),
+              0,
+            )
 
   const evolution =
     selectedPeriod !== "no-comparison" && value !== 0 && previousValue !== 0
