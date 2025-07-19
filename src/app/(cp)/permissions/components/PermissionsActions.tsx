@@ -20,13 +20,12 @@ export default function PermissionsActions({
   const { updatePermission, deletePermission, fetchPermissions } =
     useAdminPermissionsStore()
   const [form, setForm] = useState<
-    UpdatePermissionDto & { password: string; phone: string }
+    UpdatePermissionDto & { password: string; }
   >({
     email: permission.email,
     type: permission.type,
     permissions: permission.permissions,
     password: "",
-    phone: "",
   })
 
   const onClose = () => {
@@ -34,7 +33,7 @@ export default function PermissionsActions({
   }
 
   const handleChange = (
-    field: keyof (UpdatePermissionDto & { password?: string; phone?: string }),
+    field: keyof (UpdatePermissionDto & { password?: string; }),
     value: string | string[],
   ) => {
     setForm((prev) => ({
@@ -120,12 +119,6 @@ export default function PermissionsActions({
                 placeholder="Password"
                 value={form.password}
                 onChange={(e) => handleChange("password", e.target.value)}
-              />
-              <Input
-                type="text"
-                placeholder="Phone Number"
-                value={form.phone}
-                onChange={(e) => handleChange("phone", e.target.value)}
               />
 
               <select
