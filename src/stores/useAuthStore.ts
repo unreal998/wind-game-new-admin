@@ -1,3 +1,4 @@
+import { createUser } from "@/actions/users"
 import { getErrorMessage } from "@/helper/error.helper"
 import { createClient } from "@/utils/supabase/client"
 import { type Provider } from "@supabase/supabase-js"
@@ -6,15 +7,15 @@ import { create } from "zustand"
 const client = createClient()
 
 export type SignUpDto = {
-  email: string;
-  password: string;
+  email: string
+  password: string
   options?: {
     data?: {
-      first_name?: string;
-      last_name?: string;
-      phone?: string;
-    };
-    emailRedirectTo?: string;
+      first_name?: string
+      last_name?: string
+      phone?: string
+    }
+    emailRedirectTo?: string
   }
 }
 
@@ -28,27 +29,25 @@ type AuthAction = {
     email: string
     password: string
   }): Promise<{ error: string; isNeedConfirmEmail: boolean } | void>
-  signUpAsync(opt: { 
-    email: string; 
-    password: string; 
-    options?: {
-      data?: {
-        first_name?: string;
-        last_name?: string;
-        phone?: string;
-      };
-      emailRedirectTo?: string;
-    }
-  }): Promise<{ error: string } | void>
-  signInWithOauth(opt: { provider: Provider }): Promise<{ error?: string; url?: string }>
-  signUpWithOauth(opt: { provider: Provider }): Promise<{ error?: string; url?: string }>
+  signUpAsync(opt: SignUpDto): Promise<{ error: string } | void>
+  createNewUser(opt: SignUpDto): Promise<{ error: string } | { error: null }>
+  signInWithOauth(opt: {
+    provider: Provider
+  }): Promise<{ error?: string; url?: string }>
+  signUpWithOauth(opt: {
+    provider: Provider
+  }): Promise<{ error?: string; url?: string }>
   signUpVerifyAsync(opt: {
     email: string
     token: string
   }): Promise<{ error: string } | void>
   resendOtpAsync(opt: { email: string }): Promise<{ error: string } | void>
-  checkUserExistence(email: string): Promise<{ exists: boolean; error?: string }>
-  signOutAsync(scope?: 'local' | 'global' | 'others'): Promise<{ error: string } | void>
+  checkUserExistence(
+    email: string,
+  ): Promise<{ exists: boolean; error?: string }>
+  signOutAsync(
+    scope?: "local" | "global" | "others",
+  ): Promise<{ error: string } | void>
 }
 
 export const useAuthStore = create<AuthAction>()(() => ({
@@ -83,14 +82,15 @@ export const useAuthStore = create<AuthAction>()(() => ({
       const { error } = await client.auth.signInWithPassword(opt)
       if (!error) return
 
-      const isNeedConfirmEmail = error.message.toLowerCase() === "email not confirmed"
+      const isNeedConfirmEmail =
+        error.message.toLowerCase() === "email not confirmed"
 
       throw new Error(
         isNeedConfirmEmail
           ? "NEED_CONFIRM_EMAIL"
           : error.status === 400
-          ? "Не вірні дані авторизації: пароль або логін"
-          : error.message,
+            ? "Не вірні дані авторизації: пароль або логін"
+            : error.message,
       )
     } catch (error) {
       const message = getErrorMessage(error as Error)
@@ -101,12 +101,15 @@ export const useAuthStore = create<AuthAction>()(() => ({
       }
     }
   },
+  async createNewUser(opt: SignUpDto) {
+    return createUser(opt)
+  },
   async signUpAsync(opt) {
     try {
       const { data, error } = await client.auth.signUp({
         email: opt.email,
         password: opt.password,
-        options: opt.options
+        options: opt.options,
       })
       if (!error) {
         // Currently the response of signUp returns a fake user object instead of an error.
@@ -126,9 +129,9 @@ export const useAuthStore = create<AuthAction>()(() => ({
     try {
       const { data, error } = await client.auth.signInWithOAuth({
         provider: opt.provider,
-        options: { 
+        options: {
           redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback?action=signin`,
-        }
+        },
       })
 
       if (error) throw new Error(error.message)
@@ -143,9 +146,9 @@ export const useAuthStore = create<AuthAction>()(() => ({
     try {
       const { data, error } = await client.auth.signInWithOAuth({
         provider: opt.provider,
-        options: { 
-          redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback?action=signup`
-        }
+        options: {
+          redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback?action=signup`,
+        },
       })
 
       if (error) throw new Error(error.message)
@@ -162,7 +165,8 @@ export const useAuthStore = create<AuthAction>()(() => ({
       if (!error) return
 
       // rate limit error
-      if (error.status === 429) throw new Error("429rate limit error for sign up")
+      if (error.status === 429)
+        throw new Error("429rate limit error for sign up")
       throw new Error(error.message)
     } catch (error) {
       return { error: getErrorMessage(error as Error) }
@@ -183,14 +187,18 @@ export const useAuthStore = create<AuthAction>()(() => ({
   },
   async checkUserExistence(email: string) {
     try {
-      const { data, error } = await client.from('profiles').select('id').eq('email', email).single()
+      const { data, error } = await client
+        .from("profiles")
+        .select("id")
+        .eq("email", email)
+        .single()
       if (error) throw error
       return { exists: !!data }
     } catch (error) {
       return { exists: false, error: getErrorMessage(error as Error) }
     }
   },
-  async signOutAsync(scope: 'local' | 'global' | 'others' = 'local') {
+  async signOutAsync(scope: "local" | "global" | "others" = "local") {
     try {
       const { error } = await client.auth.signOut({ scope })
       if (error) throw error
