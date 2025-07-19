@@ -39,6 +39,7 @@ export function useReferalsStats() {
                 first_name: "",
                 last_name: "",
               },
+              windBalance: user.WindBalance
             })
           })
         }
@@ -46,7 +47,7 @@ export function useReferalsStats() {
 
       const grouped = referalEarnings.reduce<Record<string, number>>((acc, item) => {
         const key = startOfDay(new Date(item.created_at)).toISOString()
-        acc[key] = (acc[key] || 0) + 1
+        acc[key] = (acc[key] || 0) + (item?.windBalance || 0)
         return acc
       }, {})
 
