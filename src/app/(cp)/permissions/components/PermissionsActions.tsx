@@ -1,5 +1,6 @@
 "use client"
 
+import { updateUserByEmail } from "@/actions/users"
 import { Button, Input } from "@/components"
 import {
   AdminPermissions,
@@ -16,11 +17,16 @@ export default function PermissionsActions({
   permission: GetPermissionsDto
 }) {
   const [open, setOpen] = useState<boolean>(false)
-  const { updatePermission, deletePermission, fetchPermissions } = useAdminPermissionsStore()
-  const [form, setForm] = useState<UpdatePermissionDto>({
+  const { updatePermission, deletePermission, fetchPermissions } =
+    useAdminPermissionsStore()
+  const [form, setForm] = useState<
+    UpdatePermissionDto & { password: string; phone: string }
+  >({
     email: permission.email,
     type: permission.type,
     permissions: permission.permissions,
+    password: "",
+    phone: "",
   })
 
   const onClose = () => {
@@ -28,7 +34,7 @@ export default function PermissionsActions({
   }
 
   const handleChange = (
-    field: keyof UpdatePermissionDto,
+    field: keyof (UpdatePermissionDto & { password?: string; phone?: string }),
     value: string | string[],
   ) => {
     setForm((prev) => ({
@@ -50,7 +56,17 @@ export default function PermissionsActions({
   }
 
   const handleSubmit = async () => {
-    await updatePermission(form, permission.id)
+    const result = await updateUserByEmail(permission.email, form)
+    if (result.error) {
+      alert("Помилка при створенні користувача: " + result.error)
+      return
+    }
+
+    await updatePermission(permission.id, {
+      email: form.email,
+      type: form.type,
+      permissions: form.permissions,
+    })
     onClose()
   }
 
@@ -63,9 +79,14 @@ export default function PermissionsActions({
   return (
     <>
       <Button onClick={() => setOpen(true)}>Редагувати</Button>
-      <Button style={{
-        marginLeft: "8px"
-      }} onClick={handleRemove}>Видалити</Button>
+      <Button
+        style={{
+          marginLeft: "8px",
+        }}
+        onClick={handleRemove}
+      >
+        Видалити
+      </Button>
       {open && (
         <div
           onClick={onClose}
@@ -93,6 +114,18 @@ export default function PermissionsActions({
                 placeholder="Email"
                 value={form.email}
                 onChange={(e) => handleChange("email", e.target.value)}
+              />
+              <Input
+                type="text"
+                placeholder="Password"
+                value={form.password}
+                onChange={(e) => handleChange("password", e.target.value)}
+              />
+              <Input
+                type="text"
+                placeholder="Phone Number"
+                value={form.phone}
+                onChange={(e) => handleChange("phone", e.target.value)}
               />
 
               <select

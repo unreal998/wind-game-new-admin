@@ -1,30 +1,16 @@
 "use server"
 
 import { SignUpDto } from "@/stores/useAuthStore"
-import { createClient } from "@supabase/supabase-js"
+import { createAdminClient } from "@/utils/supabase/admin"
+import { UserAttributes } from "@supabase/supabase-js"
+
+const supabaseAdmin = createAdminClient()
 
 export async function createUser(userData: SignUpDto) {
-  console.log("NEXT_PUBLIC_SUPABASE_URL", process.env.NEXT_PUBLIC_SUPABASE_URL!)
-  console.log(
-    "SUPABASE_SERVICE_ROLE_KEY",
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  )
-
-  const supabaseAdmin = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    {
-      auth: {
-        autoRefreshToken: false,
-        persistSession: false,
-      },
-    },
-  )
-
   const { error } = await supabaseAdmin.auth.admin.createUser({
     email: userData.email,
     password: userData.password,
-    email_confirm: true, // Automatically confirm the user's email
+    email_confirm: true,
     user_metadata: userData.options?.data,
   })
 
@@ -33,4 +19,37 @@ export async function createUser(userData: SignUpDto) {
   }
 
   return { error: null }
+}
+
+export async function updateUserByEmail(
+  userEmail: string,
+  updateAttributes: UserAttributes,
+) {
+  const updatePayload: UserAttributes = {
+    email: updateAttributes.email,
+    phone: updateAttributes.phone,
+    password: updateAttributes.password,
+    data: updateAttributes.data,
+    nonce: updateAttributes.nonce,
+  }
+
+  const { data: usersData, error: listUsersErr } =
+    await supabaseAdmin.auth.admin.listUsers()
+  if (listUsersErr) return { data: null, error: listUsersErr.message }
+
+  const userToUpdate = usersData.users.find((u) => u.email === userEmail)
+  if (!userToUpdate)
+    return {
+      data: null,
+      error: `User with Email:${userEmail} does not exist`,
+    }
+
+  const { data, error: updateUserErr } =
+    await supabaseAdmin.auth.admin.updateUserById(
+      userToUpdate.id,
+      updatePayload,
+    )
+  if (updateUserErr) return { data: null, error: updateUserErr.message }
+
+  return { data, error: null }
 }
