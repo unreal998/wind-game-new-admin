@@ -24,8 +24,8 @@ interface AdminPermissionsState {
   fetchPermissions: () => Promise<void>
   createPermission: (permissionData: CreatePermissionDto) => Promise<void>
   updatePermission: (
-    permissionData: UpdatePermissionDto,
     id: GetPermissionsDto["id"],
+    permissionData: UpdatePermissionDto,
   ) => Promise<void>
   deletePermission: (id: GetPermissionsDto["id"]) => Promise<void>
 }
@@ -72,8 +72,8 @@ export const useAdminPermissionsStore = create<AdminPermissionsState>(
       }
     },
     updatePermission: async (
-      permissionData: UpdatePermissionDto,
       id: GetPermissionsDto["id"],
+      permissionData: UpdatePermissionDto,
     ) => {
       try {
         const { data } = await axios.put(
@@ -108,6 +108,6 @@ export const useAdminPermissionsStore = create<AdminPermissionsState>(
         console.log("DELETING PERMISSION ERROR", e)
         set({ error: `error when deleting permission with id:${id}` })
       }
-    }
+    },
   }),
 )
