@@ -85,8 +85,7 @@ export default function WithdrawalAdminPage() {
       try {
         const data = await fetchUserPermissions()
         setIsAvialableToWrite(
-          data.permissions.includes("write") &&
-            (userRole === "admin" || userRole === "teamlead"),
+          data.permissions.includes("write") && userRole === "admin",
         )
       } catch (error) {
         console.error("Failed to fetch withdrawals", error)

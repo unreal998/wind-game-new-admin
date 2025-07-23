@@ -94,7 +94,7 @@ export default function ReferralEarningsAdminPage() {
     },
   ]
 
-  if (userRole !== "admin") return <NotAllowed />
+  if (!(userRole === "admin" || userRole === "teamlead")) return <NotAllowed />
 
   return (
     <>

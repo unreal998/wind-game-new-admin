@@ -25,13 +25,18 @@ export async function updateUserByEmail(
   userEmail: string,
   updateAttributes: UserAttributes,
 ) {
-  const updatePayload: UserAttributes = {
+  let updatePayload: UserAttributes = {
     email: updateAttributes.email,
     phone: updateAttributes.phone,
     password: updateAttributes.password,
     data: updateAttributes.data,
     nonce: updateAttributes.nonce,
   }
+
+  // delete null fields
+  updatePayload = Object.fromEntries(
+    Object.entries(updatePayload).filter((arr) => !!arr[1]),
+  )
 
   const { data: usersData, error: listUsersErr } =
     await supabaseAdmin.auth.admin.listUsers()

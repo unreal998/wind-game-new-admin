@@ -19,21 +19,21 @@ export default function PermissionsActions({
   const [open, setOpen] = useState<boolean>(false)
   const { updatePermission, deletePermission, fetchPermissions } =
     useAdminPermissionsStore()
-  const [form, setForm] = useState<
-    UpdatePermissionDto & { password: string; }
-  >({
-    email: permission.email,
-    type: permission.type,
-    permissions: permission.permissions,
-    password: "",
-  })
+  const [form, setForm] = useState<UpdatePermissionDto & { password?: string }>(
+    {
+      email: permission.email,
+      password: "",
+      type: permission.type,
+      permissions: permission.permissions,
+    },
+  )
 
   const onClose = () => {
     setOpen(false)
   }
 
   const handleChange = (
-    field: keyof (UpdatePermissionDto & { password?: string; }),
+    field: keyof (UpdatePermissionDto & { password?: string }),
     value: string | string[],
   ) => {
     setForm((prev) => ({
@@ -55,16 +55,18 @@ export default function PermissionsActions({
   }
 
   const handleSubmit = async () => {
-    const result = await updateUserByEmail(permission.email, form)
-    if (result.error) {
-      alert("Помилка при створенні користувача: " + result.error)
-      return
+    if (form.email || form.password) {
+      const result = await updateUserByEmail(permission.email, form)
+      if (result.error) {
+        alert("Помилка при створенні користувача: " + result.error)
+        return
+      }
     }
 
     await updatePermission(permission.id, {
-      email: form.email,
-      type: form.type,
-      permissions: form.permissions,
+      email: form.email ?? permission.email,
+      type: form.type ?? permission.type,
+      permissions: form.permissions ?? permission.permissions,
     })
     onClose()
   }

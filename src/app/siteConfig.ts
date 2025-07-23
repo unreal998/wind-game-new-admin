@@ -50,7 +50,7 @@ export const siteConfig: SiteConfig = {
       "windMods",
       // "userMods",
       "referralEarnings",
-      "permissions",
+      //"permissions",
     ],
     guest: ["users", "transactions", "overview", "withdrawals"],
   },
