@@ -94,7 +94,7 @@ export default function ReferralEarningsAdminPage() {
     },
   ]
 
-  if (userRole !== "admin") return <NotAllowed />
+  if (!(userRole === "admin" || userRole === "teamlead")) return <NotAllowed />
 
   return (
     <>
@@ -102,10 +102,10 @@ export default function ReferralEarningsAdminPage() {
         <h1 className="mr-1 text-2xl font-semibold">Реферальні</h1>
         <EnhancedDatePicker setSelectedDateRange={setSelectedDateRange} />
         <Sum
-          label="Загальна сума в КВТ в обранному періоду"
+          label="Загальна сума в кВт в обранному періоду"
           sum={selectedDateRangeSum}
         />
-        <Sum label="Загальна сума в КВТ" sum={referalSum ?? 0} />
+        <Sum label="Загальна сума в кВт" sum={referalSum ?? 0} />
         {!isLoading && aggregatedValue && (
           <Badge variant="indigo" className="px-3 py-1 text-base">
             {aggregatedValue}

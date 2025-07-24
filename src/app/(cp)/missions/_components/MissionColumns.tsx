@@ -12,7 +12,7 @@ const columnHelper = createColumnHelper<Mission>()
 
 export const getMissionColumns = (
   lang: "ru" | "en",
-  isAvialableToWrite: boolean
+  isAvialableToWrite: boolean,
 ): TableColumn<Mission>[] => {
   let columns = [
     columnHelper.display({
@@ -85,7 +85,10 @@ export const getMissionColumns = (
     }),
     columnHelper.accessor("coin", {
       header: "Коїн",
-      cell: ({ getValue }) => getValue(),
+      cell: ({ getValue }) => {
+        const coin = getValue()
+        return coin === "TURX" ? "кВт" : coin
+      },
     }),
     columnHelper.accessor("type", {
       header: "Тип",
@@ -100,8 +103,8 @@ export const getMissionColumns = (
         cell: ({ row, table }) => (
           <MissionActionsCell mission={row.original} table={table} />
         ),
-      })
+      }),
     )
   }
-  return columns;
+  return columns
 }

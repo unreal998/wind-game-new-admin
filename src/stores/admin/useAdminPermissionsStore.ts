@@ -31,7 +31,6 @@ interface AdminPermissionsState {
 }
 
 const supabase = createClient()
-const SERVER_URL = process.env.SERVER_URL
 
 export const useAdminPermissionsStore = create<AdminPermissionsState>(
   (set) => ({
@@ -77,7 +76,7 @@ export const useAdminPermissionsStore = create<AdminPermissionsState>(
     ) => {
       try {
         const { data } = await axios.put(
-          `${SERVER_URL}/permissions?id=${id}`,
+          `https://2565-95-164-85-150.ngrok-free.app/permissions?id=${id}`,
           permissionData,
         )
         if (data.error) {

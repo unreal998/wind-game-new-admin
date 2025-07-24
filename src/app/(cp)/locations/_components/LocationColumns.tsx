@@ -12,7 +12,7 @@ import LocationActionsCell from "./LocationActionsCell"
 const columnHelper = createColumnHelper<Location>()
 
 export const locationColumns = (
-  isAvialableToWrite: boolean
+  isAvialableToWrite: boolean,
 ): TableColumn<Location>[] => {
   let columns = [
     columnHelper.display({
@@ -57,7 +57,7 @@ export const locationColumns = (
 
     columnHelper.accessor("basicBonusPerClick", {
       header: "Базова енергія за клік",
-      cell: ({ getValue }) => `${getValue()} квт`,
+      cell: ({ getValue }) => `${getValue()} кВт`,
       enableSorting: true,
       filterFn: "number",
       meta: {
@@ -100,16 +100,16 @@ export const locationColumns = (
     //     },
     //   }),
   ]
-    if (isAvialableToWrite) {
-      columns.push(columnHelper.display({
+  if (isAvialableToWrite) {
+    columns.push(
+      columnHelper.display({
         id: "actions",
         header: "Дії",
-        cell: ({ row }: any) => (
-          <LocationActionsCell location={row.original} />
-        ),
+        cell: ({ row }: any) => <LocationActionsCell location={row.original} />,
         enableSorting: false,
         enableHiding: false,
-      }))
-    }
-  return columns;
+      }),
+    )
+  }
+  return columns
 }

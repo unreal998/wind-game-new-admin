@@ -93,7 +93,12 @@ export const CreateMissionModal = ({
   const handleSubmit = async () => {
     try {
       const rewardNumber = Number(form.reward)
-      if (form.reward === "" || isNaN(rewardNumber) || rewardNumber <= 0) {
+      if (rewardNumber <= 0) {
+        alert("Нагорода має бути більшою за нуль")
+        return
+      }
+      if (form.reward === "" || isNaN(rewardNumber)) {
+        console.log(rewardNumber)
         alert("Впишіть число в поле Нагороди")
         return
       }
@@ -232,7 +237,7 @@ export const CreateMissionModal = ({
               focusInput,
             )}
           >
-            <option value="TURX">TURX</option>
+            <option value="TURX">кВт</option>
             <option value="TON">TON</option>
           </select>
 
