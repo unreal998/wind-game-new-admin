@@ -81,11 +81,11 @@ export const userLocationColumns: TableColumn<UserLocation>[] = [
 
   columnHelper.accessor((row) => row.location?.base_energy_per_hour, {
     id: "location.base_energy_per_hour",
-    header: "Базово квт за клік",
+    header: "Базово кВт за клік",
     cell: ({ getValue }) => {
       const energy = getValue()
       if (!energy) return "-"
-      return `${energy} КВТ`
+      return `${energy} кВт`
     },
     enableSorting: true,
     filterFn: "number",

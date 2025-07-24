@@ -123,7 +123,7 @@ export const userColumns: TableColumn<AdminProfile>[] = [
   }),
 
   columnHelper.accessor("WindBalance", {
-    header: "kwt",
+    header: "кВт",
     cell: ({ getValue }) => formatAmount(getValue().toFixed(2)),
     enableSorting: true,
     filterFn: "number",

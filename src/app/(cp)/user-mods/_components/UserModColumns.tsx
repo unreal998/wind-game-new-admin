@@ -114,8 +114,8 @@ export const userModColumns: TableColumn<UserMod>[] = [
   }),
 
   columnHelper.accessor("coins_earned", {
-    header: "Зароблено KWT",
-    cell: ({ getValue }) => `${getValue()} KWT`,
+    header: "Зароблено кВт",
+    cell: ({ getValue }) => `${getValue()} кВт`,
     enableSorting: true,
     filterFn: "number",
     meta: {
@@ -127,7 +127,7 @@ export const userModColumns: TableColumn<UserMod>[] = [
 
   columnHelper.accessor("ton_earned", {
     header: "Зароблено TON",
-    cell: ({ getValue }) => formatAmount(getValue()),
+    cell: ({ getValue }) => `${formatAmount(getValue())} TON`,
     enableSorting: true,
     filterFn: "number",
     meta: {
