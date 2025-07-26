@@ -55,46 +55,42 @@ export default function UserLocationsAdminPage() {
     },
   ]
 
-    useEffect(() => {
-      const fetchModsData = async () => {
-        const supabase = createClient()
-        const { data, error } = await supabase.from("countries").select("*")
-        if (error) {
-          console.error(`ERROR FETCHING TURX BALANCE: ${error}`)
-          return
-        }
-
-        setCountries(data || [])
+  useEffect(() => {
+    const fetchModsData = async () => {
+      const supabase = createClient()
+      const { data, error } = await supabase.from("countries").select("*")
+      if (error) {
+        console.error(`ERROR FETCHING TURX BALANCE: ${error}`)
+        return
       }
-      fetchModsData()
-    }, [])
 
-    const formatUserLocations = [] as UserLocation[];
-    userLocations.forEach((location: any) => {
-      const locationData = location as any;
-      locationData.areas.forEach((area: any) => {
+      setCountries(data || [])
+    }
+    fetchModsData()
+  }, [])
 
-        const selectedCountire = countries.find(
-          (c) => c.shortName === area.name
-        )
-                console.log("area", area.name, selectedCountire, countries)
-          const userMod = {
-            user: { 
-              id: locationData.id,
-              username: locationData.userName || locationData.telegramID,
-              first_name: locationData.firstName || "Unknown",
-              last_name: locationData.lastName || "Unknown"
-            },
-            location: {
-              base_energy_per_hour: selectedCountire?.basicBonusPerClick || 0,
-            },
-            location_id: area.name || "",
-            last_push_at: area.lastButtonPress || "",
-
-          }
-          formatUserLocations.push(userMod as UserLocation);
-      })
+  const formatUserLocations = [] as UserLocation[]
+  userLocations.forEach((location: any) => {
+    const locationData = location as any
+    locationData.areas.forEach((area: any) => {
+      const selectedCountire = countries.find((c) => c.shortName === area.name)
+      const userMod = {
+        user: {
+          id: locationData.id,
+          username: locationData.userName || locationData.telegramID,
+          first_name: locationData.firstName || "Unknown",
+          last_name: locationData.lastName || "Unknown",
+        },
+        location: {
+          base_energy_per_hour: selectedCountire?.basicBonusPerClick || 0,
+        },
+        location_id: area.name || "",
+        last_push_at: area.lastButtonPress || "",
+        boughtAt: area.boughtAt || null,
+      } as UserLocation
+      formatUserLocations.push(userMod as UserLocation)
     })
+  })
 
   return (
     <>
