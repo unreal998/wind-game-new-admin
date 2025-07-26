@@ -147,7 +147,7 @@ export const userLocationColumns: TableColumn<UserLocation>[] = [
     meta: {
       exportValue: (row) =>
         formatTimestamp({
-          date: String(row.boughtAt),
+          date: row.boughtAt as any,
         }),
     },
   }),
