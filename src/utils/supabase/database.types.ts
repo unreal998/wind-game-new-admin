@@ -222,7 +222,7 @@ export type Database = {
           location_id: Database["public"]["Enums"]["location_type"]
           total_coins_earned: number | null
           total_ton_earned: number | null
-          unlocked_at: string | null
+          boughtAt: number | null
           user_id: number
         }
         Insert: {

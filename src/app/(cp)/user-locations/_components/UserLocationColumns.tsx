@@ -114,8 +114,8 @@ export const userLocationColumns: TableColumn<UserLocation>[] = [
   }),
 
   columnHelper.accessor("total_coins_earned", {
-    header: "Всього зароблено KWT",
-    cell: ({ getValue }) => `${getValue() || 0} KWT`,
+    header: "Всього зароблено кВт",
+    cell: ({ getValue }) => `${getValue() || 0} кВт`,
     enableSorting: true,
     filterFn: "number",
     meta: {
@@ -137,13 +137,18 @@ export const userLocationColumns: TableColumn<UserLocation>[] = [
     },
   }),
 
-  columnHelper.accessor("unlocked_at", {
+  columnHelper.accessor("boughtAt", {
     header: "Дата розблокування",
-    cell: ({ getValue }) => <DateWithDistance date={getValue()} />,
+    cell: ({ getValue }) => {
+      return <DateWithDistance date={getValue() ?? ""} />
+    },
     enableSorting: true,
     filterFn: "dateRange",
     meta: {
-      exportValue: (row) => formatTimestamp({ date: row.unlocked_at }),
+      exportValue: (row) =>
+        formatTimestamp({
+          date: row.boughtAt as any,
+        }),
     },
   }),
 
