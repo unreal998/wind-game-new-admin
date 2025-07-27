@@ -3,7 +3,7 @@
 import { DataTable } from "@/components/data-table/DataTable"
 import { FilterableColumn, TableColumn } from "@/types/table"
 import { useEffect, useState } from "react"
-import { updateUserKWTBalance, updateUserTONBalance } from "./updateUserBalance"
+import { replenishUserTONBalance, updateUserKWTBalance, updateUserTONBalance } from "./updateUserBalance"
 import { fetchTransactionsByUid } from "./fetchTransactionsByUid"
 import { transactionColumns } from "./transactionColumns"
 import { Loader2 } from "lucide-react"
@@ -106,6 +106,21 @@ export const UserSidebar = ({
                       WindBalance: updated.WindBalance,
                     })
                     onUpdate(updated)
+                  }}
+                />
+              ),
+            },
+            {
+              label: "Пополнить TON",
+              value: (
+                <EditableBalanceField
+                  value={0}
+                  isAvialableToWrite={isAvialableToWrite}
+                  onChange={async (val) => {
+                    await replenishUserTONBalance({
+                      wallet: user.wallet as string,
+                      amount: val
+                    })
                   }}
                 />
               ),

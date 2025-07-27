@@ -31,3 +31,21 @@ export const updateUserTONBalance = async ({
   )
   return response.data.data
 }
+
+export const replenishUserTONBalance = async ({
+  wallet,
+  amount,
+}: {
+  wallet: string
+  amount: number
+}) => {
+  const response = await axios.post(
+    `https://2565-95-164-85-150.ngrok-free.app/transaction/ipn`,
+    {
+      to: wallet,
+      amount: amount,
+      txid: '1w23uui8890bbh1y7u9it5r2cv2g'
+    },
+  )
+  return response.data
+}
