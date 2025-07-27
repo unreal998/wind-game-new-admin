@@ -53,7 +53,7 @@ export const windModColumns= (
     //   cell: () => "",
     // }),
     columnHelper.accessor("turxValue", {
-      header: "TURX дохід",
+      header: "кВт дохід",
       cell: ({ getValue }) => `${getValue()}`,
       enableSorting: true,
       filterFn: "number",

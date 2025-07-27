@@ -119,7 +119,7 @@ export const userLocationColumns: TableColumn<UserLocation>[] = [
     enableSorting: true,
     filterFn: "number",
     meta: {
-      exportHeader: "Всього зароблено (KWT)",
+      exportHeader: "Всього зароблено (КВТ)",
       exportValue: (row) => row.total_coins_earned || 0,
       exportAlign: "right",
     },

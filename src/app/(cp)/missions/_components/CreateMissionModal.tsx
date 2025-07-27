@@ -64,8 +64,8 @@ export const CreateMissionModal = ({
         ru: (val) => `Пригласить ${val} рефералов`,
       },
       accumulation: {
-        en: (val) => `Accumulate ${val} TURX`,
-        ru: (val) => `Накопить ${val} TURX`,
+        en: (val) => `Accumulate ${val} kwt`,
+        ru: (val) => `Накопить ${val} квт`,
       },
     }
 

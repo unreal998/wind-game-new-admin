@@ -133,7 +133,7 @@ export default function ReferralsAdminPage() {
     },
     {
       id: "coin_balance",
-      title: "kwt",
+      title: "кВт",
       type: "number",
     },
     {
@@ -187,7 +187,7 @@ export default function ReferralsAdminPage() {
         <div className="flex gap-10">
           <div className="text-1xl m-1 w-72 border-2 bg-gray-400 p-2 font-semibold text-gray-900 dark:border-gray-800 dark:bg-gray-925 dark:text-gray-50">
             <h1>Загальна сума в обранному періоду</h1>
-            <Sum label="Квт" sum={selectedDateRangeKwtSum} />
+            <Sum label="кВт" sum={selectedDateRangeKwtSum} />
             <Sum label="TON" sum={selectedDateRangeTONSum} />
           </div>
           <div className="text-1xl m-1 min-w-max border bg-gray-400 p-2 font-semibold text-gray-900 dark:border-gray-800 dark:bg-gray-925 dark:text-gray-50">

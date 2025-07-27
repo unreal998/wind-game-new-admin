@@ -94,7 +94,7 @@ export const UserSidebar = ({
               ),
             },
             {
-              label: "kwt",
+              label: "кВт",
               value: (
                 <EditableBalanceField
                   value={user.WindBalance ?? 0}

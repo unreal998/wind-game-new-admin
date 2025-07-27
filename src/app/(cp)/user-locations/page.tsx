@@ -35,7 +35,7 @@ export default function UserLocationsAdminPage() {
     },
     {
       id: "total_coins_earned",
-      title: "Всього зароблено KWT",
+      title: "Всього зароблено КВТ",
       type: "number",
     },
     {

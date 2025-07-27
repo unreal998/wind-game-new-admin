@@ -119,7 +119,7 @@ export const userModColumns: TableColumn<UserMod>[] = [
     enableSorting: true,
     filterFn: "number",
     meta: {
-      exportHeader: "Зароблено (KWT)",
+      exportHeader: "Зароблено (КВТ)",
       exportValue: (row) => row.coins_earned || 0,
       exportAlign: "right",
     },

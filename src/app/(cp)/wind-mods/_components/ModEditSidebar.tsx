@@ -69,7 +69,7 @@ export function ModEditSidebar() {
           <div className="flex-1 space-y-4">
             <div>
               <label className="text-sm font-medium dark:text-gray-200">
-                TURX дохід
+                кВт дохід
               </label>
               <Input
                 type="number"
