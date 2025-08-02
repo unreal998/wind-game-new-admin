@@ -24,7 +24,7 @@ export function useTransactionStatsNew(
     const fetchTransactions = async () => {
       try {
         const response = await axios.get(
-          "https://2565-95-164-85-150.ngrok-free.app/transaction/all",
+          "https://01767df04bf7.ngrok-free.app/transaction/all",
           {
             headers: {
               "ngrok-skip-browser-warning": true,
