@@ -1,6 +1,7 @@
 import axios from "axios"
 
 export type Mission = {
+  created_at:string
   id: number
   img: string
   title: { en: string; ru: string }
