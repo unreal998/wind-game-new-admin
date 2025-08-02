@@ -94,6 +94,10 @@ export const getMissionColumns = (
       header: "Тип",
       cell: ({ getValue }) => getValue(),
     }),
+    columnHelper.accessor("created_at", {
+      header: "Дата створення",
+      cell: ({ getValue }) => new Date(getValue()).toLocaleString("uk-UA"),
+    }),
   ]
   if (isAvialableToWrite) {
     columns.push(
