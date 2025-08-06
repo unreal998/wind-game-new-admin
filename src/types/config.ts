@@ -21,6 +21,7 @@ export type AdminLinksConfig = {
 export type AdminAccessConfig = {
   admin: ReadonlyArray<keyof AdminLinksConfig>
   teamlead: ReadonlyArray<keyof AdminLinksConfig>
+  marketing: ReadonlyArray<keyof AdminLinksConfig>
   guest: ReadonlyArray<keyof AdminLinksConfig>
 }
 

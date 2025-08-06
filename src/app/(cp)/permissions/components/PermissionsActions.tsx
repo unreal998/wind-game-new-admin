@@ -135,6 +135,7 @@ export default function PermissionsActions({
               >
                 <option value="admin">Адмін</option>
                 <option value="teamlead">Тімлід</option>
+                <option value="marketing">Маркетинг</option>
                 <option value="guest">Гість</option>
               </select>
 

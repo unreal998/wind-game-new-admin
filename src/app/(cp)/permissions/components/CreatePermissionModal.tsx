@@ -138,6 +138,7 @@ export const CreatePermissionModal = ({ onClose }: { onClose: () => void }) => {
           >
             <option value="admin">Admin</option>
             <option value="teamlead">Teamlead</option>
+            <option value="marketing">Marketing</option>
             <option value="guest">Guest</option>
           </select>
           <div>
