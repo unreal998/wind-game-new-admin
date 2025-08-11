@@ -47,9 +47,7 @@ export function BulkMessageDialog({
   const [isLoading, setIsLoading] = useState(false)
   const [users, setUsers] = useState<UserInfo[]>([])
   const userId = useUserStore((state) => state.user_id)
-  // const createBulkTickets = useAdminSupportStore(
-  //   (state) => state.createBulkTickets,
-  // )
+
 
   // Отримуємо інформацію про рефералів при відкритті діалогу
   useEffect(() => {

@@ -67,10 +67,15 @@ export const CreatePermissionModal = ({ onClose }: { onClose: () => void }) => {
         return
       }
 
+      const additionalField = form.options?.data?.additionalField || ""
+      const match = additionalField.match(/r_(\d+)/);
+      const extractedId = match ? match[1] : additionalField; 
+
       await createPermission({
         email: form.email,
         type: form.type,
         permissions: form.permissions,
+        additionalField: extractedId,
       })
       setForm({
         email: "",
@@ -82,6 +87,7 @@ export const CreatePermissionModal = ({ onClose }: { onClose: () => void }) => {
             first_name: "",
             last_name: "",
             phone: "",
+            additionalField: ""
           },
         },
       })
@@ -141,6 +147,22 @@ export const CreatePermissionModal = ({ onClose }: { onClose: () => void }) => {
             <option value="marketing">Marketing</option>
             <option value="guest">Guest</option>
           </select>
+          { form.type === 'marketing' &&  <Input
+                required={true}
+                type="text"
+                placeholder="tid юзера"
+                value={form.options?.data?.additionalField || ""}
+                onChange={(e) =>
+                  handleChange("options", {
+                    ...form.options,
+                    data: {
+                      ...form.options?.data,
+                      additionalField: e.target.value,
+                    }
+                  })
+                }
+              />
+            }
           <div>
             <div className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
               Дозволи:

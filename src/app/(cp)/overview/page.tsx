@@ -12,7 +12,7 @@ export default function Overview() {
   const [selectedDates, setSelectedDates] = React.useState<
     DateRange | undefined
   >({
-    from: subDays(new Date(), 30),
+    from: subDays(new Date(), new Date().getDate() - 1),
     to: new Date(),
   })
 

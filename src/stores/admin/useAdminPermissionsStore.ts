@@ -7,7 +7,8 @@ export type AdminPermissions = "read" | "write"
 export type CreatePermissionDto = {
   email: string
   type: "admin" | "teamlead" | "guest" | "marketing"
-  permissions: AdminPermissions[]
+  permissions: AdminPermissions[],
+  additionalField?: string
 }
 
 export type GetPermissionsDto = CreatePermissionDto & {

@@ -102,12 +102,19 @@ export default function ReferralsAdminPage() {
         setIsAvialableToWrite(
           data.permissions.includes("write") && userRole === "admin",
         )
+
       } catch (error) {
         console.error("Failed to fetch withdrawals", error)
       }
     }
 
     loadPermissions()
+  }, [userRole])
+
+  useEffect(() => {
+    if (userRole === "marketing") {
+      
+    }
   }, [userRole])
 
   const filterableColumns: FilterableColumn[] = [

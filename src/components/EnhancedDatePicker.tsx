@@ -22,7 +22,7 @@ export function EnhancedDatePicker({
   const [selectedDates, setSelectedDates] = React.useState<
     DateRange | undefined
   >({
-    from: new Date(new Date().setMonth(new Date().getMonth() - 1)),
+    from: new Date(new Date().setDate(1)),
     to: new Date(),
   })
 
