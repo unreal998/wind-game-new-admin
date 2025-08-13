@@ -54,7 +54,7 @@ export default function ReferralsAdminPage() {
     if (row.id != selectedSubRowId) {
       fetchMarketingSubReferalsProfiles(row.telegramID)
     }
-  }, [setSelectedSubRowId])
+  }, [setSelectedSubRowId, selectedSubRowId, fetchMarketingSubReferalsProfiles])
 
   const handleReferalData = useCallback((row: AdminProfile) => {
     setSelectedRowid(row.id === selectedRowid ? '' : row.id)
@@ -63,7 +63,7 @@ export default function ReferralsAdminPage() {
       fetchMarketingReferalsProfiles(row.telegramID)
     }
 
-  }, [setSelectedRowid])
+  }, [setSelectedRowid, selectedRowid, fetchMarketingReferalsProfiles, setSelectedSubRowId])
 
   useEffect(() => {
     setTotalTONSum(
