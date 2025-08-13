@@ -50,13 +50,19 @@ export default function ReferralsAdminPage() {
   const [selectedSubRowId, setSelectedSubRowId] = useState<string>('')
 
   const handleSubReferalData = useCallback((row: AdminProfile) => {
-    setSelectedSubRowId(row.id)
-    fetchMarketingSubReferalsProfiles(row.telegramID)
+    setSelectedSubRowId(row.id === selectedSubRowId ? '' : row.id)
+    if (row.id != selectedSubRowId) {
+      fetchMarketingSubReferalsProfiles(row.telegramID)
+    }
   }, [setSelectedSubRowId])
 
   const handleReferalData = useCallback((row: AdminProfile) => {
-    setSelectedRowid(row.id)
-    fetchMarketingReferalsProfiles(row.telegramID)
+    setSelectedRowid(row.id === selectedRowid ? '' : row.id)
+    if (row.id != selectedRowid) {
+      setSelectedSubRowId('')
+      fetchMarketingReferalsProfiles(row.telegramID)
+    }
+
   }, [setSelectedRowid])
 
   useEffect(() => {
