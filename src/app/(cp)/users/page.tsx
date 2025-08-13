@@ -19,6 +19,7 @@ import { EnhancedDatePicker } from "@/components/EnhancedDatePicker"
 import { DateRange } from "react-day-picker"
 import { interval, isWithinInterval } from "date-fns"
 import { CreatePermissionDto } from "@/stores/admin/useAdminPermissionsStore"
+import { TableCell, TableRow } from "@/components/Table"
 
 export default function ReferralsAdminPage() {
   const { 
@@ -257,26 +258,43 @@ export default function ReferralsAdminPage() {
           onRowClick={(row) => handleReferalData(row)}
           selectedRowid={selectedRowid}
           dropDownComponent={
-            <DataTable
-              selectedDateRange={selectedDateRange}
-              data={marketingReferalsProfiles}
-              columns={userColumns}
-              filterableColumns={filterableColumns}
-              isLoading={isLoading}
-              openSidebarOnRowClick={true}
-              onRowClick={(row) => handleSubReferalData(row)}
-              selectedRowid={selectedSubRowId}
-              dropDownComponent={
-                <DataTable
-                  selectedDateRange={selectedDateRange}
-                  data={marketingSubReferalsProfiles}
-                  columns={userColumns}
-                  filterableColumns={filterableColumns}
-                  isLoading={isLoading}
-                  openSidebarOnRowClick={true}
-                />
-              }
-            />
+            marketingReferalsProfiles.length > 0 ?
+              <DataTable
+                selectedDateRange={selectedDateRange}
+                data={marketingReferalsProfiles}
+                columns={userColumns}
+                filterableColumns={filterableColumns}
+                isLoading={isLoading}
+                openSidebarOnRowClick={true}
+                onRowClick={(row) => handleSubReferalData(row)}
+                selectedRowid={selectedSubRowId}
+                dropDownComponent={
+                  marketingSubReferalsProfiles.length > 0 ? <DataTable
+                    selectedDateRange={selectedDateRange}
+                    data={marketingSubReferalsProfiles}
+                    columns={userColumns}
+                    filterableColumns={filterableColumns}
+                    isLoading={isLoading}
+                    openSidebarOnRowClick={true}
+                  /> : 
+                  <TableRow>
+                    <TableCell
+                      colSpan={ userColumns.length }
+                      className="h-24 text-center text-gray-500"
+                    >
+                        Немає результатів
+                    </TableCell>
+                </TableRow>
+                }
+              />
+              : <TableRow>
+                <TableCell
+                  colSpan={ userColumns.length }
+                  className="h-24 text-center text-gray-500"
+                >
+                    Немає результатів
+                </TableCell>
+              </TableRow>
           }
         />}
       </Card>
