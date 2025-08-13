@@ -7,7 +7,7 @@ import {
   useAdminReferralsStore,
 } from "@/stores/admin/useAdminReferralsStore"
 import { FilterableColumn } from "@/types/table"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { userColumns } from "./_components/UserColumns"
 import { UserSidebar } from "./_components/UserSidebar"
 import { fetchWithdrawals } from "./_components/fetchWithdrawals"
@@ -18,9 +18,20 @@ import { roleSelector, useUserStore } from "@/stores/useUserStore"
 import { EnhancedDatePicker } from "@/components/EnhancedDatePicker"
 import { DateRange } from "react-day-picker"
 import { interval, isWithinInterval } from "date-fns"
+import { CreatePermissionDto } from "@/stores/admin/useAdminPermissionsStore"
 
 export default function ReferralsAdminPage() {
-  const { profiles, isLoading, updateUser } = useAdminReferralsStore()
+  const { 
+    profiles, 
+    isLoading, 
+    updateUser, 
+    marketingProfiles, 
+    fetchMarketingProfiles, 
+    fetchMarketingReferalsProfiles, 
+    fetchMarketingSubReferalsProfiles, 
+    marketingReferalsProfiles, 
+    marketingSubReferalsProfiles 
+  } = useAdminReferralsStore()
   const userRole = useUserStore(roleSelector)
   const [activeUser, setActiveUser] = useState<any | null>(null)
   const [withdrawals, setWithdrawals] = useState<any[]>()
@@ -33,6 +44,20 @@ export default function ReferralsAdminPage() {
     useState<number>(0)
   const [selectedDateRangeKwtSum, setSelectedDateRangeKwtSum] =
     useState<number>(0)
+  
+  const [userPermissions, setUserPermissionsData] = useState<CreatePermissionDto | null>(null)
+  const [selectedRowid, setSelectedRowid] = useState<string>('')
+  const [selectedSubRowId, setSelectedSubRowId] = useState<string>('')
+
+  const handleSubReferalData = useCallback((row: AdminProfile) => {
+    setSelectedSubRowId(row.id)
+    fetchMarketingSubReferalsProfiles(row.telegramID)
+  }, [setSelectedSubRowId])
+
+  const handleReferalData = useCallback((row: AdminProfile) => {
+    setSelectedRowid(row.id)
+    fetchMarketingReferalsProfiles(row.telegramID)
+  }, [setSelectedRowid])
 
   useEffect(() => {
     setTotalTONSum(
@@ -102,6 +127,7 @@ export default function ReferralsAdminPage() {
         setIsAvialableToWrite(
           data.permissions.includes("write") && userRole === "admin",
         )
+        setUserPermissionsData(data)
 
       } catch (error) {
         console.error("Failed to fetch withdrawals", error)
@@ -113,9 +139,9 @@ export default function ReferralsAdminPage() {
 
   useEffect(() => {
     if (userRole === "marketing") {
-      
+      fetchMarketingProfiles(userPermissions?.additionalField || '')
     }
-  }, [userRole])
+  }, [userRole, userPermissions?.additionalField])
 
   const filterableColumns: FilterableColumn[] = [
     {
@@ -203,15 +229,10 @@ export default function ReferralsAdminPage() {
             <Sum label="TON" sum={totalTONSum} />
           </div>
         </div>
-        {/* {!isLoading && aggregatedValue && (
-          <Badge variant="indigo" className="px-3 py-1 text-base">
-            {aggregatedValue}
-          </Badge>
-        )} */}
       </div>
 
       <Card className="p-0">
-        <DataTable
+        {userRole !== "marketing" && <DataTable
           selectedDateRange={selectedDateRange}
           data={usersColumnData ?? profiles}
           columns={userColumns}
@@ -219,7 +240,39 @@ export default function ReferralsAdminPage() {
           isLoading={isLoading}
           openSidebarOnRowClick={true}
           onRowClick={(row) => setActiveUser(row)}
-        />
+        />}
+        {userRole === "marketing" && <DataTable
+          selectedDateRange={selectedDateRange}
+          data={marketingProfiles}
+          columns={userColumns}
+          filterableColumns={filterableColumns}
+          isLoading={isLoading}
+          openSidebarOnRowClick={true}
+          onRowClick={(row) => handleReferalData(row)}
+          selectedRowid={selectedRowid}
+          dropDownComponent={
+            <DataTable
+              selectedDateRange={selectedDateRange}
+              data={marketingReferalsProfiles}
+              columns={userColumns}
+              filterableColumns={filterableColumns}
+              isLoading={isLoading}
+              openSidebarOnRowClick={true}
+              onRowClick={(row) => handleSubReferalData(row)}
+              selectedRowid={selectedSubRowId}
+              dropDownComponent={
+                <DataTable
+                  selectedDateRange={selectedDateRange}
+                  data={marketingSubReferalsProfiles}
+                  columns={userColumns}
+                  filterableColumns={filterableColumns}
+                  isLoading={isLoading}
+                  openSidebarOnRowClick={true}
+                />
+              }
+            />
+          }
+        />}
       </Card>
       {activeUser &&
         (() => {

@@ -11,7 +11,7 @@ import {
   TableHeaderCell,
   TableRow,
 } from "@/components/Table"
-import { useEffect, useState } from "react"
+import { ReactElement, useEffect, useState } from "react"
 
 import { DataTableBulkEditor } from "./DataTableBulkEditor"
 
@@ -36,6 +36,7 @@ import { FilterableColumn, type TableColumn } from "@/types/table"
 import { rankItem } from "@tanstack/match-sorter-utils"
 import { DateRange } from "react-day-picker"
 import { interval, isWithinInterval } from "date-fns"
+import React from "react"
 
 interface DataTableProps<TData> {
   data: TData[]
@@ -51,6 +52,8 @@ interface DataTableProps<TData> {
   isLoading?: boolean
   openSidebarOnRowClick?: boolean
   onRowClick?: (row: TData) => void
+  dropDownComponent?: ReactElement
+  selectedRowid?: string
 }
 
 // Функція для форматування значень для пошуку
@@ -135,6 +138,8 @@ export function DataTable<TData extends Record<string, any>>({
   onRowClick,
   openSidebarOnRowClick = false,
   selectedDateRange,
+  dropDownComponent,
+  selectedRowid,
 }: DataTableProps<TData> & { selectedDateRange?: DateRange }) {
   const [pagination, setPagination] = useState({
     pageSize: simple ? 100 : 50,
@@ -409,38 +414,54 @@ export function DataTable<TData extends Record<string, any>>({
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  onClick={() => {
-                    if (openSidebarOnRowClick) {
-                      setActiveRow(row.original)
-                      onRowClick?.(row.original)
-                    }
-                  }}
-                  className={cx(
-                    "group cursor-pointer hover:bg-gray-50 hover:dark:bg-gray-900",
-                  )}
-                >
-                  {row.getVisibleCells().map((cell, index) => (
-                    <TableCell
-                      key={cell.id}
-                      className={cx(
-                        "relative whitespace-nowrap py-2 text-gray-700 first:w-10 dark:text-gray-300",
-                        index === 0 &&
-                          row.getIsSelected() &&
-                          "relative before:absolute before:inset-y-0 before:left-0 before:w-0.5 before:bg-indigo-500",
-                        // cell.id.includes("actions") &&
-                        //   "sticky right-0 before:inset-0 before:-left-4 before:w-4 before:bg-gradient-to-r before:from-gray-50/0 before:to-gray-50 group-hover:bg-gray-50 group-hover:before:absolute before:dark:from-gray-900/0 before:dark:to-gray-900 group-hover:dark:bg-gray-900",
-                        cell.column.columnDef.meta?.className,
-                      )}
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
+                <React.Fragment key={row.id}>
+                  <TableRow
+                    onClick={() => {
+                      if (openSidebarOnRowClick) {
+                        setActiveRow(row.original)
+                        onRowClick?.(row.original)
+                      }
+                    }}
+                    className={cx(
+                      "group cursor-pointer hover:bg-gray-50 hover:dark:bg-gray-900",
+                    )}
+                  >
+                    {row.getVisibleCells().map((cell, index) => (
+                      <TableCell
+                        key={cell.id}
+                        className={cx(
+                          "relative whitespace-nowrap py-2 text-gray-700 first:w-10 dark:text-gray-300",
+                          index === 0 &&
+                            row.getIsSelected() &&
+                            "relative before:absolute before:inset-y-0 before:left-0 before:w-0.5 before:bg-indigo-500",
+                          // cell.id.includes("actions") &&
+                          //   "sticky right-0 before:inset-0 before:-left-4 before:w-4 before:bg-gradient-to-r before:from-gray-50/0 before:to-gray-50 group-hover:bg-gray-50 group-hover:before:absolute before:dark:from-gray-900/0 before:dark:to-gray-900 group-hover:dark:bg-gray-900",
+                          cell.column.columnDef.meta?.className,
+                        )}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                  {row.original.id === selectedRowid && dropDownComponent ? (
+                    <TableRow className="bg-gray-50/60 dark:bg-gray-900/60">
+                      <TableCell
+                        colSpan={row.getVisibleCells().length}
+                        className="p-0 align-top"
+                      >
+                        {React.isValidElement(dropDownComponent)
+                          ? React.cloneElement(dropDownComponent, {
+                              row: row.original,
+                              rowId: row.id,
+                            } as any)
+                          : dropDownComponent}
+                      </TableCell>
+                    </TableRow>
+                  ) : null}
+                </React.Fragment>
               ))
             ) : (
               <TableRow>

@@ -177,9 +177,9 @@ export const userColumns: TableColumn<AdminProfile>[] = [
       if (!row.original.telegramID) return "-"
       return (
         <span className="flex items-center space-x-2">
-          <span className="max-w-[150px] truncate">{`https://t.me/WindGameAppWrapperBot?start=r_${row.original.telegramID}`}</span>
+          <span className="max-w-[150px] truncate">{`https://t.me/TurbinexAppBot?start=r_${row.original.telegramID}`}</span>
           <CopyButton
-            text={`https://t.me/WindGameAppWrapperBot?start=r_${row.original.telegramID}`}
+            text={`https://t.me/TurbinexAppBot?start=r_${row.original.telegramID}`}
           />
         </span>
       )

@@ -5,11 +5,17 @@ import { GetPermissionsDto } from "./useAdminPermissionsStore"
 
 interface AdminReferralsState {
   profiles: AdminProfile[]
+  marketingProfiles: AdminProfile[]
   isLoading: boolean
   error: string | null
   fetchProfiles: () => Promise<void>
   updateUser: (updatedUser: AdminProfile) => void
   subscribeToProfiles: () => Promise<() => void>
+  fetchMarketingProfiles: (tid: string) => Promise<void>
+  marketingSubReferalsProfiles: AdminProfile[]
+  fetchMarketingReferalsProfiles: (tid: string) => Promise<void>
+  fetchMarketingSubReferalsProfiles: (tid: string) => Promise<void>
+  marketingReferalsProfiles: AdminProfile[]
 }
 
 const supabase = createClient()
@@ -19,9 +25,11 @@ export const useAdminReferralsStore = create<AdminReferralsState>(
     profiles: [],
     isLoading: true,
     error: null,
+    marketingProfiles: [],
+    marketingReferalsProfiles: [],
+    marketingSubReferalsProfiles: [],
 
     fetchProfiles: async () => {
-      // set({ isLoading: true, error: null });
       try {
         const { data, error } = await supabase
           .from("users")
@@ -37,6 +45,60 @@ export const useAdminReferralsStore = create<AdminReferralsState>(
       } catch (error) {
         console.error("Error fetching profiles:", error)
         set({ error: "Failed to load profiles", isLoading: false })
+      }
+    },
+
+    fetchMarketingProfiles: async (tid: string) => {
+      try {
+        const { data, error } = await supabase
+          .from("users")
+          .select("*")
+          .eq("invitedBy", tid)
+          .order("created_at", { ascending: false })
+
+        if (error) throw error
+
+        set({ marketingProfiles: data || [] })
+      } 
+      catch (error) {
+        console.error("Error fetching marketing profiles:", error)
+        set({ error: "Failed to load marketing profiles" })
+      }
+    },
+
+    fetchMarketingReferalsProfiles: async (tid: string) => {
+      try {
+        const { data, error } = await supabase
+          .from("users")
+          .select("*")
+          .eq("invitedBy", tid)
+          .order("created_at", { ascending: false })
+
+        if (error) throw error
+
+        set({ marketingReferalsProfiles: data || [] })
+      } 
+      catch (error) {
+        console.error("Error fetching marketing profiles:", error)
+        set({ error: "Failed to load marketing profiles" })
+      }
+    },
+
+    fetchMarketingSubReferalsProfiles: async (tid: string) => {
+      try {
+        const { data, error } = await supabase
+          .from("users")
+          .select("*")
+          .eq("invitedBy", tid)
+          .order("created_at", { ascending: false })
+
+        if (error) throw error
+
+        set({ marketingSubReferalsProfiles: data || [] })
+      } 
+      catch (error) {
+        console.error("Error fetching marketing profiles:", error)
+        set({ error: "Failed to load marketing profiles" })
       }
     },
 
@@ -71,7 +133,6 @@ export const useAdminReferralsStore = create<AdminReferralsState>(
 )
 
 export async function fetchUserPermissions(): Promise<GetPermissionsDto> {
-  const supabase = createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -84,7 +145,6 @@ export async function fetchUserPermissions(): Promise<GetPermissionsDto> {
       .single()
 
     if (error) throw error
-    console.log("=======", data)
     return data
   } catch (error) {
     console.error("Error fetching user permissions:", error)

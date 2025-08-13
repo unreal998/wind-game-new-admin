@@ -35,7 +35,7 @@ type UserAction = {
 fetchUserPermissions()
 
 const initialState: UserState = {
-  role: "guest",
+  role: "marketing",
   user_id: null,
   profile_id: null,
   email: null,

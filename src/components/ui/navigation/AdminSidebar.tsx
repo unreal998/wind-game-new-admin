@@ -177,7 +177,7 @@ export function AdminSidebar({
     getUserPermissions()
   }, [])
 
-  const availableSections = siteConfig.adminAccess[role ?? "guest"].map(
+  const availableSections = siteConfig.adminAccess[role ?? "marketing"].map(
     (section) => {
       const link = siteConfig.adminLinks[section]
       return link
