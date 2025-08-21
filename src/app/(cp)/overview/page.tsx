@@ -7,8 +7,11 @@ import React from "react"
 import { type DateRange } from "react-day-picker"
 import { ChartCard } from "./_components/ChartCard"
 import { FilterBar } from "./_components/FilterBar"
+import { roleSelector, useUserStore } from "@/stores/useUserStore"
+import NotAllowed from "@/components/NotAllowed"
 
 export default function Overview() {
+  const userRole = useUserStore(roleSelector)
   const [selectedDates, setSelectedDates] = React.useState<
     DateRange | undefined
   >({
@@ -22,6 +25,8 @@ export default function Overview() {
   const [selectedCategories, setSelectedCategories] = React.useState<
     (typeof categories)[number]["title"][]
   >(categories.map((category) => category.title))
+
+  if (userRole === "marketing") return <NotAllowed />
 
   return (
     <>

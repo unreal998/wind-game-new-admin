@@ -16,6 +16,7 @@ import { DateRange } from "react-day-picker"
 import Sum from "@/components/Sum"
 import { useAdminWithdrawalsStore } from "@/stores/admin/useAdminWithdrawalsStore"
 import { roleSelector, useUserStore } from "@/stores/useUserStore"
+import NotAllowed from "@/components/NotAllowed"
 
 export default function WithdrawalAdminPage() {
   const [selectedDateRange, setSelectedDateRange] = useState<DateRange>()
@@ -133,6 +134,8 @@ export default function WithdrawalAdminPage() {
       }, 0),
     )
   }, [withdrawalsData, selectedDateRange])
+
+  if (userRole === "marketing") return <NotAllowed />
 
   return (
     <>

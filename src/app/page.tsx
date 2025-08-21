@@ -12,5 +12,5 @@ export default async function RootPage() {
     redirect("/auth/login")
   }
 
-  redirect("/overview")
+  redirect("/users")
 }

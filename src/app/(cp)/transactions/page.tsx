@@ -14,6 +14,8 @@ import Sum from "@/components/Sum"
 import { EnhancedDatePicker } from "@/components/EnhancedDatePicker"
 import { DateRange } from "react-day-picker"
 import { interval, isWithinInterval } from "date-fns"
+import NotAllowed from "@/components/NotAllowed"
+import { roleSelector, useUserStore } from "@/stores/useUserStore"
 
 export default function WalletsAdminPage() {
   const [transactions, setTransactions] = useState<any[]>([])
@@ -22,6 +24,9 @@ export default function WalletsAdminPage() {
   const [aggregatedValue] = useState<string | number | null>(null)
   const [sum, setSum] = useState<number>(0)
   const [selectedDateRangeSum, setSelectedDateRangeSum] = useState<number>(0)
+    const userRole = useUserStore(roleSelector)
+
+  if (userRole === "marketing") return <NotAllowed />
 
   useEffect(() => {
     setSum(transactions.reduce((acc: number, next: any) => acc + next.summ, 0))

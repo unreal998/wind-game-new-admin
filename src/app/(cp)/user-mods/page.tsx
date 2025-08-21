@@ -10,12 +10,15 @@ import { useEffect, useState } from "react"
 import { userModColumns } from "./_components/UserModColumns"
 import { UserMod } from "@/types/userMod"
 import { createClient } from "@/utils/supabase/client"
+import NotAllowed from "@/components/NotAllowed"
+import { roleSelector, useUserStore } from "@/stores/useUserStore"
 
 export default function UserModsAdminPage() {
   const { userMods, isLoading } = useAdminUserModsStore()
   const [aggregatedValue] = useState<string | number | null>(null)
   const formatUserMod = [] as UserMod[];
   const [modifiersData, setModifiers] = useState<any[]>([])
+  const userRole = useUserStore(roleSelector)
 
   useEffect(() => {
     const fetchModsData = async () => {
@@ -114,6 +117,8 @@ export default function UserModsAdminPage() {
       type: "dateRange",
     },
   ]
+
+  if (userRole === "marketing") return <NotAllowed />
 
   return (
     <>

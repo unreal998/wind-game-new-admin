@@ -10,11 +10,15 @@ import { useEffect, useState } from "react"
 import { userLocationColumns } from "./_components/UserLocationColumns"
 import { UserLocation } from "@/types/userLocation"
 import { createClient } from "@/utils/supabase/client"
+import { roleSelector, useUserStore } from "@/stores/useUserStore"
+import NotAllowed from "@/components/NotAllowed"
 
 export default function UserLocationsAdminPage() {
   const { userLocations, isLoading } = useAdminUserLocationsStore()
   const [aggregatedValue] = useState<string | number | null>(null)
   const [countries, setCountries] = useState<any[]>([])
+  const userRole = useUserStore(roleSelector)
+
 
   const filterableColumns: FilterableColumn[] = [
     {
@@ -91,6 +95,8 @@ export default function UserLocationsAdminPage() {
       formatUserLocations.push(userMod as UserLocation)
     })
   })
+
+  if (userRole === "marketing") return <NotAllowed />
 
   return (
     <>
