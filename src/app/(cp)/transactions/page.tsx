@@ -26,8 +26,6 @@ export default function WalletsAdminPage() {
   const [selectedDateRangeSum, setSelectedDateRangeSum] = useState<number>(0)
     const userRole = useUserStore(roleSelector)
 
-  if (userRole === "marketing") return <NotAllowed />
-
   useEffect(() => {
     setSum(transactions.reduce((acc: number, next: any) => acc + next.summ, 0))
     setSelectedDateRangeSum(
@@ -82,6 +80,8 @@ export default function WalletsAdminPage() {
 
     loadTransactions()
   }, [])
+
+  if (userRole === "marketing") return <NotAllowed />
 
   return (
     <>
