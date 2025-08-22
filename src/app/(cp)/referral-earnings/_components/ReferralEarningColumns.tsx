@@ -113,13 +113,25 @@ export const referralEarningColumns: TableColumn<ReferralEarning>[] = [
   }),
 
   columnHelper.accessor("amount", {
-    header: "Сума",
+    header: "Сума квт",
     cell: ({ getValue }) => formatAmount(getValue()),
     enableSorting: true,
     filterFn: "number",
     meta: {
       exportHeader: "Сума (TON)",
       exportValue: (row) => row.amount || 0,
+      exportAlign: "right",
+    },
+  }),
+
+  columnHelper.accessor("tonAmount", {
+    header: "Сума TON",
+    cell: ({ getValue }) => formatAmount(getValue()),
+    enableSorting: true,
+    filterFn: "number",
+    meta: {
+      exportHeader: "Сума (TON)",
+      exportValue: (row) => row.tonAmount || 0,
       exportAlign: "right",
     },
   }),

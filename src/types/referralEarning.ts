@@ -16,4 +16,5 @@ export type ReferralEarning = {
   }
   referalCount?: number
   windBalance?: number
+  tonAmount?: number
 }

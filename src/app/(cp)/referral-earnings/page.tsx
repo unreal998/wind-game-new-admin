@@ -84,7 +84,12 @@ export default function ReferralEarningsAdminPage() {
     },
     {
       id: "amount",
-      title: "Сума",
+      title: "Сума квт",
+      type: "number",
+    },
+    {
+      id: "tonAmount",
+      title: "Сума TON",
       type: "number",
     },
     {

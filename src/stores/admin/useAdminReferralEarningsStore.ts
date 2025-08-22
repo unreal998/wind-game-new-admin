@@ -33,7 +33,7 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
         const { data: referalUsers, error: refError } = await supabase
           .from("users")
           .select(
-            "telegramID, userName, created_at, WindBalance, rewardFromClicks",
+            "telegramID, userName, created_at, WindBalance, rewardFromClicks, TONRewardFromClicks",
           )
           .in("telegramID", allReferalIds)
 
@@ -49,6 +49,8 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
               amount:
                 referalUsers.find((ru) => ru.telegramID === id)
                   ?.rewardFromClicks || 0,
+              tonAmount:
+                referalUsers.find((ru) => ru.telegramID === id)?.TONRewardFromClicks || 0,
               user: {
                 id: user.telegramID,
                 username: user.userName || user.telegramID,
