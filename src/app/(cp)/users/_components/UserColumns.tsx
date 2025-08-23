@@ -2,6 +2,7 @@
 
 import { Checkbox } from "@/components/Checkbox"
 import { CopyButton } from "@/components/CopyButton"
+import { DateWithDistance } from "@/components/data-table/DateWithDistance"
 import { type AdminProfile } from "@/types/profile"
 import { type TableColumn } from "@/types/table"
 import { formatAmount } from "@/utils/amountFormatter"
@@ -234,9 +235,7 @@ export const userColumns: TableColumn<AdminProfile>[] = [
       const registration = row.original.created_at
       if (!registration) return "-"
       return (
-        <span className="flex items-center space-x-2">
-          <span className="max-w-[200px] truncate">{registration}</span>
-        </span>
+        <DateWithDistance date={row.original.created_at as string} />
       )
     },
     enableSorting: true,
