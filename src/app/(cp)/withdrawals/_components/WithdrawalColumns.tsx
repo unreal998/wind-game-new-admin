@@ -12,6 +12,8 @@ type WithdrawalDataColumn = {
   created_at: string
   wallet: string
   sum: number
+  fee?: number
+  sumfee?: number
   uid: string
   tid: string
   MEMO?: string
@@ -87,6 +89,14 @@ export const getWithdrawalColumns = (
     columnHelper.accessor("sum", {
       header: "Сума",
       cell: ({ getValue }) => getValue(),
+    }),
+    columnHelper.accessor("fee", {
+      header: "Комісія",
+      cell: ({ row }) => row.original.sum * 0.02,
+    }),
+    columnHelper.accessor("sumfee", {
+      header: "Сума з комісією",
+      cell: ({ row }) => row.original.sum * 0.98,
     }),
     columnHelper.accessor("uid", {
       header: "UID",
