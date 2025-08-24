@@ -30,7 +30,7 @@ export type CreateMissionData = {
   reward: number | string
   coin: string
   type: "daily" | "quest"
-  specType: "depposite" | "countries" | "referrals" | "accumulation"
+  specType: "depposite" | "countries" | "referrals" | "accumulation" | ""
   specValue: string
 }
 

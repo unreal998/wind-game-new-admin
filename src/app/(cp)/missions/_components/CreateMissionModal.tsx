@@ -22,7 +22,7 @@ export const CreateMissionModal = ({
     reward: "",
     coin: "TURX",
     type: "quest",
-    specType: "depposite",
+    specType: "",
     specValue: "0",
   })
 
@@ -113,7 +113,7 @@ export const CreateMissionModal = ({
         reward: "",
         coin: "TURX",
         type: "quest",
-        specType: "depposite",
+        specType: "",
         specValue: "0",
       })
       onClose()
