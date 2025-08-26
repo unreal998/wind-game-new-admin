@@ -3,7 +3,7 @@ import axios from "axios"
 
 export const fetchTransactionsApi = async () => {
   const response = await axios.get(
-    `https://01767df04bf7.ngrok-free.app/transaction/all`,
+    `https://60d211c58427.ngrok-free.app/transaction/all`,
     {
       headers: {
         "ngrok-skip-browser-warning": true,
