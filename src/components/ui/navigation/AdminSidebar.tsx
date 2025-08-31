@@ -30,6 +30,11 @@ interface SectionConfig {
 }
 
 const sectionConfigs: Record<AdminLinkKeys, SectionConfig> = {
+  tgMsg: {
+    title: "Tg повідомлення",
+    icon: "solar:chat-round-dots-bold",
+    href: siteConfig.adminLinks.tgMsg,
+  },
   users: {
     title: "Користувачі",
     icon: "solar:expressionless-square-bold",
