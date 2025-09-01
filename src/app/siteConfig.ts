@@ -6,6 +6,7 @@ export const siteConfig: SiteConfig = {
   description:
     "Join the community that's bringing money earning opportunities like never before",
   adminLinks: {
+    tgMsg: "tg-msg",
     users: "/users",
     transactions: "/transactions",
     missions: "/missions",
@@ -37,6 +38,7 @@ export const siteConfig: SiteConfig = {
       "userMods",
       "referralEarnings",
       "permissions",
+      "tgMsg",
     ],
     teamlead: [
       "users",
@@ -52,9 +54,7 @@ export const siteConfig: SiteConfig = {
       "referralEarnings",
       //"permissions",
     ],
-    marketing: [
-      "users"
-    ],
+    marketing: ["users"],
     guest: ["users", "transactions", "overview", "withdrawals"],
   },
 } as const satisfies SiteConfig
