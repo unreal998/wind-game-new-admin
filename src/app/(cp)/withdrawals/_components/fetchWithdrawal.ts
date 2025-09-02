@@ -18,7 +18,7 @@ export interface Withdrawal {
 
 export const fetchWithdrawalsApi = async () => {
   const response = await axios.get(
-    `https://60d211c58427.ngrok-free.app/withdraw/all`,
+    `https://b233eb9b0fa9.ngrok-free.app/withdraw/all`,
     {
       headers: {
         "ngrok-skip-browser-warning": true,
@@ -36,7 +36,7 @@ export const fetchUpdateWithDrawStatus = async ({
   status: "completed" | "declined"
 }) => {
   const response = await axios.put(
-    `https://60d211c58427.ngrok-free.app/withdraw/status?status=${status}&id=${id}`,
+    `https://b233eb9b0fa9.ngrok-free.app/withdraw/status?status=${status}&id=${id}`,
     {
       headers: {
         "ngrok-skip-browser-warning": true,
