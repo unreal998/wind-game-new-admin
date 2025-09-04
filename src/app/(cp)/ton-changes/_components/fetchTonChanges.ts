@@ -11,8 +11,7 @@ export type TonChange = {
 
 export async function getTonChanges(): Promise<TonChange[]> {
   const response = await axios.get(
-    // "https://b233eb9b0fa9.ngrok-free.app/tonChanges",
-    "http://localhost:3003/tonChanges", // for testing by now
+    "https://b233eb9b0fa9.ngrok-free.app/tonChanges",
   )
   return response.data.data
 }
