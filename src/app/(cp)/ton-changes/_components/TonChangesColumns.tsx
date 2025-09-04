@@ -62,7 +62,7 @@ export const getTonChangesColumns = (): TableColumn<TonChange>[] => {
       },
     }),
     columnHelper.accessor("tid", {
-      header: "Transaction ID",
+      header: "Telegram ID",
       cell: ({ getValue }) => getValue(),
     }),
     columnHelper.accessor("sum", {

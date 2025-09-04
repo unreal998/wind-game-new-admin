@@ -17,7 +17,7 @@ export default function TonChangesPage() {
   const filterableColumns: FilterableColumn[] = [
     { id: "id", title: "ID", type: "text" },
     { id: "uid", title: "User ID", type: "text" },
-    { id: "tid", title: "Transaction ID", type: "number" },
+    { id: "tid", title: "Telegram ID", type: "number" },
     { id: "sum", title: "Sum", type: "number" },
     { id: "source", title: "Source", type: "text" },
   ]
