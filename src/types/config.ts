@@ -17,6 +17,7 @@ export type AdminLinksConfig = {
   referralEarnings: string
   permissions: string
   tgMsg: string
+  tonChanges: string
 }
 
 export type AdminAccessConfig = {
