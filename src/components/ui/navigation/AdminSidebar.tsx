@@ -31,7 +31,7 @@ interface SectionConfig {
 
 const sectionConfigs: Record<AdminLinkKeys, SectionConfig> = {
   tonChanges: {
-    title: "TON зміни",
+    title: "TON нарахування",
     icon: "solar:chat-round-dots-bold",
     href: siteConfig.adminLinks.tonChanges,
   },

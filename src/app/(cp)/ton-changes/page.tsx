@@ -43,7 +43,7 @@ export default function TonChangesPage() {
   return (
     <>
       <div className="mb-4 flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">TON Зміни</h1>
+        <h1 className="text-2xl font-semibold">TON Нарахування</h1>
       </div>
 
       <Card className="p-0">

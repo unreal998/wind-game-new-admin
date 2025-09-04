@@ -66,15 +66,15 @@ export const getTonChangesColumns = (): TableColumn<TonChange>[] => {
       cell: ({ getValue }) => getValue(),
     }),
     columnHelper.accessor("sum", {
-      header: "Sum",
+      header: "Сума в TON",
       cell: ({ getValue }) => getValue(),
     }),
     columnHelper.accessor("source", {
-      header: "Source",
+      header: "Джерело",
       cell: ({ getValue }) => getValue(),
     }),
     columnHelper.accessor("created_at", {
-      header: "Date",
+      header: "Дата",
       cell: ({ getValue }) => new Date(getValue()).toLocaleString("uk-UA"),
     }),
   ]
