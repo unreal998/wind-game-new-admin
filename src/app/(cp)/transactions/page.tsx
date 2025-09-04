@@ -66,8 +66,8 @@ export default function WalletsAdminPage() {
           return {
             ...item,
             invitedBy: user?.invitedBy || "",
-            telegramID: user.telegramID ?? "",
-            userName: user.userName ?? "",
+            telegramID: user?.telegramID ?? "",
+            userName: user?.userName ?? "",
           }
         })
         setTransactions(transactionsData)
@@ -79,7 +79,7 @@ export default function WalletsAdminPage() {
     }
 
     loadTransactions()
-  }, [])
+  }, [setTransactions])
 
   if (userRole === "marketing") return <NotAllowed />
 
