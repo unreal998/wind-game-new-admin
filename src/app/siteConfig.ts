@@ -6,6 +6,7 @@ export const siteConfig: SiteConfig = {
   description:
     "Join the community that's bringing money earning opportunities like never before",
   adminLinks: {
+    tonChanges: "ton-changes",
     tgMsg: "tg-msg",
     users: "/users",
     transactions: "/transactions",
@@ -39,6 +40,7 @@ export const siteConfig: SiteConfig = {
       "referralEarnings",
       "permissions",
       "tgMsg",
+      "tonChanges",
     ],
     teamlead: [
       "users",
@@ -52,6 +54,8 @@ export const siteConfig: SiteConfig = {
       "windMods",
       "userMods",
       "referralEarnings",
+      "tgMsg",
+      "tonChanges",
       //"permissions",
     ],
     marketing: ["users"],
