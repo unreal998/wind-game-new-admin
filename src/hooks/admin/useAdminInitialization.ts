@@ -98,7 +98,7 @@ export function useAdminInitialization() {
     }, [fetchUserTasks, subscribeToUserTasks]);
 
     useEffect(() => {
-        fetchReferralEarnings();
+        fetchReferralEarnings(0);
         subscribeToReferralEarnings();
     }, [fetchReferralEarnings, subscribeToReferralEarnings]);
 }

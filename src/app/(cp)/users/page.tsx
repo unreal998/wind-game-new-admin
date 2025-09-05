@@ -62,6 +62,9 @@ export default function ReferralsAdminPage() {
   const handleSubReferalData = useCallback((row: AdminProfile) => {
     setSelectedSubRowId(row.id === selectedSubRowId ? '' : row.id)
     if (row.id != selectedSubRowId) {
+      setSelectedSub3RowId('')
+      setSelectedSub4RowId('')
+      setSelectedSub5RowId('')
       fetchMarketingSubReferalsProfiles(row.telegramID)
     }
   }, [setSelectedSubRowId, selectedSubRowId, fetchMarketingSubReferalsProfiles])
@@ -69,6 +72,8 @@ export default function ReferralsAdminPage() {
   const handleSub3ReferalData = useCallback((row: AdminProfile) => {
     setSelectedSub3RowId(row.id === selectedSub3RowId ? '' : row.id)
     if (row.id != selectedSub3RowId) {
+      setSelectedSub4RowId('')
+      setSelectedSub5RowId('')
       fetchMarketingSubReferalsProfiles3(row.telegramID)
     }
   }, [setSelectedSub3RowId, selectedSub3RowId, fetchMarketingSubReferalsProfiles3])
@@ -76,6 +81,7 @@ export default function ReferralsAdminPage() {
   const handleSub4ReferalData = useCallback((row: AdminProfile) => {
     setSelectedSub4RowId(row.id === selectedSub4RowId ? '' : row.id)
     if (row.id != selectedSub4RowId) {
+      setSelectedSub5RowId('')
       fetchMarketingSubReferalsProfiles4(row.telegramID)
     }
   }, [setSelectedSub4RowId, selectedSub4RowId, fetchMarketingSubReferalsProfiles4])
@@ -91,10 +97,21 @@ export default function ReferralsAdminPage() {
     setSelectedRowid(row.id === selectedRowid ? '' : row.id)
     if (row.id != selectedRowid) {
       setSelectedSubRowId('')
+      setSelectedSub3RowId('')
+      setSelectedSub4RowId('')
+      setSelectedSub5RowId('')
       fetchMarketingReferalsProfiles(row.telegramID)
     }
 
-  }, [setSelectedRowid, selectedRowid, fetchMarketingReferalsProfiles, setSelectedSubRowId])
+  }, [
+    setSelectedRowid, 
+    selectedRowid, 
+    fetchMarketingReferalsProfiles, 
+    setSelectedSubRowId,
+    setSelectedSub3RowId,
+    setSelectedSub4RowId,
+    setSelectedSub5RowId,
+  ])
 
   useEffect(() => {
     setTotalTONSum(
