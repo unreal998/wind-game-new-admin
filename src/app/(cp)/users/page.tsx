@@ -30,8 +30,14 @@ export default function ReferralsAdminPage() {
     fetchMarketingProfiles, 
     fetchMarketingReferalsProfiles, 
     fetchMarketingSubReferalsProfiles, 
+    fetchMarketingSubReferalsProfiles3, 
+    fetchMarketingSubReferalsProfiles4, 
+    fetchMarketingSubReferalsProfiles5, 
     marketingReferalsProfiles, 
-    marketingSubReferalsProfiles 
+    marketingSubReferalsProfiles,
+    marketingSubReferalsProfiles3,
+    marketingSubReferalsProfiles4,
+    marketingSubReferalsProfiles5,
   } = useAdminReferralsStore()
   const userRole = useUserStore(roleSelector)
   const [activeUser, setActiveUser] = useState<any | null>(null)
@@ -49,6 +55,9 @@ export default function ReferralsAdminPage() {
   const [userPermissions, setUserPermissionsData] = useState<CreatePermissionDto | null>(null)
   const [selectedRowid, setSelectedRowid] = useState<string>('')
   const [selectedSubRowId, setSelectedSubRowId] = useState<string>('')
+  const [selectedSub3RowId, setSelectedSub3RowId] = useState<string>('')
+  const [selectedSub4RowId, setSelectedSub4RowId] = useState<string>('')
+  const [selectedSub5RowId, setSelectedSub5RowId] = useState<string>('')
 
   const handleSubReferalData = useCallback((row: AdminProfile) => {
     setSelectedSubRowId(row.id === selectedSubRowId ? '' : row.id)
@@ -56,6 +65,27 @@ export default function ReferralsAdminPage() {
       fetchMarketingSubReferalsProfiles(row.telegramID)
     }
   }, [setSelectedSubRowId, selectedSubRowId, fetchMarketingSubReferalsProfiles])
+
+  const handleSub3ReferalData = useCallback((row: AdminProfile) => {
+    setSelectedSub3RowId(row.id === selectedSub3RowId ? '' : row.id)
+    if (row.id != selectedSub3RowId) {
+      fetchMarketingSubReferalsProfiles3(row.telegramID)
+    }
+  }, [setSelectedSub3RowId, selectedSub3RowId, fetchMarketingSubReferalsProfiles3])
+
+  const handleSub4ReferalData = useCallback((row: AdminProfile) => {
+    setSelectedSub4RowId(row.id === selectedSub4RowId ? '' : row.id)
+    if (row.id != selectedSub4RowId) {
+      fetchMarketingSubReferalsProfiles4(row.telegramID)
+    }
+  }, [setSelectedSub4RowId, selectedSub4RowId, fetchMarketingSubReferalsProfiles4])
+
+  const handleSub5ReferalData = useCallback((row: AdminProfile) => {
+    setSelectedSub5RowId(row.id === selectedSub5RowId ? '' : row.id)
+    if (row.id != selectedSub5RowId) {
+      fetchMarketingSubReferalsProfiles5(row.telegramID)
+    }
+  }, [setSelectedSub5RowId, selectedSub5RowId, fetchMarketingSubReferalsProfiles5])
 
   const handleReferalData = useCallback((row: AdminProfile) => {
     setSelectedRowid(row.id === selectedRowid ? '' : row.id)
@@ -275,6 +305,62 @@ export default function ReferralsAdminPage() {
                     filterableColumns={filterableColumns}
                     isLoading={isLoading}
                     openSidebarOnRowClick={true}
+                    onRowClick={(row) => handleSub3ReferalData(row)}
+                    selectedRowid={selectedSub3RowId}
+                    dropDownComponent={ marketingSubReferalsProfiles3.length > 0 ? <DataTable
+                      selectedDateRange={selectedDateRange}
+                      data={marketingSubReferalsProfiles3}
+                      columns={userColumns}
+                      filterableColumns={filterableColumns}
+                      isLoading={isLoading}
+                      openSidebarOnRowClick={true}
+                      onRowClick={(row) => handleSub4ReferalData(row)}
+                      selectedRowid={selectedSub4RowId}
+                      dropDownComponent={ marketingSubReferalsProfiles4.length > 0 ? <DataTable
+                        selectedDateRange={selectedDateRange}
+                        data={marketingSubReferalsProfiles4}
+                        columns={userColumns}
+                        filterableColumns={filterableColumns}
+                        isLoading={isLoading}
+                        openSidebarOnRowClick={true}
+                        onRowClick={(row) => handleSub5ReferalData(row)}
+                        selectedRowid={selectedSub5RowId}
+                        dropDownComponent={ marketingSubReferalsProfiles5.length > 0 ? <DataTable
+                          selectedDateRange={selectedDateRange}
+                          data={marketingSubReferalsProfiles5}
+                          columns={userColumns}
+                          filterableColumns={filterableColumns}
+                          isLoading={isLoading}
+                          openSidebarOnRowClick={true}
+                          onRowClick={(row) => setActiveUser(row)}
+                          /> : <TableRow>
+                            <TableCell
+                              colSpan={ userColumns.length }
+                              className="h-24 text-center text-gray-500"
+                            > 
+                                Немає результатів
+                            </TableCell>
+                        </TableRow>
+                      }
+                        /> : <TableRow>
+                            <TableCell
+                              colSpan={ userColumns.length }
+                              className="h-24 text-center text-gray-500"
+                            > 
+                                Немає результатів
+                            </TableCell>
+                        </TableRow>
+                      }
+                    /> : 
+                    <TableRow>
+                        <TableCell
+                          colSpan={ userColumns.length }
+                          className="h-24 text-center text-gray-500"
+                        > 
+                            Немає результатів
+                        </TableCell>
+                    </TableRow>
+                    }
                   /> : 
                   <TableRow>
                     <TableCell
