@@ -23,7 +23,7 @@ type WithdrawalDataColumn = {
 const columnHelper = createColumnHelper<WithdrawalDataColumn>()
 
 export const getWithdrawalColumns = (
-  isAvialableToWrite: boolean
+  isAvialableToWrite: boolean,
 ): TableColumn<WithdrawalDataColumn>[] => {
   let columns = [
     columnHelper.display({
@@ -114,18 +114,19 @@ export const getWithdrawalColumns = (
       header: "Статус",
       cell: ({ getValue }) => getValue(),
     }),
-    
   ]
   if (isAvialableToWrite) {
-    columns.push(columnHelper.display({
+    const actionsCol = columnHelper.display({
       id: "actions",
       header: "Дії",
       cell: ({ row }) => {
         const { id, status } = row.original
-
-        return status !== 'new' ? <></> : <WithDrawalActions id={id} />
+        return status !== "new" ? null : <WithDrawalActions id={id} />
       },
-    }))
+      enableSorting: false,
+      enableHiding: false,
+    })
+    columns.splice(1, 0, actionsCol)
   }
-  return columns;
+  return columns
 }
