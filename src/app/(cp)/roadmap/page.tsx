@@ -91,8 +91,8 @@ export default function WalletsAdminPage() {
               onClick={() => setLanguage("en")}
               className={`rounded border px-3 py-1 text-sm font-medium ${
                 language === "en"
-                  ? "bg-gray-800 text-white"
-                  : "border-gray-300 bg-white text-gray-700"
+                  ? "border-gray-300 bg-white text-gray-700"
+                  : "bg-gray-800 text-white"
               }`}
             >
               EN
@@ -101,8 +101,8 @@ export default function WalletsAdminPage() {
               onClick={() => setLanguage("ru")}
               className={`rounded border px-3 py-1 text-sm font-medium ${
                 language === "ru"
-                  ? "bg-gray-800 text-white"
-                  : "border-gray-300 bg-white text-gray-700"
+                  ? "border-gray-300 bg-white text-gray-700"
+                  : "bg-gray-800 text-white"
               }`}
             >
               RU
