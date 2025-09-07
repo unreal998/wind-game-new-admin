@@ -39,7 +39,8 @@ export function useReferalsStats() {
                 first_name: "",
                 last_name: "",
               },
-              windBalance: user.WindBalance
+              windBalance: user.WindBalance,
+              id: user.id
             })
           })
         }
