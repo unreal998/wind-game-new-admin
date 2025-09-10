@@ -117,7 +117,7 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
                 telegramID: user.telegramID,
               },
               referral_user: {
-                id: user.id,
+                id: user.invitedBy,
                 username:
                   user.userName ||
                   user.id,
