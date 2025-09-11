@@ -24,7 +24,7 @@ export default function WalletsAdminPage() {
   const [aggregatedValue] = useState<string | number | null>(null)
   const [sum, setSum] = useState<number>(0)
   const [selectedDateRangeSum, setSelectedDateRangeSum] = useState<number>(0)
-    const userRole = useUserStore(roleSelector)
+  const userRole = useUserStore(roleSelector)
 
   useEffect(() => {
     setSum(transactions.reduce((acc: number, next: any) => acc + next.summ, 0))
@@ -63,6 +63,7 @@ export default function WalletsAdminPage() {
         const usersData = await getUsersByIds(uniqueUserIds)
         const transactionsData = data.map((item: any) => {
           const user = usersData.find((user: any) => user.id === item.uid)
+          if (user === undefined) return item
           return {
             ...item,
             invitedBy: user?.invitedBy || "",
