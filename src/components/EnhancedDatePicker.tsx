@@ -47,10 +47,18 @@ export function EnhancedDatePicker({
       alert("Помилка: Дата ВІД є вища ніж ДО")
       return
     }
+    const fromTime = new Date(tempDateInput.from);
+    fromTime.setHours(0)
+    fromTime.setMinutes(0)
+    fromTime.setSeconds(0)
 
+    const toTime = new Date(tempDateInput.to);
+    toTime.setHours(23)
+    toTime.setMinutes(59)
+    toTime.setSeconds(59)
     setSelectedDates({
-      from: new Date(tempDateInput.from),
-      to: new Date(tempDateInput.to),
+      from: fromTime,
+      to: toTime,
     })
   }
 
@@ -58,10 +66,28 @@ export function EnhancedDatePicker({
     <div className="flex w-full items-center justify-between">
       <div className="w-full sm:flex sm:items-center sm:gap-2">
         <DateRangePicker
-          setSelectedDateRange={setSelectedDateRange}
+          setSelectedDateRange={(dates: any) => {
+            dates?.from?.setHours(0)
+            dates?.from?.setMinutes(0)
+            dates?.from?.setSeconds(0)
+
+            dates?.to?.setHours(23)
+            dates?.to?.setMinutes(59)
+            dates?.to?.setSeconds(59)
+
+            if (setSelectedDateRange) setSelectedDateRange(dates)
+          }}
           value={selectedDates}
           onChange={(dates) => {
+            dates?.from?.setHours(0)
+            dates?.from?.setMinutes(0)
+            dates?.from?.setSeconds(0)
+
+            dates?.to?.setHours(23)
+            dates?.to?.setMinutes(59)
+            dates?.to?.setSeconds(59)
             setSelectedDates(dates)
+
             if (setSelectedDateRange && dates) {
               setSelectedDateRange(dates)
             }
