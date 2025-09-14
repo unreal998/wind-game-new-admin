@@ -6,6 +6,7 @@ import { type TableColumn } from "@/types/table"
 
 type Transaction = {
   id: string
+  txid: string
   created_at: string
   summ: number
 }
@@ -17,12 +18,16 @@ export const transactionColumns: TableColumn<Transaction>[] = [
     header: "ID",
     cell: ({ getValue }) => getValue(),
   }),
-  columnHelper.accessor("created_at", {
-    header: "Час створення",
-    cell: ({ getValue }) => formatTimestamp({ date: getValue() }),
+  columnHelper.accessor("txid", {
+    header: "txId",
+    cell: ({ getValue }) => getValue(),
   }),
   columnHelper.accessor("summ", {
     header: "Сума",
     cell: ({ getValue }) => `${getValue().toFixed(2)} TON`,
+  }),
+  columnHelper.accessor("created_at", {
+    header: "Час створення",
+    cell: ({ getValue }) => formatTimestamp({ date: getValue() }),
   }),
 ]

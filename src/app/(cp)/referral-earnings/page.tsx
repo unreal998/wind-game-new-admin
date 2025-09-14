@@ -60,7 +60,7 @@ export default function ReferralEarningsAdminPage() {
     )
     const earningsWithReferalCount = referralEarnings.map((earning) => {
       const referralUser = profiles.find(
-        (u) => Number(u.telegramID) === Number(earning.referral_user?.id),
+        (u) => Number(u.telegramID) === Number(earning.user?.id),
       )
       const referalCount = profiles.filter(
         (anotherUser) => anotherUser.invitedBy === referralUser?.telegramID,
@@ -117,6 +117,7 @@ export default function ReferralEarningsAdminPage() {
   ]
 
   const handleReferalData = useCallback((row: ReferralEarning, level: number) => {
+    console.log('row', row)
     if (row.user?.id) {
         if (level === 4) {
           setSelectedSub4RowId(row.user.id.toString() === selectedSub4RowId ? '' : row.user.id.toString())

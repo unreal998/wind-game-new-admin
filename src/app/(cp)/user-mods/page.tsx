@@ -51,7 +51,7 @@ export default function UserModsAdminPage() {
               first_name: modData.firstName || "Unknown",
               last_name: modData.lastName || "Unknown"
             },
-            pushes_done: 64 - modifierData.clicksRemaining,
+            pushes_done: 63 - modifierData.clicksRemaining,
             required_pushes: modifierData.clicksRemaining,
             ton_earned: selectedModValue?.tonValue ? ((selectedModValue.tonValue / 64) * (64 - modifierData.clicksRemaining)).toFixed(2) : 0,
             coins_earned: selectedModValue?.turxValue ? (selectedModValue.turxValue / 64) * (64 - modifierData.clicksRemaining) : 0,
