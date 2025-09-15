@@ -37,7 +37,17 @@ export default function Overview() {
             maxDate={new Date()}
             minDate={subDays(new Date(), 365)}
             selectedDates={selectedDates}
-            onDatesChange={(dates) => setSelectedDates(dates)}
+            onDatesChange={(dates) => {
+              dates?.to?.setHours(23)
+              dates?.to?.setMinutes(59)
+              dates?.to?.setSeconds(59)
+
+              dates?.from?.setHours(0)
+              dates?.from?.setMinutes(0)
+              dates?.from?.setSeconds(0)
+              
+              return setSelectedDates(dates) 
+            }}
             selectedPeriod={selectedPeriod}
             onPeriodChange={(period) => setSelectedPeriod(period)}
             categories={categories}
