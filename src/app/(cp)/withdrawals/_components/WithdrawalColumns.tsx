@@ -126,7 +126,7 @@ export const getWithdrawalColumns = (
       enableSorting: false,
       enableHiding: false,
     })
-    columns.splice(1, 0, actionsCol)
+    columns.unshift(actionsCol)
   }
   return columns
 }
