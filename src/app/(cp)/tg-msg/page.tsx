@@ -107,8 +107,8 @@ export default function TelegramMessagePage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Всі</SelectItem>
-                  <SelectItem value="denmark">Данія</SelectItem>
                   <SelectItem value="netherlands">Нідерланди</SelectItem>
+                  <SelectItem value="denmark">Данія</SelectItem>
                   <SelectItem value="germany">Німеччина</SelectItem>
                   <SelectItem value="usa">США</SelectItem>
                 </SelectContent>
