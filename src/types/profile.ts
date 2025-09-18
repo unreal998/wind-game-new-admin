@@ -7,6 +7,7 @@ type UserRow = Database["public"]["Tables"]["users"]["Row"]
 export type AdminProfile = UserRow & {
   telegramID?: string | null
   referalCount?: number
+  team?: string
 }
 
 export interface TransactionProfile {

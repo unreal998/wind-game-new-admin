@@ -60,6 +60,23 @@ export const userColumns: TableColumn<AdminProfile>[] = [
     },
   }),
 
+  columnHelper.accessor("team", {
+    header: "Команда",
+    cell: ({ getValue }) => {
+      const team = getValue()
+      return (
+        <span className="flex items-center space-x-2">
+          <span className="font-medium">{team}</span>
+        </span>
+      )
+    },
+    enableSorting: true,
+    filterFn: "text",
+    meta: {
+      exportValue: (row) => String(row.id),
+    },
+  }),
+
   columnHelper.accessor("telegramID", {
     header: "Telegram ID",
     cell: ({ getValue }) => {
