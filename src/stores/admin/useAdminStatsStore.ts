@@ -30,11 +30,11 @@ export const useAdminStatsStore = create<AdminStatsState>((set) => ({
                     }),
                     supabase.from("transactions").select("type, amount"),
                 ]);
-
             if (!transactions) {
                 throw new Error("Failed to fetch transactions");
             }
 
+            
             // Обчислюємо суми транзакцій за один прохід
             const { deposits, withdrawals } = transactions.reduce(
                 (acc, tx) => {

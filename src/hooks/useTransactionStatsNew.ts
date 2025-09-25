@@ -6,6 +6,7 @@ import { DateRange } from "react-day-picker"
 type Transaction = {
   created_at: string
   summ: number
+  txid: string
 }
 
 type DateValue = { date: Date; value: number }
@@ -34,7 +35,10 @@ export function useTransactionStatsNew(
 
         const rawData: Transaction[] = response.data.data
 
-        const grouped = rawData.reduce<Record<string, number>>((acc, item) => {
+        const filteredRawData = rawData.filter((item) => {
+          return item.txid !== "1w23uui8890bbh1y7u9it5r2cv2g" && item.txid !== "312r2r12f12r12f12fqwfh55h5h"
+        })
+        const grouped = filteredRawData.reduce<Record<string, number>>((acc, item) => {
           const key = startOfDay(new Date(item.created_at)).toISOString()
           acc[key] = (acc[key] || 0) + item.summ
           return acc

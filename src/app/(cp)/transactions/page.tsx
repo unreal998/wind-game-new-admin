@@ -23,11 +23,17 @@ export default function WalletsAdminPage() {
   const [selectedDateRange, setSelectedDateRange] = useState<DateRange>()
   const [aggregatedValue] = useState<string | number | null>(null)
   const [sum, setSum] = useState<number>(0)
+  const [clearSum, setClearSum] = useState<number>(0)
   const [selectedDateRangeSum, setSelectedDateRangeSum] = useState<number>(0)
   const userRole = useUserStore(roleSelector)
 
   useEffect(() => {
     setSum(transactions.reduce((acc: number, next: any) => acc + next.summ, 0))
+    setClearSum(
+      transactions
+        .filter((item: any) => item.txid !== "1w23uui8890bbh1y7u9it5r2cv2g" && item.txid !== "312r2r12f12r12f12fqwfh55h5h")
+        .reduce((acc: number, next: any) => acc + next.summ, 0),
+    )
     setSelectedDateRangeSum(
       transactions
         .filter((item: any) =>
@@ -94,6 +100,7 @@ export default function WalletsAdminPage() {
           sum={selectedDateRangeSum}
         />
         <Sum label="Загальна сума" sum={sum} />
+        <Sum label="Загальна сума чиста" sum={clearSum} />
 
         {!isLoading && aggregatedValue && (
           <Badge variant="indigo" className="px-3 py-1 text-base">

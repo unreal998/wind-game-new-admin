@@ -22,9 +22,13 @@ export function useTonBalanceStats(selectedDates: DateRange | undefined) {
   const [previousTotalTonBalance, setPreviousTotalTonBalance] = useState<number>(0)
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchData = async () => { 
       const transactions: Transaction[] = await fetchTransactionsApi()
       const apiWithdrawals: Withdrawal[] = await fetchWithdrawalsApi()
+
+      const filteredTransactions = transactions.filter((item) => {
+        return item.txid !== "1w23uui8890bbh1y7u9it5r2cv2g" && item.txid !== "312r2r12f12r12f12fqwfh55h5h"
+      })
 
       let from: Date, to: Date
       if (selectedDates?.from && selectedDates?.to) {
@@ -32,7 +36,7 @@ export function useTonBalanceStats(selectedDates: DateRange | undefined) {
         to = startOfDay(selectedDates.to)
       } else {
         const allDates = [
-          ...transactions.map((tx) => startOfDay(new Date(tx.created_at))),
+          ...filteredTransactions.map((tx) => startOfDay(new Date(tx.created_at))),
           ...apiWithdrawals.map((wd) => startOfDay(new Date(wd.created_at))),
         ]
         if (allDates.length) {
@@ -46,7 +50,7 @@ export function useTonBalanceStats(selectedDates: DateRange | undefined) {
       const isInRange = (date: Date) =>
         isWithinInterval(date, { start: from, end: to })
 
-      const filteredTx = transactions.filter((tx) =>
+      const filteredTx = filteredTransactions.filter((tx) =>
         isInRange(startOfDay(new Date(tx.created_at))),
       )
       const filteredWd = apiWithdrawals
@@ -68,6 +72,10 @@ export function useTonBalanceStats(selectedDates: DateRange | undefined) {
 
       const days = eachDayOfInterval({ start: from, end: to })
       let runningBalance = 0
+
+      console.log("txByDay", txByDay)
+      console.log("wdByDay", filteredWd)
+
       const result: DateValue[] = days.map((date) => {
         const key = startOfDay(date).toISOString()
         runningBalance += (txByDay[key] || 0) - (wdByDay[key] || 0)

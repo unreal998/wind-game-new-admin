@@ -76,6 +76,7 @@ export function ChartCard({
   const { turxBalance, currentTotalTurxBalance, previousTotalTurxBalance } =
     useTurxBalance(selectedDates)
 
+
   // Вибираємо потрібний набір даних
   const stats: StatsType = {
     registrations: registrationStats.registrations,

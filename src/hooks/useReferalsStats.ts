@@ -48,7 +48,7 @@ export function useReferalsStats() {
 
       const grouped = referalEarnings.reduce<Record<string, number>>((acc, item) => {
         const key = startOfDay(new Date(item.created_at)).toISOString()
-        acc[key] = (acc[key] || 0) + (item?.windBalance || 0)
+        acc[key] = (acc[key] || 0) + (item?.referalIncomeTON || 0)
         return acc
       }, {})
 
