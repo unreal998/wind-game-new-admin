@@ -19,6 +19,7 @@ import { useTurxBalance } from "@/hooks/useTurxBalance"
 import { useRegistrationStats } from "@/hooks/useRegistrationStats"
 import { useReferalsStats } from "@/hooks/useReferalsStats"
 import { useTonBalanceStats } from "@/hooks/useTonBalanceStats"
+import { usePotentialOutputStats } from "@/hooks/usePotentialOutputStats"
 
 type StatsType = {
   registrations: Array<{ date: Date; value: number }>
@@ -27,6 +28,9 @@ type StatsType = {
   referals: Array<{ date: Date; value: number }>
   turxBalance: Array<{ date: Date; value: number }>
   tonBalance: Array<{ date: Date; value: number }>
+  potentialOutput: Array<{ date: Date; value: number }>
+  referalsKWT: Array<{ date: Date; value: number }>
+  referalsTon: Array<{ date: Date; value: number }>
 }
 
 export type CardProps = {
@@ -70,21 +74,33 @@ export function ChartCard({
     useWithdrawalsStats(selectedDates)
   const { transactions, currentTotalTransactions, previousTotalTransactions } =
     useTransactionStatsNew(selectedDates, selectedPeriod)
-  const { referals } = useReferalsStats()
+  const { 
+    referalsTonBalance, 
+    referalsKWTBalance, 
+    currentTotalReferalsTonBalance, 
+    currentTotalReferalsKWTBalance, 
+    previousTotalReferalsTonBalance, 
+    previousTotalReferalsKWTBalance 
+  } = useReferalsStats(selectedDates)
   const { tonBalance, currentTotalTonBalance, previousTotalTonBalance } =
     useTonBalanceStats(selectedDates)
   const { turxBalance, currentTotalTurxBalance, previousTotalTurxBalance } =
     useTurxBalance(selectedDates)
-
+    
+  const { potentialOutput, currentTotalPotentialOutput, previousTotalPotentialOutput } =
+    usePotentialOutputStats(selectedDates)
 
   // Вибираємо потрібний набір даних
   const stats: StatsType = {
     registrations: registrationStats.registrations,
     deposits: transactions,
     withdrawals: withdrawals,
-    referals: referals,
+    referals: referalsTonBalance,
     tonBalance: tonBalance,
     turxBalance: turxBalance,
+    potentialOutput: potentialOutput,
+    referalsKWT: referalsKWTBalance,
+    referalsTon: referalsTonBalance,
   }
 
   // Створюємо інтервали для фільтрації
@@ -185,6 +201,12 @@ export function ChartCard({
           ? currentTotalTonBalance
           : title === "turxBalance"
             ? currentTotalTurxBalance
+            : title === "potentialOutput"
+              ? currentTotalPotentialOutput
+            : title === "referalsKWT"
+              ? currentTotalReferalsKWTBalance
+            : title === "referalsTon"
+              ? currentTotalReferalsTonBalance
             : chartData.reduce((acc, item) => acc + (item.value || 0), 0)
 
   const previousValue =
@@ -196,6 +218,12 @@ export function ChartCard({
           ? previousTotalTonBalance
           : title === "turxBalance"
             ? previousTotalTurxBalance
+            : title === "potentialOutput"
+              ? previousTotalPotentialOutput
+            : title === "referalsKWT"
+              ? previousTotalReferalsKWTBalance
+            : title === "referalsTon"
+              ? previousTotalReferalsTonBalance
             : chartData.reduce(
               (acc, item) => acc + (item.previousValue || 0),
               0,

@@ -22,13 +22,23 @@ export const categories = [
     type: "currency" as const,
   },
   {
-    title: "referals",
-    label: "Реферальні",
+    title: "tonBalance",
+    label: "TON Баланс",
     type: "currency" as const,
   },
   {
-    title: "tonBalance",
-    label: "TON Баланс",
+    title: "potentialOutput",
+    label: "Прогнозована сума виплат",
+    type: "currency" as const,
+  },
+  {
+    title: "referalsKWT",
+    label: "кВт Рефералів",
+    type: "currency" as const,
+  },
+  {
+    title: "referalsTon",
+    label: "TON Рефералів",
     type: "currency" as const,
   },
 ] as const

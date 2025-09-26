@@ -137,6 +137,28 @@ export const userModColumns: TableColumn<UserMod>[] = [
     },
   }),
 
+  columnHelper.accessor("ton_remaining", {
+    header: "Залишилось TON",
+    cell: ({ getValue }) => `${formatAmount(getValue())} TON`,
+    enableSorting: true,
+    filterFn: "number",
+    meta: {
+      exportValue: (row) => row.ton_remaining || 0,
+      exportAlign: "right",
+    },
+  }),
+
+  columnHelper.accessor("coins_remaining", {
+    header: "Залишилось кВт",
+    cell: ({ getValue }) => `${getValue()} кВт`,
+    enableSorting: true,
+    filterFn: "number",
+    meta: {
+      exportValue: (row) => row.coins_remaining || 0,
+      exportAlign: "right",
+    },
+  }),
+
   columnHelper.accessor("purchased_at", {
     header: "Дата покупки",
     cell: ({ getValue }) => <DateWithDistance date={getValue()} />,

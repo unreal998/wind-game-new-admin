@@ -19,4 +19,6 @@ export type UserMod =
         };
         locationName?: string;
         location_id?: string;
+        ton_remaining?: number;
+        coins_remaining?: number;
     };

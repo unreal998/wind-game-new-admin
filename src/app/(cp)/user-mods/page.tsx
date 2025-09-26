@@ -55,6 +55,8 @@ export default function UserModsAdminPage() {
             required_pushes: modifierData.clicksRemaining,
             ton_earned: selectedModValue?.tonValue ? ((selectedModValue.tonValue / 64) * (64 - modifierData.clicksRemaining)).toFixed(2) : 0,
             coins_earned: selectedModValue?.turxValue ? (selectedModValue.turxValue / 64) * (64 - modifierData.clicksRemaining) : 0,
+            ton_remaining: selectedModValue?.tonValue ? ((selectedModValue.tonValue / 64) * modifierData.clicksRemaining).toFixed(2) : 0,
+            coins_remaining: selectedModValue?.turxValue ? (selectedModValue.turxValue / 64) * modifierData.clicksRemaining : 0,
             price: selectedModValue?.price || 0,
             purchased_at: modifierData.boughtDate,
             location_id: modifier.areaName || "",
@@ -109,6 +111,16 @@ export default function UserModsAdminPage() {
     {
       id: "ton_earned",
       title: "Зароблено TON",
+      type: "number",
+    },
+    {
+      id: "ton_remaining",
+      title: "Залишилось TON",
+      type: "number",
+    },
+    {
+      id: "coins_remaining",
+      title: "Залишилось кВт",
       type: "number",
     },
     {

@@ -3,15 +3,17 @@
 import { cx } from "@/lib/utils"
 import { categories, type PeriodValue } from "@/types/overview"
 import { subDays } from "date-fns"
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { type DateRange } from "react-day-picker"
 import { ChartCard } from "./_components/ChartCard"
 import { FilterBar } from "./_components/FilterBar"
 import { roleSelector, useUserStore } from "@/stores/useUserStore"
 import NotAllowed from "@/components/NotAllowed"
+import axios from "axios"
 
 export default function Overview() {
   const userRole = useUserStore(roleSelector)
+  const [potentialTonOutput, setPotentialTonOutput] = useState<number>(0)
   const [selectedDates, setSelectedDates] = React.useState<
     DateRange | undefined
   >({
@@ -25,6 +27,18 @@ export default function Overview() {
   const [selectedCategories, setSelectedCategories] = React.useState<
     (typeof categories)[number]["title"][]
   >(categories.map((category) => category.title))
+
+  useEffect(() => {
+      const fetchPotentialTonOutput = async () => {
+        const potentialTonOutput = await axios.get(`https://3623de90c38f.ngrok-free.app/user/potential-ton-output`, {
+          headers: {
+            "ngrok-skip-browser-warning": true,
+          },
+        })
+        setPotentialTonOutput(potentialTonOutput.data.potentialTONOutput)
+      }
+      fetchPotentialTonOutput()
+  }, [])
 
   if (userRole === "marketing") return <NotAllowed />
 
@@ -71,7 +85,8 @@ export default function Overview() {
                 selectedDates={selectedDates}
                 selectedPeriod={selectedPeriod}
               />
-            ))}
+          ))}
+          <div>Загальна прогнозована сума виплат на даний момент: {potentialTonOutput.toFixed(2)} TON </div>
         </dl>
       </section>
     </>
