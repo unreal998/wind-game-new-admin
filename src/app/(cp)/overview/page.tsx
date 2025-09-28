@@ -30,7 +30,7 @@ export default function Overview() {
 
   useEffect(() => {
       const fetchPotentialTonOutput = async () => {
-        const potentialTonOutput = await axios.get(`https://3623de90c38f.ngrok-free.app/user/potential-ton-output`, {
+        const potentialTonOutput = await axios.get(`https://generously-nonfluorescent-marivel.ngrok-free.dev/user/potential-ton-output`, {
           headers: {
             "ngrok-skip-browser-warning": true,
           },

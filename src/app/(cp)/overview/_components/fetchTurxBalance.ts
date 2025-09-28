@@ -2,8 +2,8 @@ import axios from "axios"
 
 export async function fetchGetTurxBalance() {
   const response = await axios.get(
-    `https://3623de90c38f.ngrok-free.app/turx_dynamic`,
-    // `https://3623de90c38f.ngrok-free.app`,
+    `https://generously-nonfluorescent-marivel.ngrok-free.dev/turx_dynamic`,
+    // `https://generously-nonfluorescent-marivel.ngrok-free.dev`,
     {
       headers: {
         "ngrok-skip-browser-warning": true,

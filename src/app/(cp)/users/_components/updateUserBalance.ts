@@ -8,7 +8,7 @@ export const updateUserKWTBalance = async ({
   WindBalance: number
 }) => {
   const response = await axios.post(
-    `https://3623de90c38f.ngrok-free.app/user?uid=${id}`,
+    `https://generously-nonfluorescent-marivel.ngrok-free.dev/user?uid=${id}`,
     {
       WindBalance,
     },
@@ -24,7 +24,7 @@ export const updateUserTONBalance = async ({
   TONBalance: number
 }) => {
   const response = await axios.post(
-    `https://3623de90c38f.ngrok-free.app/user?uid=${id}`,
+    `https://generously-nonfluorescent-marivel.ngrok-free.dev/user?uid=${id}`,
     {
       TONBalance,
     },
@@ -40,7 +40,7 @@ export const replenishUserTONBalance = async ({
   amount: number
 }) => {
   const response = await axios.post(
-    `https://3623de90c38f.ngrok-free.app/transaction/ipn`,
+    `https://generously-nonfluorescent-marivel.ngrok-free.dev/transaction/ipn`,
     {
       to: wallet,
       amount: amount,

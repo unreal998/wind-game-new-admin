@@ -36,7 +36,7 @@ export type CreateMissionData = {
 
 export async function fetchMissions() {
   const missionsDataRequest = await axios.get(
-    `https://3623de90c38f.ngrok-free.app/missions`,
+    `https://generously-nonfluorescent-marivel.ngrok-free.dev/missions`,
     {
       headers: {
         "ngrok-skip-browser-warning": true,
@@ -48,7 +48,7 @@ export async function fetchMissions() {
 
 export async function fetchAddMissions(createMissionData: CreateMissionData) {
   const missionsDataRequest = await axios.put(
-    `https://3623de90c38f.ngrok-free.app/missions`,
+    `https://generously-nonfluorescent-marivel.ngrok-free.dev/missions`,
     createMissionData,
     {
       headers: {
@@ -61,7 +61,7 @@ export async function fetchAddMissions(createMissionData: CreateMissionData) {
 
 export async function fetchDeleteMission(id: MissionsData["id"]) {
   const response = await axios.delete(
-    `https://3623de90c38f.ngrok-free.app/missions?id=${id}`,
+    `https://generously-nonfluorescent-marivel.ngrok-free.dev/missions?id=${id}`,
     {
       headers: {
         "ngrok-skip-browser-warning": true,

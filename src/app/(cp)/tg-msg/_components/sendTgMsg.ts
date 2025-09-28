@@ -10,7 +10,7 @@ export type TgMsgPayload = {
 
 export async function sendTgMsg(tgMsgPayload: TgMsgPayload) {
   await axios.post(
-    "https://3623de90c38f.ngrok-free.app/tgbot/send-msg",
+    "https://generously-nonfluorescent-marivel.ngrok-free.dev/tgbot/send-msg",
     tgMsgPayload,
   )
   return

@@ -77,7 +77,7 @@ export const useAdminPermissionsStore = create<AdminPermissionsState>(
     ) => {
       try {
         const { data } = await axios.put(
-          `https://3623de90c38f.ngrok-free.app/permissions?id=${id}`,
+          `https://generously-nonfluorescent-marivel.ngrok-free.dev/permissions?id=${id}`,
           permissionData,
         )
         if (data.error) {
