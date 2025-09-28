@@ -3,7 +3,7 @@ import axios from "axios"
 
 export const fetchTransactionsApi = async () => {
   const response = await axios.get(
-    `https://generously-nonfluorescent-marivel.ngrok-free.dev/transaction/all`,
+    `https://turbinex.pp.ua/transaction/all`,
     {
       headers: {
         "ngrok-skip-browser-warning": true,

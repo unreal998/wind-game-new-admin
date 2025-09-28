@@ -18,7 +18,7 @@ export interface Withdrawal {
 
 export const fetchWithdrawalsApi = async () => {
   const response = await axios.get(
-    `https://generously-nonfluorescent-marivel.ngrok-free.dev/withdraw/all`,
+    `https://turbinex.pp.ua/withdraw/all`,
     {
       headers: {
         "ngrok-skip-browser-warning": true,
@@ -36,7 +36,7 @@ export const fetchUpdateWithDrawStatus = async ({
   status: "completed" | "declined"
 }) => {
   const response = await axios.put(
-    `https://generously-nonfluorescent-marivel.ngrok-free.dev/withdraw/status?status=${status}&id=${id}`,
+    `https://turbinex.pp.ua/withdraw/status?status=${status}&id=${id}`,
     {
       headers: {
         "ngrok-skip-browser-warning": true,

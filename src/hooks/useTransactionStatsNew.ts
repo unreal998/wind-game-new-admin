@@ -25,7 +25,7 @@ export function useTransactionStatsNew(
     const fetchTransactions = async () => {
       try {
         const response = await axios.get(
-          "https://generously-nonfluorescent-marivel.ngrok-free.dev/transaction/all",
+          "https://turbinex.pp.ua/transaction/all",
           {
             headers: {
               "ngrok-skip-browser-warning": true,

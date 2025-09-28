@@ -20,7 +20,7 @@ export function useWithdrawalsStats(selectedDates: DateRange | undefined) {
     const fetchWithdrawals = async () => {
       try {
         const response = await axios.get(
-          "https://generously-nonfluorescent-marivel.ngrok-free.dev/withdraw/all",
+          "https://turbinex.pp.ua/withdraw/all",
           {
             headers: {
               "ngrok-skip-browser-warning": true,
