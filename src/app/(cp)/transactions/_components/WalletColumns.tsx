@@ -14,6 +14,7 @@ type Transaction = {
   txid: string
   invitedBy: string
   userName: string
+  team: string
 }
 
 const columnHelper = createColumnHelper<Transaction>()
@@ -114,6 +115,13 @@ export const walletColumns: TableColumn<Transaction>[] = [
           <CopyButton text={value} />
         </span>
       )
+    },
+  }),
+  columnHelper.accessor("team", {
+    header: "Команда",
+    cell: ({ getValue }) => {
+      const value = getValue()
+      return <span className="max-w-[160px] truncate">{value}</span>
     },
   }),
   columnHelper.accessor("invitedBy", {

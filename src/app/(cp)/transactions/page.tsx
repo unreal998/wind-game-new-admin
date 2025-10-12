@@ -75,6 +75,7 @@ export default function WalletsAdminPage() {
             invitedBy: user?.invitedBy || "",
             telegramID: user?.telegramID ?? "",
             userName: user?.userName ?? "",
+            team: user?.team ?? "",
           }
         })
         setTransactions(transactionsData)

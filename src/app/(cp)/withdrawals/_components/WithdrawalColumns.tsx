@@ -9,6 +9,7 @@ import WithDrawalActions from "./WithDrawalActions"
 type WithdrawalDataColumn = {
   id: string
   inviter: string
+  team: string
   created_at: string
   wallet: string
   sum: number
@@ -80,6 +81,13 @@ export const getWithdrawalColumns = (
             <CopyButton text={inviter} />
           </span>
         )
+      },
+    }),
+    columnHelper.accessor("team", {
+      header: "Команда",
+      cell: ({ getValue }) => {
+        const value = getValue()
+        return <span className="max-w-[160px] truncate">{value}</span>
       },
     }),
     columnHelper.accessor("wallet", {

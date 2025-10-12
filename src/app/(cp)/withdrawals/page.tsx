@@ -113,6 +113,7 @@ export default function WithdrawalAdminPage() {
           const withdrawalWithInviter = {
             ...withdrawal,
             inviter: user.invitedBy,
+            team: user.team,
           }
           return withdrawalWithInviter
         }
