@@ -46,7 +46,7 @@ export default function UserModsAdminPage() {
           const selectedModValue = selectedMod?.values[modifierData.speed - 1];
           const userMod = {
             user: { 
-              id: modData.id,
+              id: modData.telegramID,
               username: modData.userName || modData.telegramID,
               first_name: modData.firstName || "Unknown",
               last_name: modData.lastName || "Unknown"
@@ -69,8 +69,8 @@ export default function UserModsAdminPage() {
 
   const filterableColumns: FilterableColumn[] = [
     {
-      id: "user.id",
-      title: "ID користувача",
+      id: "user.telegramID",
+      title: "Telegram ID користувача",
       type: "text",
     },
     {

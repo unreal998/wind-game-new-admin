@@ -22,8 +22,8 @@ export default function UserLocationsAdminPage() {
 
   const filterableColumns: FilterableColumn[] = [
     {
-      id: "user.id",
-      title: "ID користувача",
+      id: "user.telegramID",
+      title: "Telegram ID користувача",
       type: "text",
     },
     {
@@ -80,7 +80,7 @@ export default function UserLocationsAdminPage() {
       const selectedCountire = countries.find((c) => c.shortName === area.name)
       const userMod = {
         user: {
-          id: locationData.id,
+          id: locationData.telegramID,
           username: locationData.userName || locationData.telegramID,
           first_name: locationData.firstName || "Unknown",
           last_name: locationData.lastName || "Unknown",
