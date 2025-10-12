@@ -40,17 +40,26 @@ export const useAdminReferralsStore = create<AdminReferralsState>(
 
     fetchProfiles: async () => {
       try {
-        const { data, error } = await supabase
-          .from("users")
-          .select("*")
-          .order("created_at", { ascending: false })
+        const PAGE_SIZE = 1000;
+        let allUsers: any[] = [];
+        let from = 0;
+        let hasMore = true;
 
-        if (error) throw error
+        while (hasMore) {
+          const { data, error } = await supabase
+            .from("users")
+            .select("*")
+            .order("created_at", { ascending: false })
+            .range(from, from + PAGE_SIZE - 1);
 
-        set({
-          profiles: data || [],
-          isLoading: false,
-        })
+          if (error) throw error;
+
+          allUsers = allUsers.concat(data);
+          hasMore = data.length === PAGE_SIZE;
+          from += PAGE_SIZE;
+        }
+
+        set({ profiles: allUsers, isLoading: false });
       } catch (error) {
         console.error("Error fetching profiles:", error)
         set({ error: "Failed to load profiles", isLoading: false })
@@ -63,6 +72,7 @@ export const useAdminReferralsStore = create<AdminReferralsState>(
           .from("users")
           .select("*")
           .eq("invitedBy", tid)
+          .limit(6000) 
           .order("created_at", { ascending: false })
 
         if (error) throw error
@@ -81,6 +91,7 @@ export const useAdminReferralsStore = create<AdminReferralsState>(
           .from("users")
           .select("*")
           .eq("invitedBy", tid)
+          .limit(6000) 
           .order("created_at", { ascending: false })
 
         if (error) throw error
@@ -99,6 +110,7 @@ export const useAdminReferralsStore = create<AdminReferralsState>(
           .from("users")
           .select("*")
           .eq("invitedBy", tid)
+          .limit(6000) 
           .order("created_at", { ascending: false })
 
         if (error) throw error
@@ -117,6 +129,7 @@ export const useAdminReferralsStore = create<AdminReferralsState>(
           .from("users")
           .select("*")
           .eq("invitedBy", tid)
+          .limit(6000) 
           .order("created_at", { ascending: false })
 
         if (error) throw error
@@ -135,6 +148,7 @@ export const useAdminReferralsStore = create<AdminReferralsState>(
           .from("users")
           .select("*")
           .eq("invitedBy", tid)
+          .limit(6000) 
           .order("created_at", { ascending: false })
 
         if (error) throw error
@@ -153,6 +167,7 @@ export const useAdminReferralsStore = create<AdminReferralsState>(
           .from("users")
           .select("*")
           .eq("invitedBy", tid)
+          .limit(6000) 
           .order("created_at", { ascending: false })
 
         if (error) throw error
