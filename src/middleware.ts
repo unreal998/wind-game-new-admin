@@ -4,7 +4,7 @@ import { updateSession } from "@/utils/supabase/middleware";
 
 // Разрешённые IP-адреса
 const ALLOWED_IPS = [
-  "::1",
+  // "::1", // localhost
   "5.45.79.91",
 
 ];
