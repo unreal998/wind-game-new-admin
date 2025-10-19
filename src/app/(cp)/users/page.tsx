@@ -39,6 +39,7 @@ export default function ReferralsAdminPage() {
     marketingSubReferalsProfiles4,
     marketingSubReferalsProfiles5,
   } = useAdminReferralsStore()
+
   const userRole = useUserStore(roleSelector)
   const [activeUser, setActiveUser] = useState<any | null>(null)
   const [withdrawals, setWithdrawals] = useState<any[]>()
@@ -295,7 +296,6 @@ export default function ReferralsAdminPage() {
           onRowClick={(row) => setActiveUser(row)}
         />}
         {userRole === "marketing" && <DataTable
-          selectedDateRange={selectedDateRange}
           data={marketingProfiles}
           columns={userColumns}
           filterableColumns={filterableColumns}
