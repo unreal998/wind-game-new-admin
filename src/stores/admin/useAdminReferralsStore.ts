@@ -12,15 +12,7 @@ interface AdminReferralsState {
   updateUser: (updatedUser: AdminProfile) => void
   subscribeToProfiles: () => Promise<() => void>
   fetchMarketingProfiles: (tid: string) => Promise<void>
-  marketingSubReferalsProfiles: AdminProfile[]
-  marketingSubReferalsProfiles3: AdminProfile[]
-  marketingSubReferalsProfiles4: AdminProfile[]
-  marketingSubReferalsProfiles5: AdminProfile[]
   fetchMarketingReferalsProfiles: (tid: string) => Promise<void>
-  fetchMarketingSubReferalsProfiles: (tid: string) => Promise<void>
-  fetchMarketingSubReferalsProfiles3: (tid: string) => Promise<void>
-  fetchMarketingSubReferalsProfiles4: (tid: string) => Promise<void>
-  fetchMarketingSubReferalsProfiles5: (tid: string) => Promise<void>
   marketingReferalsProfiles: AdminProfile[]
 }
 
@@ -33,10 +25,6 @@ export const useAdminReferralsStore = create<AdminReferralsState>(
     error: null,
     marketingProfiles: [],
     marketingReferalsProfiles: [],
-    marketingSubReferalsProfiles: [],
-    marketingSubReferalsProfiles3: [],
-    marketingSubReferalsProfiles4: [],
-    marketingSubReferalsProfiles5: [],
 
     fetchProfiles: async () => {
       try {
@@ -66,22 +54,33 @@ export const useAdminReferralsStore = create<AdminReferralsState>(
       }
     },
 
-    fetchMarketingProfiles: async (tid: string) => {
+    fetchMarketingProfiles: async (team: string) => {
+
       try {
+        const PAGE_SIZE = 1000;
+        let allUsers: any[] = [];
+        let from = 0;
+        let hasMore = true;
+
+        while (hasMore) {
         const { data, error } = await supabase
           .from("users")
           .select("*")
-          .eq("invitedBy", tid)
-          .limit(6000) 
+          .eq("team", team)
           .order("created_at", { ascending: false })
+          .range(from, from + PAGE_SIZE - 1);
 
-        if (error) throw error
+          if (error) throw error;
 
-        set({ marketingProfiles: data || [] })
-      } 
-      catch (error) {
-        console.error("Error fetching marketing profiles:", error)
-        set({ error: "Failed to load marketing profiles" })
+          allUsers = allUsers.concat(data);
+          hasMore = data.length === PAGE_SIZE;
+          from += PAGE_SIZE;
+        }
+
+        set({ marketingProfiles: allUsers, isLoading: false });
+      } catch (error) {
+        console.error("Error fetching profiles:", error)
+        set({ error: "Failed to load profiles", isLoading: false })
       }
     },
 
@@ -97,82 +96,6 @@ export const useAdminReferralsStore = create<AdminReferralsState>(
         if (error) throw error
 
         set({ marketingReferalsProfiles: data || [] })
-      } 
-      catch (error) {
-        console.error("Error fetching marketing profiles:", error)
-        set({ error: "Failed to load marketing profiles" })
-      }
-    },
-
-    fetchMarketingSubReferalsProfiles: async (tid: string) => {
-      try {
-        const { data, error } = await supabase
-          .from("users")
-          .select("*")
-          .eq("invitedBy", tid)
-          .limit(6000) 
-          .order("created_at", { ascending: false })
-
-        if (error) throw error
-
-        set({ marketingSubReferalsProfiles: data || [] })
-      } 
-      catch (error) {
-        console.error("Error fetching marketing profiles:", error)
-        set({ error: "Failed to load marketing profiles" })
-      }
-    },
-
-    fetchMarketingSubReferalsProfiles3: async (tid: string) => {
-      try {
-        const { data, error } = await supabase
-          .from("users")
-          .select("*")
-          .eq("invitedBy", tid)
-          .limit(6000) 
-          .order("created_at", { ascending: false })
-
-        if (error) throw error
-
-        set({ marketingSubReferalsProfiles3: data || [] })
-      } 
-      catch (error) {
-        console.error("Error fetching marketing profiles:", error)
-        set({ error: "Failed to load marketing profiles" })
-      }
-    },
-
-    fetchMarketingSubReferalsProfiles4: async (tid: string) => {
-      try {
-        const { data, error } = await supabase
-          .from("users")
-          .select("*")
-          .eq("invitedBy", tid)
-          .limit(6000) 
-          .order("created_at", { ascending: false })
-
-        if (error) throw error
-
-        set({ marketingSubReferalsProfiles4: data || [] })
-      } 
-      catch (error) {
-        console.error("Error fetching marketing profiles:", error)
-        set({ error: "Failed to load marketing profiles" })
-      }
-    },
-
-    fetchMarketingSubReferalsProfiles5: async (tid: string) => {
-      try {
-        const { data, error } = await supabase
-          .from("users")
-          .select("*")
-          .eq("invitedBy", tid)
-          .limit(6000) 
-          .order("created_at", { ascending: false })
-
-        if (error) throw error
-
-        set({ marketingSubReferalsProfiles5: data || [] })
       } 
       catch (error) {
         console.error("Error fetching marketing profiles:", error)
@@ -228,4 +151,14 @@ export async function fetchUserPermissions(): Promise<GetPermissionsDto> {
     console.error("Error fetching user permissions:", error)
     throw error
   }
+}
+
+export async function fetchUserDataByTid(tid: string): Promise<AdminProfile> {
+  const { data, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("telegramID", tid)
+    .single()
+  if (error) throw error
+  return data
 }

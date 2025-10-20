@@ -40,8 +40,6 @@ export function useAdminInitialization() {
     const { fetchPushes, subscribeToPushes } = useAdminPushesStore();
     const { fetchTasks, subscribeToTasks } = useAdminTasksStore();
     const { fetchUserTasks, subscribeToUserTasks } = useAdminUserTasksStore();
-    const { fetchReferralEarnings, subscribeToReferralEarnings } =
-        useAdminReferralEarningsStore();
 
     useEffect(() => {
         fetchStats();
@@ -96,9 +94,4 @@ export function useAdminInitialization() {
         fetchUserTasks();
         subscribeToUserTasks();
     }, [fetchUserTasks, subscribeToUserTasks]);
-
-    useEffect(() => {
-        fetchReferralEarnings(0);
-        subscribeToReferralEarnings();
-    }, [fetchReferralEarnings, subscribeToReferralEarnings]);
 }

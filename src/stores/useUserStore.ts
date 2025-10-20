@@ -66,34 +66,6 @@ export const useUserStore = create<UserState & UserAction>((set) => ({
       if (userError) throw new Error(userError.message)
       if (!userData.user) throw new Error("Користувача не знайдено")
 
-      // // Використовуємо viewAsUserId зі стору якщо він є
-      // const targetUserId = get().viewAsUserId || userData.user.id;
-
-      // // Отримуємо профіль цільового користувача через admin_profiles_view
-      // const { data: profileData, error: profileError } = await supabase
-      //   .from("admin_profiles_view")
-      //   .select("*")
-      //   .eq("user_id", targetUserId)
-      //   .single();
-
-      // if (profileError) throw new Error(profileError.message);
-
-      // const newProfileState = {
-      //   user_id: profileData.user_id,
-      //   profile_id: profileData.id,
-      //   email: profileData.email,
-      //   phone: profileData.phone,
-      //   first_name: profileData.first_name,
-      //   last_name: profileData.last_name,
-      //   status: profileData.status,
-      //   level: profileData.level_id,
-      //   invite_code: profileData.invite_code,
-      //   usdt_address: profileData.usdt_address,
-      //   avatar_url: profileData.avatar_url,
-      //   last_ip: profileData.last_ip,
-      //   created_at: profileData.created_at,
-      // };
-
       const newProfileState = {
         email: userData.user.email,
       }

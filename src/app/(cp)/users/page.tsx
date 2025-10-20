@@ -3,11 +3,12 @@
 import { Card } from "@/components/Card"
 import { DataTable } from "@/components/data-table/DataTable"
 import {
+  fetchUserDataByTid,
   fetchUserPermissions,
   useAdminReferralsStore,
 } from "@/stores/admin/useAdminReferralsStore"
 import { FilterableColumn } from "@/types/table"
-import { useCallback, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { userColumns } from "./_components/UserColumns"
 import { UserSidebar } from "./_components/UserSidebar"
 import { fetchWithdrawals } from "./_components/fetchWithdrawals"
@@ -19,7 +20,6 @@ import { EnhancedDatePicker } from "@/components/EnhancedDatePicker"
 import { DateRange } from "react-day-picker"
 import { interval, isWithinInterval } from "date-fns"
 import { CreatePermissionDto } from "@/stores/admin/useAdminPermissionsStore"
-import { TableCell, TableRow } from "@/components/Table"
 
 export default function ReferralsAdminPage() {
   const { 
@@ -27,17 +27,7 @@ export default function ReferralsAdminPage() {
     isLoading, 
     updateUser, 
     marketingProfiles, 
-    fetchMarketingProfiles, 
-    fetchMarketingReferalsProfiles, 
-    fetchMarketingSubReferalsProfiles, 
-    fetchMarketingSubReferalsProfiles3, 
-    fetchMarketingSubReferalsProfiles4, 
-    fetchMarketingSubReferalsProfiles5, 
-    marketingReferalsProfiles, 
-    marketingSubReferalsProfiles,
-    marketingSubReferalsProfiles3,
-    marketingSubReferalsProfiles4,
-    marketingSubReferalsProfiles5,
+    fetchMarketingProfiles,
   } = useAdminReferralsStore()
 
   const userRole = useUserStore(roleSelector)
@@ -54,65 +44,6 @@ export default function ReferralsAdminPage() {
     useState<number>(0)
   
   const [userPermissions, setUserPermissionsData] = useState<CreatePermissionDto | null>(null)
-  const [selectedRowid, setSelectedRowid] = useState<string>('')
-  const [selectedSubRowId, setSelectedSubRowId] = useState<string>('')
-  const [selectedSub3RowId, setSelectedSub3RowId] = useState<string>('')
-  const [selectedSub4RowId, setSelectedSub4RowId] = useState<string>('')
-  const [selectedSub5RowId, setSelectedSub5RowId] = useState<string>('')
-
-  const handleSubReferalData = useCallback((row: AdminProfile) => {
-    setSelectedSubRowId(row.id === selectedSubRowId ? '' : row.id)
-    if (row.id != selectedSubRowId) {
-      setSelectedSub3RowId('')
-      setSelectedSub4RowId('')
-      setSelectedSub5RowId('')
-      fetchMarketingSubReferalsProfiles(row.telegramID)
-    }
-  }, [setSelectedSubRowId, selectedSubRowId, fetchMarketingSubReferalsProfiles])
-
-  const handleSub3ReferalData = useCallback((row: AdminProfile) => {
-    setSelectedSub3RowId(row.id === selectedSub3RowId ? '' : row.id)
-    if (row.id != selectedSub3RowId) {
-      setSelectedSub4RowId('')
-      setSelectedSub5RowId('')
-      fetchMarketingSubReferalsProfiles3(row.telegramID)
-    }
-  }, [setSelectedSub3RowId, selectedSub3RowId, fetchMarketingSubReferalsProfiles3])
-
-  const handleSub4ReferalData = useCallback((row: AdminProfile) => {
-    setSelectedSub4RowId(row.id === selectedSub4RowId ? '' : row.id)
-    if (row.id != selectedSub4RowId) {
-      setSelectedSub5RowId('')
-      fetchMarketingSubReferalsProfiles4(row.telegramID)
-    }
-  }, [setSelectedSub4RowId, selectedSub4RowId, fetchMarketingSubReferalsProfiles4])
-
-  const handleSub5ReferalData = useCallback((row: AdminProfile) => {
-    setSelectedSub5RowId(row.id === selectedSub5RowId ? '' : row.id)
-    if (row.id != selectedSub5RowId) {
-      fetchMarketingSubReferalsProfiles5(row.telegramID)
-    }
-  }, [setSelectedSub5RowId, selectedSub5RowId, fetchMarketingSubReferalsProfiles5])
-
-  const handleReferalData = useCallback((row: AdminProfile) => {
-    setSelectedRowid(row.id === selectedRowid ? '' : row.id)
-    if (row.id != selectedRowid) {
-      setSelectedSubRowId('')
-      setSelectedSub3RowId('')
-      setSelectedSub4RowId('')
-      setSelectedSub5RowId('')
-      fetchMarketingReferalsProfiles(row.telegramID)
-    }
-
-  }, [
-    setSelectedRowid, 
-    selectedRowid, 
-    fetchMarketingReferalsProfiles, 
-    setSelectedSubRowId,
-    setSelectedSub3RowId,
-    setSelectedSub4RowId,
-    setSelectedSub5RowId,
-  ])
 
   useEffect(() => {
     setTotalTONSum(
@@ -193,8 +124,13 @@ export default function ReferralsAdminPage() {
   }, [userRole])
 
   useEffect(() => {
+    const loadUserData = async () => {
+      const userData = await fetchUserDataByTid(userPermissions?.additionalField ?? '')
+      fetchMarketingProfiles(userData.team ?? '')
+    }
+
     if (userRole === "marketing" && userPermissions?.additionalField) {
-      fetchMarketingProfiles(userPermissions?.additionalField || '')
+      loadUserData()
     } else {
       setUsersColumnData(
         profiles.map((user) => {
@@ -215,7 +151,7 @@ export default function ReferralsAdminPage() {
         }),
       )
     }
-  }, [userRole, userPermissions?.additionalField, profiles])
+  }, [userRole, userPermissions?.additionalField, profiles, fetchUserDataByTid])
 
   const filterableColumns: FilterableColumn[] = [
     {
@@ -295,110 +231,15 @@ export default function ReferralsAdminPage() {
           openSidebarOnRowClick={true}
           onRowClick={(row) => setActiveUser(row)}
         />}
-        {userRole === "marketing" && <DataTable
-          data={marketingProfiles}
-          columns={userColumns}
-          filterableColumns={filterableColumns}
-          isLoading={isLoading}
-          openSidebarOnRowClick={true}
-          onRowClick={(row) => handleReferalData(row)}
-          selectedRowid={selectedRowid}
-          dropDownComponent={
-            marketingReferalsProfiles.length > 0 ?
-              <DataTable
-                selectedDateRange={selectedDateRange}
-                data={marketingReferalsProfiles}
-                columns={userColumns}
-                filterableColumns={filterableColumns}
-                isLoading={isLoading}
-                openSidebarOnRowClick={true}
-                onRowClick={(row) => handleSubReferalData(row)}
-                selectedRowid={selectedSubRowId}
-                dropDownComponent={
-                  marketingSubReferalsProfiles.length > 0 ? <DataTable
-                    selectedDateRange={selectedDateRange}
-                    data={marketingSubReferalsProfiles}
-                    columns={userColumns}
-                    filterableColumns={filterableColumns}
-                    isLoading={isLoading}
-                    openSidebarOnRowClick={true}
-                    onRowClick={(row) => handleSub3ReferalData(row)}
-                    selectedRowid={selectedSub3RowId}
-                    dropDownComponent={ marketingSubReferalsProfiles3.length > 0 ? <DataTable
-                      selectedDateRange={selectedDateRange}
-                      data={marketingSubReferalsProfiles3}
-                      columns={userColumns}
-                      filterableColumns={filterableColumns}
-                      isLoading={isLoading}
-                      openSidebarOnRowClick={true}
-                      onRowClick={(row) => handleSub4ReferalData(row)}
-                      selectedRowid={selectedSub4RowId}
-                      dropDownComponent={ marketingSubReferalsProfiles4.length > 0 ? <DataTable
-                        selectedDateRange={selectedDateRange}
-                        data={marketingSubReferalsProfiles4}
-                        columns={userColumns}
-                        filterableColumns={filterableColumns}
-                        isLoading={isLoading}
-                        openSidebarOnRowClick={true}
-                        onRowClick={(row) => handleSub5ReferalData(row)}
-                        selectedRowid={selectedSub5RowId}
-                        dropDownComponent={ marketingSubReferalsProfiles5.length > 0 ? <DataTable
-                          selectedDateRange={selectedDateRange}
-                          data={marketingSubReferalsProfiles5}
-                          columns={userColumns}
-                          filterableColumns={filterableColumns}
-                          isLoading={isLoading}
-                          openSidebarOnRowClick={true}
-                          onRowClick={(row) => setActiveUser(row)}
-                          /> : <TableRow>
-                            <TableCell
-                              colSpan={ userColumns.length }
-                              className="h-24 text-center text-gray-500"
-                            > 
-                                Немає результатів
-                            </TableCell>
-                        </TableRow>
-                      }
-                        /> : <TableRow>
-                            <TableCell
-                              colSpan={ userColumns.length }
-                              className="h-24 text-center text-gray-500"
-                            > 
-                                Немає результатів
-                            </TableCell>
-                        </TableRow>
-                      }
-                    /> : 
-                    <TableRow>
-                        <TableCell
-                          colSpan={ userColumns.length }
-                          className="h-24 text-center text-gray-500"
-                        > 
-                            Немає результатів
-                        </TableCell>
-                    </TableRow>
-                    }
-                  /> : 
-                  <TableRow>
-                    <TableCell
-                      colSpan={ userColumns.length }
-                      className="h-24 text-center text-gray-500"
-                    >
-                        Немає результатів
-                    </TableCell>
-                </TableRow>
-                }
-              />
-              : <TableRow>
-                <TableCell
-                  colSpan={ userColumns.length }
-                  className="h-24 text-center text-gray-500"
-                >
-                    Немає результатів
-                </TableCell>
-              </TableRow>
-          }
-        />}
+        {userRole === "marketing" && 
+          <DataTable
+            data={marketingProfiles}
+            columns={userColumns}
+            filterableColumns={filterableColumns}
+            isLoading={isLoading}
+            openSidebarOnRowClick={true}
+          />
+        }
       </Card>
       {activeUser &&
         (() => {
