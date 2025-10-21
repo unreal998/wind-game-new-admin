@@ -5,7 +5,6 @@ import { useUserStore } from "@/stores/useUserStore";
 import { useAdminStatsStore } from "@/stores/admin/useAdminStatsStore";
 import { useAdminLocationsStore } from "@/stores/admin/useAdminLocationsStore";
 import { useAdminPushesStore } from "@/stores/admin/useAdminPushesStore";
-import { useAdminReferralEarningsStore } from "@/stores/admin/useAdminReferralEarningsStore";
 import { useAdminReferralsStore } from "@/stores/admin/useAdminReferralsStore";
 import { useAdminTasksStore } from "@/stores/admin/useAdminTasksStore";
 import { useAdminTransactionsStore } from "@/stores/admin/useAdminTransactionsStore";
