@@ -14,7 +14,19 @@ import { UserSidebar } from "./_components/UserSidebar"
 import { fetchWithdrawals } from "./_components/fetchWithdrawals"
 import { withdrawalsColumns } from "./_components/withdrawalsColumns"
 import Sum from "@/components/Sum"
-import { AdminProfile } from "@/types/profile"
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/Select"
+import {
+  AdminProfile,
+  AdminProfileTeams,
+  adminProfileTeams,
+} from "@/types/profile"
 import { roleSelector, useUserStore } from "@/stores/useUserStore"
 import { EnhancedDatePicker } from "@/components/EnhancedDatePicker"
 import { DateRange } from "react-day-picker"
@@ -22,11 +34,11 @@ import { interval, isWithinInterval } from "date-fns"
 import { CreatePermissionDto } from "@/stores/admin/useAdminPermissionsStore"
 
 export default function ReferralsAdminPage() {
-  const { 
-    profiles, 
-    isLoading, 
-    updateUser, 
-    marketingProfiles, 
+  const {
+    profiles,
+    isLoading,
+    updateUser,
+    marketingProfiles,
     fetchMarketingProfiles,
   } = useAdminReferralsStore()
 
@@ -42,8 +54,10 @@ export default function ReferralsAdminPage() {
     useState<number>(0)
   const [selectedDateRangeKwtSum, setSelectedDateRangeKwtSum] =
     useState<number>(0)
-  
-  const [userPermissions, setUserPermissionsData] = useState<CreatePermissionDto | null>(null)
+  const [teamFilter, setTeamFilter] = useState<AdminProfileTeams | "all">("all")
+
+  const [userPermissions, setUserPermissionsData] =
+    useState<CreatePermissionDto | null>(null)
 
   useEffect(() => {
     setTotalTONSum(
@@ -114,7 +128,6 @@ export default function ReferralsAdminPage() {
           data.permissions.includes("write") && userRole === "admin",
         )
         setUserPermissionsData(data)
-
       } catch (error) {
         console.error("Failed to fetch withdrawals", error)
       }
@@ -125,33 +138,64 @@ export default function ReferralsAdminPage() {
 
   useEffect(() => {
     const loadUserData = async () => {
-      const userData = await fetchUserDataByTid(userPermissions?.additionalField ?? '')
-      fetchMarketingProfiles(userData.team ?? '')
+      const userData = await fetchUserDataByTid(
+        userPermissions?.additionalField ?? "",
+      )
+      fetchMarketingProfiles(userData.team ?? "")
     }
 
     if (userRole === "marketing" && userPermissions?.additionalField) {
       loadUserData()
     } else {
-      setUsersColumnData(
-        profiles.map((user) => {
-          const referalUsers = profiles.filter(
-            (anotherUser) => anotherUser.invitedBy === user.telegramID,
-          )
+      if (teamFilter && teamFilter != "all") {
+        setUsersColumnData(
+          profiles
+            .map((user) => {
+              const referalUsers = profiles.filter(
+                (anotherUser) => anotherUser.invitedBy === user.telegramID,
+              )
 
-          if (user.referalCount === undefined)
+              if (user.referalCount === undefined)
+                return {
+                  ...user,
+                  referalCount: referalUsers ? referalUsers.length : 0,
+                }
+
+              return {
+                ...user,
+                referalCount: referalUsers ? referalUsers.length : 0,
+              }
+            })
+            .filter((user) => user.team === teamFilter),
+        )
+      } else {
+        setUsersColumnData(
+          profiles.map((user) => {
+            const referalUsers = profiles.filter(
+              (anotherUser) => anotherUser.invitedBy === user.telegramID,
+            )
+
+            if (user.referalCount === undefined)
+              return {
+                ...user,
+                referalCount: referalUsers ? referalUsers.length : 0,
+              }
+
             return {
               ...user,
               referalCount: referalUsers ? referalUsers.length : 0,
             }
-
-          return {
-            ...user,
-            referalCount: referalUsers ? referalUsers.length : 0,
-          }
-        }),
-      )
+          }),
+        )
+      }
     }
-  }, [userRole, userPermissions?.additionalField, profiles, fetchUserDataByTid])
+  }, [
+    userRole,
+    userPermissions?.additionalField,
+    profiles,
+    fetchUserDataByTid,
+    teamFilter,
+  ])
 
   const filterableColumns: FilterableColumn[] = [
     {
@@ -205,33 +249,59 @@ export default function ReferralsAdminPage() {
     <>
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Користувачі</h1>
-        <EnhancedDatePicker setSelectedDateRange={setSelectedDateRange} />
-        {userRole && userRole !== "marketing" && <div className="flex gap-10">
-          <div className="text-1xl m-1 w-72 border-2 bg-gray-400 p-2 font-semibold text-gray-900 dark:border-gray-800 dark:bg-gray-925 dark:text-gray-50">
-            <h1>Загальна сума в обранному періоду</h1>
-            <Sum label="кВт" sum={selectedDateRangeKwtSum} />
-            <Sum label="TON" sum={selectedDateRangeTONSum} />
-          </div>
-          <div className="text-1xl m-1 min-w-max border bg-gray-400 p-2 font-semibold text-gray-900 dark:border-gray-800 dark:bg-gray-925 dark:text-gray-50">
-            <h1>Загальна сума</h1>
-            <Sum label="кВт" sum={totalTURXSum} />
-            <Sum label="TON" sum={totalTONSum} />
-          </div>
+        <div className="flex items-center gap-2">
+          <EnhancedDatePicker setSelectedDateRange={setSelectedDateRange} />
+          {userRole && userRole !== "marketing" && (
+            <Select
+              onValueChange={(value) =>
+                setTeamFilter(value as AdminProfileTeams)
+              }
+              value={teamFilter}
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select a team" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {[...adminProfileTeams, "all"].map((team) => (
+                    <SelectItem key={team} value={team}>
+                      {team === "all" ? "All Teams" : team.toUpperCase()}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          )}
         </div>
-    }
+        {userRole && userRole !== "marketing" && (
+          <div className="flex gap-10">
+            <div className="text-1xl m-1 w-72 border-2 bg-gray-400 p-2 font-semibold text-gray-900 dark:border-gray-800 dark:bg-gray-925 dark:text-gray-50">
+              <h1>Загальна сума в обранному періоду</h1>
+              <Sum label="кВт" sum={selectedDateRangeKwtSum} />
+              <Sum label="TON" sum={selectedDateRangeTONSum} />
+            </div>
+            <div className="text-1xl m-1 min-w-max border bg-gray-400 p-2 font-semibold text-gray-900 dark:border-gray-800 dark:bg-gray-925 dark:text-gray-50">
+              <h1>Загальна сума</h1>
+              <Sum label="кВт" sum={totalTURXSum} />
+              <Sum label="TON" sum={totalTONSum} />
+            </div>
+          </div>
+        )}
       </div>
 
       <Card className="p-0">
-        {userRole && userRole !== "marketing" && <DataTable
-          selectedDateRange={selectedDateRange}
-          data={usersColumnData ?? profiles}
-          columns={userColumns}
-          filterableColumns={filterableColumns}
-          isLoading={isLoading}
-          openSidebarOnRowClick={true}
-          onRowClick={(row) => setActiveUser(row)}
-        />}
-        {userRole === "marketing" && 
+        {userRole && userRole !== "marketing" && (
+          <DataTable
+            selectedDateRange={selectedDateRange}
+            data={usersColumnData ?? profiles}
+            columns={userColumns}
+            filterableColumns={filterableColumns}
+            isLoading={isLoading}
+            openSidebarOnRowClick={true}
+            onRowClick={(row) => setActiveUser(row)}
+          />
+        )}
+        {userRole === "marketing" && (
           <DataTable
             data={marketingProfiles}
             columns={userColumns}
@@ -239,7 +309,7 @@ export default function ReferralsAdminPage() {
             isLoading={isLoading}
             openSidebarOnRowClick={true}
           />
-        }
+        )}
       </Card>
       {activeUser &&
         (() => {
