@@ -61,20 +61,21 @@ export const useAdminReferralsStore = create<AdminReferralsState>(
         let allUsers: any[] = [];
         let from = 0;
         let hasMore = true;
-
+        const teamArray = [team];
+        teamArray.push('ran');
         while (hasMore) {
-        const { data, error } = await supabase
-          .from("users")
-          .select("*")
-          .eq("team", team)
-          .order("created_at", { ascending: false })
-          .range(from, from + PAGE_SIZE - 1);
+          const { data, error } = await supabase
+            .from("users")
+            .select("*")
+            .in("team", teamArray)
+            .order("created_at", { ascending: false })
+            .range(from, from + PAGE_SIZE - 1);
 
-          if (error) throw error;
+            if (error) throw error;
 
-          allUsers = allUsers.concat(data);
-          hasMore = data.length === PAGE_SIZE;
-          from += PAGE_SIZE;
+            allUsers = allUsers.concat(data);
+            hasMore = data.length === PAGE_SIZE;
+            from += PAGE_SIZE;
         }
 
         set({ marketingProfiles: allUsers, isLoading: false });
