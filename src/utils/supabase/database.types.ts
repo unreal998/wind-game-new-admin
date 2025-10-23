@@ -223,6 +223,8 @@ export type Database = {
           total_coins_earned: number | null
           total_ton_earned: number | null
           boughtAt: number | null
+          unlockedAt: number | null
+          updatedAt: number | null
           user_id: number
         }
         Insert: {

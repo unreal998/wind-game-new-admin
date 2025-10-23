@@ -53,6 +53,16 @@ export default function UserLocationsAdminPage() {
       type: "dateRange",
     },
     {
+      id: "bought_at",
+      title: "Дата покупки",
+      type: "dateRange",
+    },
+    {
+      id: "updated_at",
+      title: "Дата оновлення",
+      type: "dateRange",
+    },
+    {
       id: "last_push_at",
       title: "Останній пуш",
       type: "dateRange",
@@ -91,6 +101,8 @@ export default function UserLocationsAdminPage() {
         location_id: area.name || "",
         last_push_at: area.lastButtonPress || "",
         boughtAt: area.boughtAt || null,
+        unlockedAt: area.unlockedAt || null,
+        updatedAt: area.updatedAt || null,
       } as UserLocation
       formatUserLocations.push(userMod as UserLocation)
     })
