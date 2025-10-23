@@ -39,9 +39,7 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
 
         if (error) throw error
 
-        const allReferalIds = Array.from(
-          new Set(users.flatMap((u) => u.referals)),
-        )
+        const allReferalIds = users.map((u) => u.telegramID)
         const { data: referalUsers, error: refError } = await supabase
           .from("users")
           .select(

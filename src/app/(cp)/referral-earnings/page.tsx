@@ -49,7 +49,7 @@ export default function ReferralEarningsAdminPage() {
 
   useEffect(() => {
     if (userPermissions) {
-      if (userPermissions?.additionalField) {
+      if (userPermissions?.type === "marketing" && userPermissions?.additionalField) {
         fetchReferralEarningsReferals(userPermissions?.additionalField ?? '', 0)
       } else {
         fetchReferralEarnings(0)
@@ -200,11 +200,11 @@ export default function ReferralEarningsAdminPage() {
       <div className="mb-4 flex items-center justify-between">
         <h1 className="mr-1 text-2xl font-semibold">Реферальні</h1>
         <EnhancedDatePicker setSelectedDateRange={setSelectedDateRange} />
-        <Sum
+        {userPermissions?.type !== "marketing" && <Sum
           label="Загальна сума в кВт в обранному періоду"
           sum={selectedDateRangeSum}
-        />
-        <Sum label="Загальна сума в кВт" sum={referalSum ?? 0} />
+        />}
+        {userPermissions?.type !== "marketing" && <Sum label="Загальна сума в кВт" sum={referalSum ?? 0} />}
         {!isLoading && aggregatedValue && (
           <Badge variant="indigo" className="px-3 py-1 text-base">
             {aggregatedValue}
