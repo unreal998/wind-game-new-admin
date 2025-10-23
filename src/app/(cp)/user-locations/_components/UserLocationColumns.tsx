@@ -137,7 +137,7 @@ export const userLocationColumns: TableColumn<UserLocation>[] = [
     },
   }),
 
-  columnHelper.accessor("boughtAt", {
+  columnHelper.accessor("unlockedAt", {
     header: "Дата розблокування",
     cell: ({ getValue }) => {
       return <DateWithDistance date={getValue() ?? ""} />
@@ -147,7 +147,37 @@ export const userLocationColumns: TableColumn<UserLocation>[] = [
     meta: {
       exportValue: (row) =>
         formatTimestamp({
+          date: row.unlockedAt as any,
+        }),
+    },
+  }),
+
+  columnHelper.accessor("boughtAt", {
+    header: "Дата покупки",
+    cell: ({ getValue }) => {
+      return <DateWithDistance date={getValue() ?? ""} />
+    },
+    enableSorting: true,
+    filterFn: "dateRange",
+    meta: {
+      exportValue: (row) =>
+        formatTimestamp({
           date: row.boughtAt as any,
+        }),
+    },
+  }),
+
+  columnHelper.accessor("updatedAt", {
+    header: "Дата оновлення",
+    cell: ({ getValue }) => {
+      return <DateWithDistance date={getValue() ?? ""} />
+    },
+    enableSorting: true,
+    filterFn: "dateRange",
+    meta: {
+      exportValue: (row) =>
+        formatTimestamp({
+          date: row.updatedAt as any,
         }),
     },
   }),
