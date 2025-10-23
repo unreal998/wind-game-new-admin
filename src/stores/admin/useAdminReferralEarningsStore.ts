@@ -139,6 +139,8 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
           set({ referralEarnings4: result || [], isLoading: false })
         } else if (level === 5) {
           set({ referralEarnings5: result || [], isLoading: false })
+        } else if (level === 0) {
+          set({ referralEarnings: result || [], isLoading: false })
         }
       } 
       catch (error) {

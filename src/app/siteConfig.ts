@@ -58,7 +58,7 @@ export const siteConfig: SiteConfig = {
       "tonChanges",
       //"permissions",
     ],
-    marketing: ["users"],
+    marketing: ["users", "referralEarnings"],
     guest: ["users", "transactions", "overview", "withdrawals"],
   },
 } as const satisfies SiteConfig

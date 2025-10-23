@@ -9,12 +9,13 @@ import { referralEarningColumns } from "./_components/ReferralEarningColumns"
 import { EnhancedDatePicker } from "@/components/EnhancedDatePicker"
 import { DateRange } from "react-day-picker"
 import Sum from "@/components/Sum"
-import { useAdminReferralsStore } from "@/stores/admin/useAdminReferralsStore"
+import { fetchUserPermissions, useAdminReferralsStore } from "@/stores/admin/useAdminReferralsStore"
 import { ReferralEarning } from "@/types/referralEarning"
 import { roleSelector, useUserStore } from "@/stores/useUserStore"
 import NotAllowed from "@/components/NotAllowed"
 import { interval, isWithinInterval } from "date-fns"
 import { TableCell, TableRow } from "@/components/Table"
+import { CreatePermissionDto } from "@/stores/admin/useAdminPermissionsStore"
 
 export default function ReferralEarningsAdminPage() {
   const { 
@@ -42,6 +43,31 @@ export default function ReferralEarningsAdminPage() {
   const [selectedSub3RowId, setSelectedSub3RowId] = useState<string>('')
   const [selectedSub4RowId, setSelectedSub4RowId] = useState<string>('')
   const [selectedSub5RowId, setSelectedSub5RowId] = useState<string>('')
+  // const [isAvialableToWrite, setIsAvialableToWrite] = useState<boolean>(false)
+  const [userPermissions, setUserPermissionsData] =
+  useState<CreatePermissionDto | null>(null)
+
+  useEffect(() => {
+    if (userPermissions) {
+      if (userPermissions?.additionalField) {
+        fetchReferralEarningsReferals(userPermissions?.additionalField ?? '', 0)
+      } else {
+        fetchReferralEarnings(0)
+      }
+    }
+  }, [fetchReferralEarnings, fetchReferralEarningsReferals, userPermissions])
+
+  useEffect(() => {
+    const loadPermissions = async () => {
+      try {
+        const data = await fetchUserPermissions()
+        setUserPermissionsData(data)
+      } catch (error) {
+        console.error("Failed to fetch withdrawals", error)
+      }
+    }
+    loadPermissions()
+  }, [])
 
   useEffect(() => {
     setReferalSum(referralEarnings.reduce((sum, item) => sum + item.amount, 0))
@@ -167,7 +193,7 @@ export default function ReferralEarningsAdminPage() {
     setSelectedSub5RowId,
   ])
 
-  if (!(userRole === "admin" || userRole === "teamlead")) return <NotAllowed />
+  if (!(userRole === "admin" || userRole === "teamlead" || userRole === "marketing")) return <NotAllowed />
 
   return (
     <>
@@ -188,7 +214,6 @@ export default function ReferralEarningsAdminPage() {
 
       <Card className="p-0">
         <DataTable
-          selectedDateRange={selectedDateRange}
           data={referralEarningsData ?? referralEarnings}
           columns={referralEarningColumns}
           filterableColumns={filterableColumns}
