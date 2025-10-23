@@ -158,12 +158,12 @@ export default function ReferralsAdminPage() {
               if (user.referalCount === undefined)
                 return {
                   ...user,
-                  referalCount: referalUsers ? referalUsers.length : 0,
+                  referalCount: referalUsers ? referalUsers.length + 1 : 0,
                 }
 
               return {
                 ...user,
-                referalCount: referalUsers ? referalUsers.length : 0,
+                referalCount: referalUsers ? referalUsers.length + 1 : 0,
               }
             })
             .filter((user) => user.team === teamFilter),
@@ -178,12 +178,12 @@ export default function ReferralsAdminPage() {
             if (user.referalCount === undefined)
               return {
                 ...user,
-                referalCount: referalUsers ? referalUsers.length : 0,
+                referalCount: referalUsers ? referalUsers.length + 1 : 0,
               }
 
             return {
               ...user,
-              referalCount: referalUsers ? referalUsers.length : 0,
+              referalCount: referalUsers ? referalUsers.length + 1 : 0,
             }
           }),
         )
