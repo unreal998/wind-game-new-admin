@@ -30,6 +30,7 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
     error: '',
 
     fetchReferralEarnings: async (level: number) => {
+
       try {
         const { data: users, error } = await supabase
           .from("users")
