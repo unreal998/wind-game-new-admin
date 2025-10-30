@@ -29,6 +29,16 @@ export const getWithdrawalColumns = (
 ): TableColumn<WithdrawalDataColumn>[] => {
   let columns = [
     columnHelper.display({
+      id: "actions",
+      header: "Дії",
+      cell: ({ row }) => {
+        const { id, status } = row.original
+        return isAvialableToWrite && status !== "new" ? null : <WithDrawalActions id={id} />
+      },
+      enableSorting: false,
+      enableHiding: false,
+    }),
+    columnHelper.display({
       id: "select",
       header: ({ table }) => (
         <Checkbox
@@ -128,18 +138,5 @@ export const getWithdrawalColumns = (
       cell: ({ getValue }) => getValue(),
     }),
   ]
-  if (isAvialableToWrite) {
-    const actionsCol = columnHelper.display({
-      id: "actions",
-      header: "Дії",
-      cell: ({ row }) => {
-        const { id, status } = row.original
-        return status !== "new" ? null : <WithDrawalActions id={id} />
-      },
-      enableSorting: false,
-      enableHiding: false,
-    })
-    columns.unshift(actionsCol)
-  }
   return columns
 }
