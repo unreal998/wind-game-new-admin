@@ -8,6 +8,7 @@ import WithDrawalActions from "./WithDrawalActions"
 
 type WithdrawalDataColumn = {
   id: string
+  updated_at: string
   inviter: string
   team: string
   created_at: string
@@ -65,6 +66,10 @@ export const getWithdrawalColumns = (
           </span>
         )
       },
+    }),
+    columnHelper.accessor("updated_at", {
+      header: "Час оновлення",
+      cell: ({ getValue }) => new Date(getValue()).toLocaleString("uk-UA"),
     }),
     columnHelper.accessor("created_at", {
       header: "Час створення",
