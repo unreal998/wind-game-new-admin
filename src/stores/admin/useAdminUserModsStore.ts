@@ -19,13 +19,7 @@ export const useAdminUserModsStore = create<AdminUserModsState>((set) => ({
 
     fetchUserMods: async () => {
         try {
-            const { data, error } = await supabase
-                .from("users")
-                .select(`
-                    *
-                `)
-
-            if (error) throw error;
+            const { data, error } = await supabase.rpc('get_users_with_mods');
 
             set({ userMods: data || [], isLoading: false });
         } catch (error) {
