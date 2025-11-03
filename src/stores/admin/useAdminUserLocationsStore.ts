@@ -20,16 +20,29 @@ export const useAdminUserLocationsStore = create<AdminUserLocationsState>((
     error: null,
 
     fetchUserLocations: async () => {
+        let from = 0
+        let to = 999
+        let allData: any[] = []
         try {
+
+            while (true) {
             const { data, error } = await supabase
                 .from("users")
                 .select(`
                     *
                 `)
-
+                .range(from, to)
+            allData = allData.concat(data)
+            from += 1000
+            to += 1000
             if (error) throw error;
+            if (data.length < 1000) break
 
-            set({ userLocations: data || [], isLoading: false });
+            from += 1000
+            to += 1000
+        }
+
+        set({ userLocations: allData || [], isLoading: false });
         } catch (error) {
             console.error("Error fetching user locations:", error);
             set({ error: "Failed to load user locations", isLoading: false });
