@@ -84,24 +84,6 @@ export default function ReferralEarningsAdminPage() {
         )
         .reduce((sum, item) => sum + item.amount, 0),
     )
-    const earningsWithReferalCount = referralEarnings.map((earning) => {
-      const referralUser = profiles.find(
-        (u) => Number(u.telegramID) === Number(earning.user?.id),
-      )
-      const referalCount = profiles.filter(
-        (anotherUser) => anotherUser.invitedBy === referralUser?.telegramID,
-      ).length
-
-      return {
-        ...earning,
-        referalCount:
-          referralUser?.referalCount !== undefined
-            ? referralUser.referalCount + referalCount
-            : referalCount,
-      }
-    })
-
-    setReferralEarningsData(earningsWithReferalCount)
   }, [profiles, referralEarnings, selectedDateRange])
 
   const filterableColumns: FilterableColumn[] = [
@@ -143,7 +125,7 @@ export default function ReferralEarningsAdminPage() {
   ]
 
   const handleReferalData = useCallback((row: ReferralEarning, level: number) => {
-    console.log('row', row)
+
     if (row.user?.id) {
         if (level === 4) {
           setSelectedSub4RowId(row.user.id.toString() === selectedSub4RowId ? '' : row.user.id.toString())
@@ -214,7 +196,7 @@ export default function ReferralEarningsAdminPage() {
 
       <Card className="p-0">
         <DataTable
-          data={referralEarningsData ?? referralEarnings}
+          data={referralEarnings}
           columns={referralEarningColumns}
           filterableColumns={filterableColumns}
           isLoading={isLoading}

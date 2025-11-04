@@ -1,5 +1,6 @@
 import { type ReferralEarning } from "@/types/referralEarning"
 import { createClient } from "@/utils/supabase/client"
+import axios from "axios"
 import { create } from "zustand"
 
 interface AdminReferralEarningsState {
@@ -66,6 +67,7 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
                 username: user.userName || user.telegramID,
                 telegramID: user.telegramID,
               },
+              referalCount: user.referals.length,
               referral_user: {
                 id: id,
                 username:
@@ -91,16 +93,31 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
     },
 
     fetchReferralEarningsReferals: async (tid: string, level: number) => {
+      let allReferals: any[] = []
       try {
-        const { data, error } = await supabase
-          .from("users")
-          .select("*")
-          .eq("invitedBy", tid)
-          .order("created_at", { ascending: false })
+        let from = 0
+        let hasMore = true
+        const PAGE_SIZE = 1000
+        while (hasMore) {
+          const { data, error } = await supabase
+            .from("users")
+            .select("*")
+            .eq("invitedBy", tid)
+            .order("created_at", { ascending: false })
+            .range(from, from + PAGE_SIZE - 1)
+            if (error) throw error
+            allReferals = allReferals.concat(data)
+            hasMore = data.length === PAGE_SIZE
+            from += PAGE_SIZE
+        }
 
-        if (error) throw error
         const result: ReferralEarning[] = []
-        data.forEach((user) => {
+
+         for (const user of allReferals) {
+          let referalCount = 0;
+          if (user?.referals?.length > 0) {
+            referalCount = (await axios.post(`http://localhost:3003/user/multiple-users`, { uids: user.referals })).data
+          }
           if (user) {
             result.push({
               created_at:
@@ -115,6 +132,7 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
                 username: user.userName || user.telegramID,
                 telegramID: user.telegramID,
               },
+              referalCount: referalCount,
               referral_user: {
                 id: user.invitedBy,
                 username:
@@ -126,7 +144,8 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
               id: user.telegramID,
             })
           }
-        })
+         } 
+ 
         if (level === 1) {
           set({ referralEarnings1: result || [], isLoading: false })
         } else if (level === 2) {
