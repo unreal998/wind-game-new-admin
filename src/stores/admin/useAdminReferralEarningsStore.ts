@@ -116,7 +116,7 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
          for (const user of allReferals) {
           let referalCount = 0;
           if (user?.referals?.length > 0) {
-            referalCount = (await axios.post(`http://localhost:3003/user/multiple-users`, { uids: user.referals })).data
+            referalCount = (await axios.post(`https://turbinex.pp.ua/user/multiple-users`, { uids: user.referals })).data
           }
           if (user) {
             result.push({
