@@ -146,6 +146,30 @@ export default function ReferralsAdminPage() {
 
     if (userRole === "marketing" && userPermissions?.additionalField) {
       loadUserData()
+      if (teamFilter && teamFilter != "all") {
+        setUsersColumnData(
+          marketingProfiles
+            .map((user) => {
+              const referalUsers = marketingProfiles.filter(
+                (anotherUser) => anotherUser.invitedBy === user.telegramID,
+              )
+
+              if (user.referalCount === undefined)
+                return {
+                  ...user,
+                  referalCount: referalUsers ? referalUsers.length : 0,
+                }
+
+              return {
+                ...user,
+                referalCount: referalUsers ? referalUsers.length : 0,
+              }
+            })
+            .filter((user) => user.team === teamFilter),
+        )
+      } else {
+        setUsersColumnData(undefined)
+      }
     } else {
       if (teamFilter && teamFilter != "all") {
         setUsersColumnData(
@@ -251,7 +275,7 @@ export default function ReferralsAdminPage() {
         <h1 className="text-2xl font-semibold">Користувачі</h1>
         <div className="flex items-center gap-2">
           <EnhancedDatePicker setSelectedDateRange={setSelectedDateRange} />
-          {userRole && userRole !== "marketing" && (
+          {userRole && (
             <Select
               onValueChange={(value) =>
                 setTeamFilter(value as AdminProfileTeams)
@@ -303,7 +327,7 @@ export default function ReferralsAdminPage() {
         )}
         {userRole === "marketing" && (
           <DataTable
-            data={marketingProfiles}
+            data={usersColumnData ?? marketingProfiles}
             columns={userColumns}
             filterableColumns={filterableColumns}
             isLoading={isLoading}
