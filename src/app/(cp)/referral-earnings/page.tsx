@@ -32,8 +32,6 @@ export default function ReferralEarningsAdminPage() {
   const { profiles } = useAdminReferralsStore()
   const [referalSum, setReferalSum] = useState<number>()
   const [selectedDateRangeSum, setSelectedDateRangeSum] = useState<number>(0)
-  const [referralEarningsData, setReferralEarningsData] =
-    useState<ReferralEarning[]>()
   const userRole = useUserStore(roleSelector)
   const [aggregatedValue] = useState<string | number | null>(null)
   const [selectedDateRange, setSelectedDateRange] = useState<DateRange>()
