@@ -9,7 +9,9 @@ import { transactionColumns } from "./transactionColumns"
 import { Loader2 } from "lucide-react"
 import { areaColumns } from "./areaColumns"
 import { modifiersColumns } from "./ModifierColumn"
-import { AdminProfile } from "@/types/profile"
+import { AdminProfile, adminProfileTeams } from "@/types/profile"
+import { Select, SelectItem, SelectGroup, SelectValue, SelectTrigger, SelectContent } from "@/components/Select"
+import useIsAvailableToWrite from "@/hooks/useIsAvailableToWrite"
 
 interface UserSidebarProps {
   user: AdminProfile
@@ -128,7 +130,7 @@ export const UserSidebar = ({
             {
               label: "Команда",
               value: (
-                <EditableBalanceField
+                <TeamSelectorField
                   value={user.team as string}
                   isAvialableToWrite={isAvialableToWrite}
                   onChange={async (val) => {
@@ -261,6 +263,63 @@ const EditableBalanceField = ({
         onChange={(e) => typeof value === "number" ? setInput(parseFloat(e.target.value)) : setInput(e.target.value)}
         disabled={isLoading}
       />
+      {isAvialableToWrite && <button
+        onClick={handleSave}
+        disabled={isLoading}
+        className="ml-auto flex items-center justify-center rounded bg-indigo-600 px-3 py-1 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
+        style={{ minWidth: "84px" }}
+      >
+        {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Зберегти"}
+      </button>}
+    </div>
+  )
+}
+
+const TeamSelectorField = ({
+  value,
+  onChange,
+  isAvialableToWrite
+}: {
+  value: string
+  onChange: (val: string) => Promise<void>
+  isAvialableToWrite: boolean
+}) => {
+  const [input, setInput] = useState(value)
+  const [isLoading, setIsLoading] = useState(false)
+  
+  const handleSave = async () => {
+    setIsLoading(true)
+    try {
+      await onChange(input)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+  useEffect(() => {
+    setInput(value)
+  }, [value])
+
+  return (
+    <div className="flex w-full items-center gap-2">
+      <Select
+        onValueChange={async (value) => {
+          setInput(value);
+        }}
+        value={input}
+      >
+        <SelectTrigger className="w-[180px]">
+          <SelectValue placeholder="Select a team" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            {adminProfileTeams.map((team) => (
+              <SelectItem key={team} value={team}>
+                {team.toUpperCase()}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
       {isAvialableToWrite && <button
         onClick={handleSave}
         disabled={isLoading}
