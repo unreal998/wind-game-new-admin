@@ -3,16 +3,16 @@
 import { DataTable } from "@/components/data-table/DataTable"
 import { FilterableColumn, TableColumn } from "@/types/table"
 import { useEffect, useState } from "react"
-import { replenishUserTONBalance, updateUserKWTBalance, updateUserTONBalance } from "./updateUserBalance"
+import { replenishUserTONBalance, updateUserInvitedBy, updateUserKWTBalance, updateUserTeam, updateUserTONBalance } from "./updateUserBalance"
 import { fetchTransactionsByUid } from "./fetchTransactionsByUid"
 import { transactionColumns } from "./transactionColumns"
 import { Loader2 } from "lucide-react"
-import { Database } from "@/utils/supabase/database.types"
 import { areaColumns } from "./areaColumns"
 import { modifiersColumns } from "./ModifierColumn"
+import { AdminProfile, AdminProfileTeams } from "@/types/profile"
 
 interface UserSidebarProps {
-  user: Database["public"]["Tables"]["users"]["Row"]
+  user: AdminProfile
   onClose: () => void
   onUpdate: (user: any) => void
   isAvialableToWrite: boolean
@@ -30,7 +30,7 @@ export const UserSidebar = ({
   isAvialableToWrite
 }: UserSidebarProps) => {
   const [transactions, setTransactions] = useState<any[] | null>(null)
-
+  console.log(user)
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -86,7 +86,7 @@ export const UserSidebar = ({
                     const updated = { ...user, TONBalance: val }
                     await updateUserTONBalance({
                       id: String(user.id),
-                      TONBalance: updated.TONBalance,
+                      TONBalance: Number(val),
                     })
                     onUpdate(updated)
                   }}
@@ -103,7 +103,7 @@ export const UserSidebar = ({
                     const updated = { ...user, WindBalance: val }
                     await updateUserKWTBalance({
                       id: String(user.id),
-                      WindBalance: updated.WindBalance,
+                      WindBalance: Number(val),
                     })
                     onUpdate(updated)
                   }}
@@ -119,8 +119,42 @@ export const UserSidebar = ({
                   onChange={async (val) => {
                     await replenishUserTONBalance({
                       wallet: user.wallet as string,
-                      amount: val
+                      amount: Number(val),
                     })
+                  }}
+                />
+              ),
+            },
+            {
+              label: "Команда",
+              value: (
+                <EditableBalanceField
+                  value={user.team as string}
+                  isAvialableToWrite={isAvialableToWrite}
+                  onChange={async (val) => {
+                    const updated = { ...user, team: val }
+                    await updateUserTeam({
+                      id: String(user.id),
+                      team: String(val),
+                    })
+                    onUpdate(updated)
+                  }}
+                />
+              ),
+            },
+            {
+              label: "Привів користувача",
+              value: (
+                <EditableBalanceField
+                  value={user.invitedBy}
+                  isAvialableToWrite={isAvialableToWrite}
+                  onChange={async (val) => {
+                    const updated = { ...user, invitedBy: String(val) }
+                    await updateUserInvitedBy({
+                      id: String(user.id),
+                      invitedBy: String(val),
+                    })
+                    onUpdate(updated)
                   }}
                 />
               ),
@@ -198,8 +232,8 @@ const EditableBalanceField = ({
   onChange,
   isAvialableToWrite
 }: {
-  value: number
-  onChange: (val: number) => Promise<void>
+  value: number | string
+  onChange: (val: number | string) => Promise<void>
   isAvialableToWrite: boolean
 }) => {
   const [input, setInput] = useState(value)
@@ -221,10 +255,10 @@ const EditableBalanceField = ({
   return (
     <div className="flex w-full items-center gap-2">
       <input
-        type="number"
+        type={typeof value === "number" ? "number" : "text"}
         className="flex-grow rounded border border-gray-300 px-2 py-1 text-sm dark:border-gray-600 dark:bg-transparent dark:text-white"
         value={input}
-        onChange={(e) => setInput(parseFloat(e.target.value))}
+        onChange={(e) => typeof value === "number" ? setInput(parseFloat(e.target.value)) : setInput(e.target.value)}
         disabled={isLoading}
       />
       {isAvialableToWrite && <button

@@ -16,6 +16,36 @@ export const updateUserKWTBalance = async ({
   return response.data.data
 }
 
+export const updateUserTeam = async ({
+  id,
+  team,
+}: {
+  id: string
+  team: string
+}) => {
+  const response = await axios.post(
+    `https://turbinex.pp.ua/user?uid=${id}`,
+    {
+      team,
+    },
+  )
+  return response.data.data
+}
+
+export const updateUserInvitedBy = async ({
+  id,
+  invitedBy,
+}: {
+  id: string
+  invitedBy: string
+}) => {
+  const response = await axios.post(
+    `https://turbinex.pp.ua/user?uid=${id}`,
+    { invitedBy },
+  )
+  return response.data.data
+}
+
 export const updateUserTONBalance = async ({
   id,
   TONBalance,
