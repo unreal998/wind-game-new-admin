@@ -21,6 +21,11 @@ export default function ReferralEarningsAdminPage() {
   const { 
     referralEarnings, 
     isLoading, 
+    isLoadingEarnings1,
+    isLoadingEarnings2,
+    isLoadingEarnings3,
+    isLoadingEarnings4,
+    isLoadingEarnings5,
     referralEarnings1,
     referralEarnings2, 
     referralEarnings3, 
@@ -202,7 +207,7 @@ export default function ReferralEarningsAdminPage() {
           onRowClick={(row) => handleReferalData(row, 1)}
           selectedRowid={selectedRowid}
           dropDownComponent={
-             referralEarnings1.length ? <DataTable
+             referralEarnings1.length && !isLoadingEarnings1 ? <DataTable
               selectedDateRange={selectedDateRange}
               data={referralEarnings1}
               columns={referralEarningColumns}
@@ -210,35 +215,35 @@ export default function ReferralEarningsAdminPage() {
               filterableColumns={filterableColumns}
               onRowClick={(row) => handleReferalData(row, 2)}
               selectedRowid={selectedSubRowId}
-              isLoading={isLoading}
+              isLoading={isLoadingEarnings1}
               dropDownComponent={
-                referralEarnings2.length ? <DataTable
+                referralEarnings2.length && !isLoadingEarnings2 ? <DataTable
                   selectedDateRange={selectedDateRange}
                   data={referralEarnings2}
                   columns={referralEarningColumns}
                   filterableColumns={filterableColumns}
-                  isLoading={isLoading}
+                  isLoading={isLoadingEarnings2}
                   openSidebarOnRowClick={true}
                   onRowClick={(row) => handleReferalData(row, 3)}
                   selectedRowid={selectedSub3RowId}
                   dropDownComponent={
-                    referralEarnings3.length ? <DataTable
+                    referralEarnings3.length && !isLoadingEarnings3 ? <DataTable
                       selectedDateRange={selectedDateRange}
                       data={referralEarnings3}
                       columns={referralEarningColumns}
                       filterableColumns={filterableColumns}
-                      isLoading={isLoading}
+                      isLoading={isLoadingEarnings3}
                       openSidebarOnRowClick={true}
                       onRowClick={(row) => handleReferalData(row, 4)}
                       selectedRowid={selectedSub4RowId}
                       dropDownComponent={
-                        referralEarnings4.length ? <DataTable
+                        referralEarnings4.length && !isLoadingEarnings4 ? <DataTable
                           selectedDateRange={selectedDateRange}
                           data={referralEarnings4}
                           openSidebarOnRowClick={true}
                           columns={referralEarningColumns}
                           filterableColumns={filterableColumns}
-                          isLoading={isLoading}
+                          isLoading={isLoadingEarnings4}
                           onRowClick={(row) => handleReferalData(row, 5)}
                           selectedRowid={selectedSub5RowId}
                           dropDownComponent={
@@ -248,7 +253,7 @@ export default function ReferralEarningsAdminPage() {
                               openSidebarOnRowClick={true}
                               columns={referralEarningColumns}
                               filterableColumns={filterableColumns}
-                              isLoading={isLoading}
+                              isLoading={isLoadingEarnings5}
                             /> : 
                             <TableRow>
                               <TableCell
