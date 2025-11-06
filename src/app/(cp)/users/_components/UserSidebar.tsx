@@ -11,7 +11,6 @@ import { areaColumns } from "./areaColumns"
 import { modifiersColumns } from "./ModifierColumn"
 import { AdminProfile, adminProfileTeams } from "@/types/profile"
 import { Select, SelectItem, SelectGroup, SelectValue, SelectTrigger, SelectContent } from "@/components/Select"
-import useIsAvailableToWrite from "@/hooks/useIsAvailableToWrite"
 
 interface UserSidebarProps {
   user: AdminProfile
