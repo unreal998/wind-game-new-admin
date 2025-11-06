@@ -9,7 +9,7 @@ import { transactionColumns } from "./transactionColumns"
 import { Loader2 } from "lucide-react"
 import { areaColumns } from "./areaColumns"
 import { modifiersColumns } from "./ModifierColumn"
-import { AdminProfile, AdminProfileTeams } from "@/types/profile"
+import { AdminProfile } from "@/types/profile"
 
 interface UserSidebarProps {
   user: AdminProfile
