@@ -17,16 +17,27 @@ import Sum from "@/components/Sum"
 import { useAdminWithdrawalsStore } from "@/stores/admin/useAdminWithdrawalsStore"
 import { roleSelector, useUserStore } from "@/stores/useUserStore"
 import NotAllowed from "@/components/NotAllowed"
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/Select"
+import { adminProfileTeams, AdminProfileTeams } from "@/types/profile"
 
 export default function WithdrawalAdminPage() {
   const [selectedDateRange, setSelectedDateRange] = useState<DateRange>()
 
   const [aggregatedValue] = useState<string | number | null>(null)
   const [withdrawalsData, setWithdrawalsData] = useState<any[]>([])
+  const [filteredWithdrawalsData, setFilteredWithdrawalsData] = useState<any[]>([])
   const [completedSum, setCompletedSum] = useState<number>(0)
   const [pendingSum, setPendingSum] = useState<number>(0)
   const [isAvialableToWrite, setIsAvialableToWrite] = useState<boolean>(false)
   const userRole = useUserStore(roleSelector)
+  const [teamFilter, setTeamFilter] = useState<AdminProfileTeams | "all">("all")
 
   const { profiles, isLoading } = useAdminReferralsStore()
   const { withdrawals, isLoadingWithDrawal, fetchWithdrawals } =
@@ -136,6 +147,15 @@ export default function WithdrawalAdminPage() {
     )
   }, [withdrawalsData, selectedDateRange])
 
+  useEffect(() => {
+    if (withdrawalsData.length === 0) return
+    if (teamFilter !== "all") {
+      setFilteredWithdrawalsData(withdrawalsData.filter((withdrawal) => withdrawal.team === teamFilter))
+    } else {
+      setFilteredWithdrawalsData(withdrawalsData)
+    }
+  }, [teamFilter, withdrawalsData])
+
   if (userRole === "marketing") return <NotAllowed />
 
   return (
@@ -143,6 +163,25 @@ export default function WithdrawalAdminPage() {
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Вивід</h1>
         <EnhancedDatePicker setSelectedDateRange={setSelectedDateRange} />
+        <Select
+              onValueChange={(value) =>
+                setTeamFilter(value as AdminProfileTeams)
+              }
+              value={teamFilter}
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select a team" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {[...adminProfileTeams, "all"].map((team) => (
+                    <SelectItem key={team} value={team}>
+                      {team === "all" ? "All Teams" : team.toUpperCase()}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
         <Sum label="Сумма в очікуванні" sum={pendingSum} />
         <Sum label="Підтверджена сума" sum={completedSum} />
 
@@ -155,7 +194,7 @@ export default function WithdrawalAdminPage() {
 
       <Card className="p-0">
         <DataTable
-          data={withdrawalsData}
+          data={filteredWithdrawalsData}
           columns={getWithdrawalColumns(isAvialableToWrite)}
           filterableColumns={filterableColumns}
           isLoading={isLoading && isLoadingWithDrawal}

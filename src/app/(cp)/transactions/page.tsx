@@ -16,9 +16,12 @@ import { DateRange } from "react-day-picker"
 import { interval, isWithinInterval } from "date-fns"
 import NotAllowed from "@/components/NotAllowed"
 import { roleSelector, useUserStore } from "@/stores/useUserStore"
+import { Select, SelectItem, SelectContent, SelectGroup, SelectValue, SelectTrigger } from "@/components/Select"
+import { AdminProfileTeams, adminProfileTeams } from "@/types/profile"
 
 export default function WalletsAdminPage() {
   const [transactions, setTransactions] = useState<any[]>([])
+  const [filteredTransactions, setFilteredTransactions] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [selectedDateRange, setSelectedDateRange] = useState<DateRange>()
   const [aggregatedValue] = useState<string | number | null>(null)
@@ -26,6 +29,7 @@ export default function WalletsAdminPage() {
   const [clearSum, setClearSum] = useState<number>(0)
   const [selectedDateRangeSum, setSelectedDateRangeSum] = useState<number>(0)
   const userRole = useUserStore(roleSelector)
+  const [teamFilter, setTeamFilter] = useState<AdminProfileTeams | "all">("all")
 
   useEffect(() => {
     setSum(transactions.reduce((acc: number, next: any) => acc + next.summ, 0))
@@ -89,6 +93,15 @@ export default function WalletsAdminPage() {
     loadTransactions()
   }, [setTransactions])
 
+  useEffect(() => {
+    if (transactions.length === 0) return
+    if (teamFilter !== "all") {
+      setFilteredTransactions(transactions.filter((transaction) => transaction.team === teamFilter))
+    } else {
+      setFilteredTransactions(transactions)
+    }
+  }, [teamFilter, transactions])
+
   if (userRole === "marketing") return <NotAllowed />
 
   return (
@@ -96,6 +109,25 @@ export default function WalletsAdminPage() {
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Поповнення TON</h1>
         <EnhancedDatePicker setSelectedDateRange={setSelectedDateRange} />
+        <Select
+              onValueChange={(value) =>
+                setTeamFilter(value as AdminProfileTeams)
+              }
+              value={teamFilter}
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select a team" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {[...adminProfileTeams, "all"].map((team) => (
+                    <SelectItem key={team} value={team}>
+                      {team === "all" ? "All Teams" : team.toUpperCase()}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
         <Sum
           label="Загальна сума в обранному періоду"
           sum={selectedDateRangeSum}
@@ -113,7 +145,7 @@ export default function WalletsAdminPage() {
       <Card className="p-0">
         <DataTable
           selectedDateRange={selectedDateRange}
-          data={transactions}
+          data={filteredTransactions}
           columns={walletColumns}
           filterableColumns={filterableColumns}
           isLoading={isLoading}
