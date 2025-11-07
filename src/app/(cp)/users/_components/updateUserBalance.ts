@@ -46,6 +46,22 @@ export const updateUserInvitedBy = async ({
   return response.data.data
 }
 
+export const updateUserReferalArray = async ({
+  id,
+  referalArray,
+}: {
+  id: string
+  referalArray: string[]
+}) => {
+  const response = await axios.post(
+    `https://turbinex.pp.ua/user?uid=${id}`,
+    {
+      referals: referalArray,
+    },
+  )
+  return response.data.data
+}
+
 export const updateUserTONBalance = async ({
   id,
   TONBalance,
@@ -78,4 +94,15 @@ export const replenishUserTONBalance = async ({
     },
   )
   return response.data
+}
+
+export const getUserData = async ({
+  id,
+}: {
+  id: string
+}) => {
+  const response = await axios.get(
+    `https://turbinex.pp.ua/user?tid=${id}`,
+  )
+  return response.data.data
 }

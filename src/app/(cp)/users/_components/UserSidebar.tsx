@@ -3,7 +3,7 @@
 import { DataTable } from "@/components/data-table/DataTable"
 import { FilterableColumn, TableColumn } from "@/types/table"
 import { useEffect, useState } from "react"
-import { replenishUserTONBalance, updateUserInvitedBy, updateUserKWTBalance, updateUserTeam, updateUserTONBalance } from "./updateUserBalance"
+import { getUserData, replenishUserTONBalance, updateUserInvitedBy, updateUserKWTBalance, updateUserReferalArray, updateUserTeam, updateUserTONBalance } from "./updateUserBalance"
 import { fetchTransactionsByUid } from "./fetchTransactionsByUid"
 import { transactionColumns } from "./transactionColumns"
 import { Loader2 } from "lucide-react"
@@ -150,12 +150,34 @@ export const UserSidebar = ({
                   value={user.invitedBy}
                   isAvialableToWrite={isAvialableToWrite}
                   onChange={async (val) => {
-                    const updated = { ...user, invitedBy: String(val) }
-                    await updateUserInvitedBy({
-                      id: String(user.id),
-                      invitedBy: String(val),
-                    })
-                    onUpdate(updated)
+                    try {
+                      const newOwnerData = await getUserData({
+                        id: String(val),
+                      })
+                      if (!newOwnerData) {
+                        throw new Error("New owner data not found")
+                      }
+                      const invitedByData = await getUserData({
+                        id: String(user.invitedBy),
+                      })
+                      await updateUserReferalArray({
+                        id: String(invitedByData.id),
+                        referalArray: invitedByData.referals.filter((referal: string) => referal !== String(user.telegramID)),
+                      })
+                      const updated = { ...user, invitedBy: String(val) }
+                      const newReferalsArray = [...(newOwnerData.referals || []), String(user.telegramID)]
+                      await updateUserInvitedBy({
+                        id: String(user.id),
+                        invitedBy: String(val),
+                      })
+                      await updateUserReferalArray({
+                        id: String(newOwnerData.id),
+                        referalArray: newReferalsArray,
+                      })
+                      onUpdate(updated)
+                    } catch (error) {
+                      console.error("Failed to update user invited by", error)
+                    }
                   }}
                 />
               ),
