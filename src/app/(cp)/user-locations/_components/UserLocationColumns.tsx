@@ -96,23 +96,6 @@ export const userLocationColumns: TableColumn<UserLocation>[] = [
     },
   }),
 
-  columnHelper.accessor((row) => row.location?.profit_multiplier, {
-    id: "location.profit_multiplier",
-    header: "Множник прибутку",
-    cell: ({ getValue }) => {
-      const multiplier = getValue()
-      if (!multiplier) return "-"
-      return `${multiplier}x`
-    },
-    enableSorting: true,
-    filterFn: "number",
-    meta: {
-      exportHeader: "Множник прибутку",
-      exportValue: (row) => row.location?.profit_multiplier || 0,
-      exportAlign: "right",
-    },
-  }),
-
   columnHelper.accessor("total_coins_earned", {
     header: "Всього зароблено кВт",
     cell: ({ getValue }) => `${getValue() || 0} кВт`,

@@ -21,26 +21,22 @@ export const useAdminUserLocationsStore = create<AdminUserLocationsState>((
 
     fetchUserLocations: async () => {
         let from = 0
-        let to = 999
+        const PAGE_SIZE = 1000
         let allData: any[] = []
+        let hasMore = true
         try {
-
-            while (true) {
-            const { data, error } = await supabase
-                .from("users")
-                .select(`
-                    *
-                `)
-                .range(from, to)
-            allData = allData.concat(data)
-            from += 1000
-            to += 1000
-            if (error) throw error;
-            if (data.length < 1000) break
-
-            from += 1000
-            to += 1000
-        }
+            while (hasMore) {
+                const { data, error } = await supabase
+                    .from("users")
+                    .select(`*`)
+                    .order("created_at", { ascending: false })
+                    .range(from, from + PAGE_SIZE - 1);
+        
+                if (error) throw error;
+                allData = allData.concat(data)
+                hasMore = data?.length === PAGE_SIZE
+                from += PAGE_SIZE
+            }
 
         set({ userLocations: allData || [], isLoading: false });
         } catch (error) {

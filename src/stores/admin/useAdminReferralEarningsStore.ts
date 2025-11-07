@@ -11,6 +11,11 @@ interface AdminReferralEarningsState {
   referralEarnings4: ReferralEarning[]
   referralEarnings5: ReferralEarning[]
   isLoading: boolean
+  isLoadingEarnings1: boolean
+  isLoadingEarnings2: boolean
+  isLoadingEarnings3: boolean
+  isLoadingEarnings4: boolean
+  isLoadingEarnings5: boolean
   error: string
   fetchReferralEarnings: (level: number) => Promise<void>
   fetchReferralEarningsReferals: (tid: string, level: number) => Promise<void>
@@ -28,58 +33,72 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
     referralEarnings4: [],
     referralEarnings5: [],
     isLoading: true,
+    isLoadingEarnings1: true,
+    isLoadingEarnings2: true,
+    isLoadingEarnings3: true,
+    isLoadingEarnings4: true,
+    isLoadingEarnings5: true,
     error: '',
 
     fetchReferralEarnings: async (level: number) => {
-
+      set({ isLoading: true })
+      const PAGE_SIZE = 1000;
+      let allUsers: any[] = [];
+      let from = 0;
+      let hasMore = true;
       try {
-        const { data: users, error } = await supabase
+        while (hasMore) {
+          const { data: users, error } = await supabase
           .from("users")
           .select("*")
-          .filter("referals", "neq", "[]")
+          .or('telegramID.eq.875867810,telegramID.eq.399678680,telegramID.eq.6668721056,team.eq.ran')
+          .range(from, from + PAGE_SIZE - 1)
 
-        if (error) throw error
 
-        const allReferalIds = users.map((u) => u.telegramID)
-        const { data: referalUsers, error: refError } = await supabase
-          .from("users")
-          .select(
-            "telegramID, userName, created_at, WindBalance, rewardFromClicks, TONRewardFromClicks",
-          )
-          .in("telegramID", allReferalIds)
+          if (error) throw error
+          allUsers = allUsers.concat(users)
+          hasMore = users.length === PAGE_SIZE
+          from += PAGE_SIZE
 
-        if (refError) throw refError
+        }
+
         const result: ReferralEarning[] = []
-        allReferalIds.forEach((id) => {
-          const user = users.find((u) => u.referals.includes(id))
-          if (user) {
-            result.push({
-              created_at:
-                referalUsers.find((ru) => ru.telegramID === id)?.created_at ||
-                new Date().toISOString(),
-              amount:
-                referalUsers.find((ru) => ru.telegramID === id)
-                  ?.rewardFromClicks || 0,
-              tonAmount:
-                referalUsers.find((ru) => ru.telegramID === id)?.TONRewardFromClicks || 0,
-              user: {
-                id: user.telegramID,
-                username: user.userName || user.telegramID,
-                telegramID: user.telegramID,
-              },
-              referalCount: user.referals.length,
-              referral_user: {
-                id: id,
-                username:
-                  referalUsers.find((ru) => ru.telegramID === id)?.userName ||
-                  id,
-                first_name: "",
-                last_name: "",
-              },
-              id: user.telegramID || 0,
-            })
-          }
-        })
+
+        for (const user of allUsers) {
+         let referalCount = 0;
+         if (user?.referals?.length > 0) {
+           referalCount = (await axios.post(`https://turbinex.pp.ua/user/multiple-users`, { uids: user.referals })).data
+         }
+        // const referalsArray = user.referals.filter((referal: string) =>  allUsers.find((user: any) => user.telegramID === referal))
+        // referalCount = referalsArray.length;
+         if (user) {
+           result.push({
+             created_at:
+               user.created_at ||
+               new Date().toISOString(),
+             amount:
+               user.rewardFromClicks || 0,
+             tonAmount:
+               user.TONRewardFromClicks || 0,
+             user: {
+               id: user.telegramID,
+               username: user.userName || user.telegramID,
+               telegramID: user.telegramID,
+             },
+             referalCount: referalCount,
+             inactiveReferalCount: user.referals?.length - referalCount,
+             referral_user: {
+               id: user.invitedBy,
+               username:
+                 user.userName ||
+                 user.id,
+               first_name: "",
+               last_name: "",
+             },
+             id: user.telegramID,
+           })
+         }
+       } 
         if (level === 0) {
           set({ referralEarnings: result || [], isLoading: false })
         }
@@ -94,6 +113,17 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
 
     fetchReferralEarningsReferals: async (tid: string, level: number) => {
       let allReferals: any[] = []
+      if (level === 1) {
+        set({ isLoadingEarnings1: true, referralEarnings1: [] })
+      } else if (level === 2) {
+        set({ isLoadingEarnings2: true, referralEarnings2: [] })
+      } else if (level === 3) {
+        set({ isLoadingEarnings3: true, referralEarnings3: [] })
+      } else if (level === 4) {
+        set({ isLoadingEarnings4: true, referralEarnings4: [] })
+      } else if (level === 5) {
+        set({ isLoadingEarnings5: true, referralEarnings5: [] })
+      }
       try {
         let from = 0
         let hasMore = true
@@ -115,9 +145,11 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
 
          for (const user of allReferals) {
           let referalCount = 0;
-          if (user?.referals?.length > 0) {
-            referalCount = (await axios.post(`https://turbinex.pp.ua/user/multiple-users`, { uids: user.referals })).data
-          }
+            if (user?.referals?.length > 0) {
+              referalCount = (await axios.post(`https://turbinex.pp.ua/user/multiple-users`, { uids: user.referals })).data
+            }
+          // const referalsArray = user.referals.filter((referal: string) => allReferals.find((user: any) => user.telegramID === referal))
+          // referalCount = referalsArray.length;
           if (user) {
             result.push({
               created_at:
@@ -133,6 +165,7 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
                 telegramID: user.telegramID,
               },
               referalCount: referalCount,
+              inactiveReferalCount: user.referals?.length - referalCount,
               referral_user: {
                 id: user.invitedBy,
                 username:
@@ -144,18 +177,18 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
               id: user.telegramID,
             })
           }
-         } 
+        } 
  
         if (level === 1) {
-          set({ referralEarnings1: result || [], isLoading: false })
+          set({ referralEarnings1: result || [], isLoadingEarnings1: false })
         } else if (level === 2) {
-          set({ referralEarnings2: result || [], isLoading: false })
+          set({ referralEarnings2: result || [], isLoadingEarnings2: false })
         } else if (level === 3) {
-          set({ referralEarnings3: result || [], isLoading: false })
+          set({ referralEarnings3: result || [], isLoadingEarnings3: false })
         } else if (level === 4) {
-          set({ referralEarnings4: result || [], isLoading: false })
+          set({ referralEarnings4: result || [], isLoadingEarnings4: false })
         } else if (level === 5) {
-          set({ referralEarnings5: result || [], isLoading: false })
+          set({ referralEarnings5: result || [], isLoadingEarnings5: false })
         } else if (level === 0) {
           set({ referralEarnings: result || [], isLoading: false })
         }

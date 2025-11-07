@@ -115,14 +115,25 @@ export const userColumns: TableColumn<AdminProfile>[] = [
     },
   }),
   columnHelper.accessor("referalCount", {
-    header: "Кількість рефералів",
+    header: "Кількість активних рефералів",
     cell: ({ getValue }) => {
       const referalCount = getValue()
       if (!referalCount) return "-"
       return (
         <span className="flex items-center space-x-2">
           <span>{referalCount}</span>
-          <CopyButton text={referalCount} />
+        </span>
+      )
+    },
+  }),
+  columnHelper.accessor("inactiveReferalCount", {
+    header: "Кількість не активних рефералів",
+    cell: ({ getValue }) => {
+      const inactiveReferalCount = getValue()
+      if (!inactiveReferalCount) return "-"
+      return (
+        <span className="flex items-center space-x-2">
+          <span>{inactiveReferalCount}</span>
         </span>
       )
     },

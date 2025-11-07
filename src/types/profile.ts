@@ -10,6 +10,7 @@ export type AdminProfileTeams = (typeof adminProfileTeams)[number]
 export type AdminProfile = UserRow & {
   telegramID?: string | null
   referalCount?: number
+  inactiveReferalCount?: number
   team: AdminProfileTeams
   invitedBy: string
 }

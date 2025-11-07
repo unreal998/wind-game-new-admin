@@ -158,11 +158,13 @@ export default function ReferralsAdminPage() {
                 return {
                   ...user,
                   referalCount: referalUsers ? referalUsers.length : 0,
+                  inactiveReferalCount: referalUsers ? user.referals?.length - referalUsers.length : 0,
                 }
 
               return {
                 ...user,
                 referalCount: referalUsers ? referalUsers.length : 0,
+                inactiveReferalCount: referalUsers ? user.referals?.length - referalUsers.length : 0,
               }
             })
             .filter((user) => user.team === teamFilter),
@@ -183,11 +185,13 @@ export default function ReferralsAdminPage() {
                 return {
                   ...user,
                   referalCount: referalUsers ? referalUsers.length : 0,
+                  inactiveReferalCount: referalUsers ? user.referals?.length - referalUsers.length : 0,
                 }
 
               return {
                 ...user,
                 referalCount: referalUsers ? referalUsers.length : 0,
+                inactiveReferalCount: referalUsers ? user.referals?.length - referalUsers.length : 0,
               }
             })
             .filter((user) => user.team === teamFilter),
@@ -203,11 +207,13 @@ export default function ReferralsAdminPage() {
               return {
                 ...user,
                 referalCount: referalUsers ? referalUsers.length : 0,
+                inactiveReferalCount: referalUsers ? user.referals?.length - referalUsers.length : 0,
               }
 
             return {
               ...user,
               referalCount: referalUsers ? referalUsers.length : 0,
+              inactiveReferalCount: referalUsers ? user.referals?.length - referalUsers.length : 0,
             }
           }),
         )
