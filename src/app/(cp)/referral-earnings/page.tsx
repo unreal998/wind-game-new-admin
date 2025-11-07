@@ -161,7 +161,7 @@ export default function ReferralEarningsAdminPage() {
       if (level === 0) {
         fetchReferralEarnings(level)
       } else {
-        fetchReferralEarningsReferals(row.user?.telegramID?.toString() || '', level)
+        fetchReferralEarningsReferals(row.user?.telegramID?.toString() || '', level, row)
       }
   }, [
     setSelectedRowid, 
