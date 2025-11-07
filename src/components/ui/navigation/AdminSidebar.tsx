@@ -13,7 +13,6 @@ import { useEffect, useState } from "react"
 import { AdminProfileDesktop } from "./AdminProfile"
 import { useAdminWithdrawalsStore } from "@/stores/admin/useAdminWithdrawalsStore"
 import { useUserStore } from "@/stores/useUserStore"
-
 interface AdminSidebarProps {
   isCollapsed: boolean
   toggleSidebar: () => void
@@ -137,9 +136,13 @@ export function AdminSidebar({
   const pathname = usePathname()
   const { getUserPermissions, role } = useUserStore()
   const { getPendingTransactions } = useAdminTransactionsStore()
-  const { newWithdrawalsCount } = useAdminWithdrawalsStore()
+  const { newWithdrawalsCount, fetchWithdrawals } = useAdminWithdrawalsStore()
   const [isMobile, setIsMobile] = useState(false)
   const router = useRouter()
+
+  useEffect(() => {
+    fetchWithdrawals()
+  }, [fetchWithdrawals])
 
   useEffect(() => {
     const handleResize = () => {

@@ -5,7 +5,7 @@ import { Card } from "@/components/Card"
 import { TRANSACTION_STATUSES } from "@/components/data-table/constants"
 import { DataTable } from "@/components/data-table/DataTable"
 import { FilterableColumn } from "@/types/table"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 import { getWithdrawalColumns } from "./_components/WithdrawalColumns"
 import {
   fetchUserPermissions,
