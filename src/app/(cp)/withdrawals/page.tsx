@@ -5,7 +5,7 @@ import { Card } from "@/components/Card"
 import { TRANSACTION_STATUSES } from "@/components/data-table/constants"
 import { DataTable } from "@/components/data-table/DataTable"
 import { FilterableColumn } from "@/types/table"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { getWithdrawalColumns } from "./_components/WithdrawalColumns"
 import {
   fetchUserPermissions,
@@ -26,6 +26,7 @@ import {
   SelectValue,
 } from "@/components/Select"
 import { adminProfileTeams, AdminProfileTeams } from "@/types/profile"
+import { interval, isWithinInterval } from "date-fns"
 
 export default function WithdrawalAdminPage() {
   const [selectedDateRange, setSelectedDateRange] = useState<DateRange>()
@@ -37,6 +38,7 @@ export default function WithdrawalAdminPage() {
   const [pendingSum, setPendingSum] = useState<number>(0)
   const [isAvialableToWrite, setIsAvialableToWrite] = useState<boolean>(false)
   const userRole = useUserStore(roleSelector)
+  const [selectedDateRangeClearSum, setSelectedDateRangeClearSum] = useState<number>(0)
   const [teamFilter, setTeamFilter] = useState<AdminProfileTeams | "all">("all")
 
   const { profiles, isLoading } = useAdminReferralsStore()
@@ -143,7 +145,19 @@ export default function WithdrawalAdminPage() {
     setPendingSum(
       withdrawalsData.reduce((acc: number, next: any) => {
         return next.status === "new" ? acc + next.sum : acc
-      }, 0),
+      }, 0)
+    )
+    const filteredWithdrawalsData = withdrawalsData.filter((item: any) => item.status === "completed")
+    setSelectedDateRangeClearSum(
+      filteredWithdrawalsData.filter((item: any) => item.status === "completed" && isWithinInterval(
+          item.created_at,
+          interval(
+            selectedDateRange?.to ?? new Date(),
+            selectedDateRange?.from ?? new Date(),
+          ),
+        ),
+      )
+      .reduce((acc: number, next: any) => acc + next.sum, 0),
     )
   }, [withdrawalsData, selectedDateRange])
 
@@ -183,6 +197,8 @@ export default function WithdrawalAdminPage() {
               </SelectContent>
             </Select>
         <Sum label="Сумма в очікуванні" sum={pendingSum} />
+        <Sum label="Сумма виведень" sum={completedSum} />
+        <Sum label="Підтверджена сума в обранному періоді" sum={selectedDateRangeClearSum} />
         <Sum label="Підтверджена сума" sum={completedSum} />
 
         {!isLoading && !isLoadingWithDrawal && aggregatedValue && (
