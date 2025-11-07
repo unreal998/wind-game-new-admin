@@ -18,7 +18,7 @@ interface AdminReferralEarningsState {
   isLoadingEarnings5: boolean
   error: string
   fetchReferralEarnings: (level: number) => Promise<void>
-  fetchReferralEarningsReferals: (tid: string, level: number) => Promise<void>
+  fetchReferralEarningsReferals: (tid: string, level: number, ownersData?: ReferralEarning) => Promise<void>
   subscribeToReferralEarnings: () => Promise<() => void>
 }
 
@@ -89,9 +89,7 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
              inactiveReferalCount: user.referals?.length - referalCount,
              referral_user: {
                id: user.invitedBy,
-               username:
-                 user.userName ||
-                 user.id,
+               username: allUsers.find((refUser: any) => refUser.telegramID === user.invitedBy)?.userName || user.invitedBy,
                first_name: "",
                last_name: "",
              },
@@ -111,7 +109,7 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
       }
     },
 
-    fetchReferralEarningsReferals: async (tid: string, level: number) => {
+    fetchReferralEarningsReferals: async (tid: string, level: number, ownersData?: ReferralEarning) => {
       let allReferals: any[] = []
       if (level === 1) {
         set({ isLoadingEarnings1: true, referralEarnings1: [] })
@@ -168,9 +166,7 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
               inactiveReferalCount: user.referals?.length - referalCount,
               referral_user: {
                 id: user.invitedBy,
-                username:
-                  user.userName ||
-                  user.id,
+                username: ownersData?.user?.username || user.invitedBy,
                 first_name: "",
                 last_name: "",
               },
