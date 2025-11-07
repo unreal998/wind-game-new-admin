@@ -28,6 +28,7 @@ export default function WalletsAdminPage() {
   const [sum, setSum] = useState<number>(0)
   const [clearSum, setClearSum] = useState<number>(0)
   const [selectedDateRangeSum, setSelectedDateRangeSum] = useState<number>(0)
+  const [selectedDateRangeClearSum, setSelectedDateRangeClearSum] = useState<number>(0)
   const userRole = useUserStore(roleSelector)
   const [teamFilter, setTeamFilter] = useState<AdminProfileTeams | "all">("all")
 
@@ -40,6 +41,20 @@ export default function WalletsAdminPage() {
     )
     setSelectedDateRangeSum(
       transactions
+        .filter((item: any) =>
+          isWithinInterval(
+            item.created_at,
+            interval(
+              selectedDateRange?.to ?? new Date(),
+              selectedDateRange?.from ?? new Date(),
+            ),
+          ),
+        )
+        .reduce((acc: number, next: any) => acc + next.summ, 0),
+    )
+    setSelectedDateRangeClearSum(
+      transactions
+        .filter((item: any) => item.txid !== "1w23uui8890bbh1y7u9it5r2cv2g" && item.txid !== "312r2r12f12r12f12fqwfh55h5h")
         .filter((item: any) =>
           isWithinInterval(
             item.created_at,
@@ -134,6 +149,7 @@ export default function WalletsAdminPage() {
         />
         <Sum label="Загальна сума" sum={sum} />
         <Sum label="Загальна сума чиста" sum={clearSum} />
+        <Sum label="Загальна сума в обранному періоді чиста" sum={selectedDateRangeClearSum} />
 
         {!isLoading && aggregatedValue && (
           <Badge variant="indigo" className="px-3 py-1 text-base">
