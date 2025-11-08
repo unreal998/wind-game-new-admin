@@ -197,7 +197,6 @@ export default function WithdrawalAdminPage() {
               </SelectContent>
             </Select>
         <Sum label="Сумма в очікуванні" sum={pendingSum} />
-        <Sum label="Сумма виведень" sum={completedSum} />
         <Sum label="Підтверджена сума в обранному періоді" sum={selectedDateRangeClearSum} />
         <Sum label="Підтверджена сума" sum={completedSum} />
 
