@@ -151,29 +151,32 @@ export const UserSidebar = ({
                   isAvialableToWrite={isAvialableToWrite}
                   onChange={async (val) => {
                     try {
-                      const newOwnerData = await getUserData({
-                        id: String(val),
-                      })
-                      if (!newOwnerData) {
-                        throw new Error("New owner data not found")
-                      }
                       const invitedByData = await getUserData({
                         id: String(user.invitedBy),
                       })
-                      await updateUserReferalArray({
-                        id: String(invitedByData.id),
-                        referalArray: invitedByData.referals.filter((referal: string) => referal !== String(user.telegramID)),
-                      })
+                      if (invitedByData) {
+                        await updateUserReferalArray({
+                          id: String(invitedByData.id),
+                          referalArray: invitedByData.referals.filter((referal: string) => referal !== String(user.telegramID)),
+                        })
+                      }
                       const updated = { ...user, invitedBy: String(val) }
-                      const newReferalsArray = [...(newOwnerData.referals || []), String(user.telegramID)]
+                      
+                      if (val) {
+                        const newOwnerData = await getUserData({
+                          id: String(val),
+                        })
+                        const newReferalsArray = [...(newOwnerData.referals || []), String(user.telegramID)]
+                        await updateUserReferalArray({
+                          id: String(newOwnerData.id),
+                          referalArray: newReferalsArray,
+                        })
+                      }
                       await updateUserInvitedBy({
                         id: String(user.id),
                         invitedBy: String(val),
                       })
-                      await updateUserReferalArray({
-                        id: String(newOwnerData.id),
-                        referalArray: newReferalsArray,
-                      })
+
                       onUpdate(updated)
                     } catch (error) {
                       console.error("Failed to update user invited by", error)
