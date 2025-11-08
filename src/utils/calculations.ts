@@ -81,7 +81,7 @@ export function calculateMonthlyProfit(
   }
 
   const totalProfit = currentBalance - initialBalance;
-  const effectiveMonthlyRate = (currentBalance / initialBalance - 1) * 100;
+  // const effectiveMonthlyRate = (currentBalance / initialBalance - 1) * 100;
 
   return totalProfit;
 }

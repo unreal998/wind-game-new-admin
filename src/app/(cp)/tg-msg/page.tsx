@@ -47,7 +47,7 @@ export default function TelegramMessagePage() {
       if (file) formData.append("image", file)
       setIsLoading(true)
       try {
-        const response = await fetch(`https://turbinex.pp.ua/broadcast-file`, {
+        await fetch(`https://turbinex.pp.ua/broadcast-file`, {
           method: "POST",
           body: formData,
         })
