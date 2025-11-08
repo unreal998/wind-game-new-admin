@@ -196,9 +196,6 @@ export default function WithdrawalAdminPage() {
                 </SelectGroup>
               </SelectContent>
             </Select>
-        <Sum label="Сумма в очікуванні" sum={pendingSum} />
-        <Sum label="Підтверджена сума в обранному періоді" sum={selectedDateRangeClearSum} />
-        <Sum label="Підтверджена сума" sum={completedSum} />
 
         {!isLoading && !isLoadingWithDrawal && aggregatedValue && (
           <Badge variant="indigo" className="px-3 py-1 text-base">
@@ -206,7 +203,11 @@ export default function WithdrawalAdminPage() {
           </Badge>
         )}
       </div>
-
+      <div className="flex gap-10">
+        <Sum label="В очікуванні" sum={pendingSum} />
+        <Sum label="Підтверджена сума в обранному періоді" sum={selectedDateRangeClearSum} />
+        <Sum label="Підтверджена сума" sum={completedSum} />
+      </div>
       <Card className="p-0">
         <DataTable
           data={filteredWithdrawalsData}

@@ -143,19 +143,22 @@ export default function WalletsAdminPage() {
                 </SelectGroup>
               </SelectContent>
             </Select>
-        <Sum
-          label="Сума за період"
-          sum={selectedDateRangeSum}
-        />
-        <Sum label="Загальна сума" sum={sum} />
-        <Sum label="Сума чиста" sum={clearSum} />
-        <Sum label="Чиста сума за період " sum={selectedDateRangeClearSum} />
 
         {!isLoading && aggregatedValue && (
           <Badge variant="indigo" className="px-3 py-1 text-base">
             {aggregatedValue}
           </Badge>
         )}
+      </div>
+
+      <div className="flex gap-10">
+        <Sum
+            label="Сума за період"
+            sum={selectedDateRangeSum}
+          />
+        <Sum label="Загальна сума" sum={sum} />
+        <Sum label="Сума чиста" sum={clearSum} />
+        <Sum label="Чиста сума за період " sum={selectedDateRangeClearSum} />
       </div>
 
       <Card className="p-0">

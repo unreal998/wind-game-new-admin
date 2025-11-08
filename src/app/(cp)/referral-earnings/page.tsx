@@ -196,18 +196,20 @@ export default function ReferralEarningsAdminPage() {
       <div className="mb-4 flex items-center justify-between">
         <h1 className="mr-1 text-2xl font-semibold">Реферальні</h1>
         <EnhancedDatePicker setSelectedDateRange={setSelectedDateRange} />
-        {userPermissions?.type !== "marketing" && <Sum
-          label="Загальна сума в кВт в обранному періоду"
-          sum={selectedDateRangeSum}
-        />}
-        {userPermissions?.type !== "marketing" && <Sum label="Загальна сума в кВт" sum={referalSum ?? 0} />}
+
         {!isLoading && aggregatedValue && (
           <Badge variant="indigo" className="px-3 py-1 text-base">
             {aggregatedValue}
           </Badge>
         )}
       </div>
-
+      {userPermissions?.type !== "marketing" && <div className="flex gap-10">
+         <Sum
+          label="Cума в кВт в обранному періоду"
+          sum={selectedDateRangeSum}
+        />
+        <Sum label="Cума в кВт" sum={referalSum ?? 0} />
+      </div>}
       <Card className="p-0">
         <DataTable
           data={referralEarnings}
