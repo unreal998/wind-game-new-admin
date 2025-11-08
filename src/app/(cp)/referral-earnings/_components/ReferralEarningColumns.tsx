@@ -58,7 +58,7 @@ export const referralEarningColumns: TableColumn<ReferralEarning>[] = [
     },
   }),
   columnHelper.accessor("referalCount", {
-    header: "Кількість активних рефералів",
+    header: "Активні реф.",
     cell: ({ getValue }) => {
       const referal_count: number = getValue()
       if (!referal_count) return "0"
@@ -70,7 +70,7 @@ export const referralEarningColumns: TableColumn<ReferralEarning>[] = [
     },
   }),
   columnHelper.accessor("inactiveReferalCount", {
-    header: "Кількість не активних рефералів",
+    header: "Не активні реф.",
     cell: ({ getValue }) => {
       const inactiveReferalCount = getValue()
       if (!inactiveReferalCount) return "-"

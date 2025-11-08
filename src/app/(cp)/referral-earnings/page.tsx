@@ -16,6 +16,7 @@ import NotAllowed from "@/components/NotAllowed"
 import { interval, isWithinInterval } from "date-fns"
 import { TableCell, TableRow } from "@/components/Table"
 import { CreatePermissionDto } from "@/stores/admin/useAdminPermissionsStore"
+import { getUserData } from "../users/_components/updateUserBalance"
 
 export default function ReferralEarningsAdminPage() {
   const { 
@@ -51,13 +52,23 @@ export default function ReferralEarningsAdminPage() {
   useState<CreatePermissionDto | null>(null)
 
   useEffect(() => {
-    if (userPermissions) {
-      if (userPermissions?.type === "marketing" && userPermissions?.additionalField) {
-        fetchReferralEarningsReferals(userPermissions?.additionalField ?? '', 0)
-      } else {
-        fetchReferralEarnings(0)
+    const loadUserData = async () => {
+      let ownerData = await getUserData({
+        id: String(userPermissions?.additionalField),
+      })
+
+      if (userPermissions && ownerData) {
+ 
+        if (userPermissions?.type === "marketing" && userPermissions?.additionalField) {
+          ownerData = { ...ownerData, user: { username: ownerData.userName } }
+          fetchReferralEarningsReferals(userPermissions?.additionalField ?? '', 0, ownerData)
+        } else {
+          fetchReferralEarnings(0)
+        }
       }
     }
+    loadUserData()
+    
   }, [fetchReferralEarnings, fetchReferralEarningsReferals, userPermissions])
 
   useEffect(() => {
