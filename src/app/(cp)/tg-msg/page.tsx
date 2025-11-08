@@ -55,10 +55,12 @@ export default function TelegramMessagePage() {
       if (file) formData.append("image", file)
       setIsLoading(true)
       try {
-        await fetch(`https://turbinex.pp.ua/broadcast-file`, {
+        const response = await fetch(`https://turbinex.pp.ua/broadcast-file`, {
           method: "POST",
           body: formData,
         })
+        const result = await response.json()
+        setResult(result)
         setTgMessagePayload({ msg: "", lang: "all", country: "all", delay: 0 })
         setFile(null)
         setPreviewUrl(null)
