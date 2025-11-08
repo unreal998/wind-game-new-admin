@@ -185,7 +185,6 @@ export default function TelegramMessagePage() {
                 <SelectItem value="all">Всі</SelectItem>
                 <SelectItem value="en">Англійська</SelectItem>
                 <SelectItem value="ru">Російська</SelectItem>
-                <SelectItem value="uk">Українська</SelectItem>
               </SelectContent>
             </Select>
           </div>
