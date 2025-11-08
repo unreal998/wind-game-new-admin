@@ -12,6 +12,13 @@ import {
   SelectValue,
 } from "@/components/Select"
 
+type Result = {
+  failed: number
+  sent: number
+  inactive: number
+  total: number
+}
+
 export default function TelegramMessagePage() {
   const [tgMessagePayload, setTgMessagePayload] = useState({
     msg: "",
@@ -20,6 +27,7 @@ export default function TelegramMessagePage() {
     delay: 0,
   })
 
+  const [result, setResult] = useState<Result | null>(null)
   const [file, setFile] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -73,26 +81,26 @@ export default function TelegramMessagePage() {
         </h1>
 
         <div className="space-y-2">
-        <Label htmlFor="file">Зображення</Label>
-        <div className="flex items-center gap-2">
-          <input
-            id="file"
-            type="file"
-            accept="image/*"
-            onChange={(e) => {
-              handleFileChange(e)
-            }}
-          />
-        </div>
+          <Label htmlFor="file">Зображення</Label>
+          <div className="flex items-center gap-2">
+            <input
+              id="file"
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                handleFileChange(e)
+              }}
+            />
+          </div>
 
-        {previewUrl && (
-          <img
-            src={previewUrl}
-            alt="Preview"
-            className="mt-2 max-h-64 rounded-md border"
-          />
-        )}
-      </div>
+          {previewUrl && (
+            <img
+              src={previewUrl}
+              alt="Preview"
+              className="mt-2 max-h-64 rounded-md border"
+            />
+          )}
+        </div>
 
         <div className="space-y-2">
           <Label htmlFor="tg-message">Повідомлення</Label>
@@ -192,6 +200,19 @@ export default function TelegramMessagePage() {
           >
             Надіслати повідомлення
           </Button>
+        </div>
+
+        <div className="space-y-2">
+          <Label>Результат</Label>
+          {!isLoading && result && <div>
+              <p>Не вдалося надіслати: {result?.failed}</p>
+              <p>Вдалося надіслати: {result?.sent}</p>
+              <p>Не активних: {result?.inactive}</p>
+              <p>Всього: {result?.total}</p>
+            </div>
+          }
+          {!isLoading && result === null && <p>Очікую відправку</p>}
+          {isLoading && <p>Завантаження...</p>}
         </div>
       </Card>
     </div>
