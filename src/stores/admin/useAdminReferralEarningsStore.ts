@@ -89,7 +89,7 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
              inactiveReferalCount: user.referals?.length - referalCount,
              referral_user: {
                id: user.invitedBy,
-               username: allUsers.find((refUser: any) => refUser.telegramID === user.invitedBy)?.userName || user.invitedBy,
+               username: '',
                first_name: "",
                last_name: "",
              },
