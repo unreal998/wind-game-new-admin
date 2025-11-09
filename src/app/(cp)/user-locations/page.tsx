@@ -38,12 +38,12 @@ export default function UserLocationsAdminPage() {
       options: LOCATION_TYPES,
     },
     {
-      id: "total_coins_earned",
+      id: "areaIncome",
       title: "Всього зароблено КВТ",
       type: "number",
     },
     {
-      id: "total_ton_earned",
+      id: "areaIncomeTon",
       title: "Всього зароблено TON",
       type: "number",
     },
@@ -77,6 +77,9 @@ export default function UserLocationsAdminPage() {
   userLocations.forEach((location: any) => {
     const locationData = location as any
     locationData.areas.forEach((area: any) => {
+      if (locationData.telegramID === "7598364146") {
+        console.log(area)
+      }
       const selectedCountire = countries.find((c) => c.shortName === area.name)
       const userMod = {
         user: {
@@ -91,6 +94,8 @@ export default function UserLocationsAdminPage() {
         location_id: area.name || "",
         last_push_at: area.lastButtonPress || "",
         boughtAt: area.boughtAt || null,
+        areaIncome: area.areaIncome || 0,
+        areaIncomeTon: area.areaIncomeTon || 0,
       } as UserLocation
       formatUserLocations.push(userMod as UserLocation)
     })

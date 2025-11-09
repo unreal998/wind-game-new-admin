@@ -17,4 +17,6 @@ export type UserLocation =
             profit_multiplier: number;
         };
         locationName?: string;
+        areaIncome?: number;
+        areaIncomeTon?: number;
     };

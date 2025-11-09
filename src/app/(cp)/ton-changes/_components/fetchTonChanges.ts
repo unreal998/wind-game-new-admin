@@ -13,5 +13,5 @@ export async function getTonChanges(): Promise<TonChange[]> {
   const response = await axios.get(
     "https://turbinex.pp.ua/tonChanges",
   )
-  return response.data.data
+  return response.data
 }

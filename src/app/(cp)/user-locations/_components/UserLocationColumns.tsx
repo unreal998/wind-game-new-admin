@@ -96,26 +96,26 @@ export const userLocationColumns: TableColumn<UserLocation>[] = [
     },
   }),
 
-  columnHelper.accessor("total_coins_earned", {
+  columnHelper.accessor("areaIncome", {
     header: "Всього зароблено кВт",
     cell: ({ getValue }) => `${getValue() || 0} кВт`,
     enableSorting: true,
     filterFn: "number",
     meta: {
       exportHeader: "Всього зароблено (КВТ)",
-      exportValue: (row) => row.total_coins_earned || 0,
+      exportValue: (row) => row.areaIncome || 0,
       exportAlign: "right",
     },
   }),
 
-  columnHelper.accessor("total_ton_earned", {
+  columnHelper.accessor("areaIncomeTon", {
     header: "Всього зароблено TON",
     cell: ({ getValue }) => formatAmount(getValue() || 0),
     enableSorting: true,
     filterFn: "number",
     meta: {
       exportHeader: "Всього зароблено (TON)",
-      exportValue: (row) => row.total_ton_earned || 0,
+      exportValue: (row) => row.areaIncomeTon || 0,
       exportAlign: "right",
     },
   }),
