@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import type { DateRange } from "react-day-picker";
 import { PeriodValue } from "@/types/overview";
 import { getPeriod } from "@/app/(cp)/overview/_components/FilterBar";
+import { formatInTimeZone } from "date-fns-tz";
 
 export function useRegistrationStats(selectedDates?: DateRange, prevDates?: PeriodValue) {
   const [stats, setStats] = useState<{
@@ -81,7 +82,7 @@ export function useRegistrationStats(selectedDates?: DateRange, prevDates?: Peri
       }
 
       const dailyStats = allData.reduce<Record<string, number>>((acc, user) => {
-        const localDay = format(startOfDay(new Date(user.created_at)), "yyyy-MM-dd");
+        const localDay = formatInTimeZone(new Date(user.created_at), "UTC", "yyyy-MM-dd");
         acc[localDay] = (acc[localDay] || 0) + 1;
         return acc;
       }, {});

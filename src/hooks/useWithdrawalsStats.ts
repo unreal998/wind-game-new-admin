@@ -1,79 +1,121 @@
 import { useEffect, useState } from "react"
-import { startOfDay, interval, isWithinInterval, subDays } from "date-fns"
-import axios from "axios"
+import { startOfDay, endOfDay, format, eachDayOfInterval } from "date-fns"
 import { DateRange } from "react-day-picker"
+import { getPeriod } from "@/app/(cp)/overview/_components/FilterBar"
+import { createClient } from "@/utils/supabase/client"
+import { PeriodValue } from "@/types/overview"
+import { formatInTimeZone } from "date-fns-tz"
 
-type Withdrawal = {
-  created_at: string
-  sum: number
-  status: string
-}
-
-export type DateValue = { date: Date; value: number }
-
-export function useWithdrawalsStats(selectedDates: DateRange | undefined) {
-  const [data, setData] = useState<DateValue[]>([])
+export function useWithdrawalsStats(selectedDates?: DateRange, prevDates?: PeriodValue) {
+  const [data, setData] = useState<{ withdrawals: { date: Date; value: number }[] }>({ withdrawals: [] })
   const [currentTotal, setCurrentTotal] = useState<number>(0)
   const [previousTotal, setPreviousTotal] = useState<number>(0)
 
   useEffect(() => {
     const fetchWithdrawals = async () => {
-      try {
-        const response = await axios.get(
-          "https://turbinex.pp.ua/withdraw/all",
-          {
-            headers: {
-              "ngrok-skip-browser-warning": true,
-            },
-          },
-        )
+      const supabase = createClient();
+      let previousDates: DateRange | undefined = undefined;
+      if (prevDates) {
+        previousDates = getPeriod(selectedDates, prevDates)
+      };
+      if (!selectedDates?.from || !selectedDates?.to) return;
 
-        const rawData: Withdrawal[] = response.data.data
+      const fromDate = startOfDay(selectedDates.from);
+      const toDate = endOfDay(selectedDates.to);
 
-        const grouped = rawData.reduce<Record<string, number>>((acc, item) => {
-          const key = startOfDay(new Date(item.created_at)).toISOString()
-          if (item.status === 'completed') {
-            acc[key] = (acc[key] || 0) + item.sum
-          }
-          return acc
-        }, {})
+      const fromStr = format(fromDate, "yyyy-MM-dd HH:mm:ss");
+      const toStr = format(toDate, "yyyy-MM-dd HH:mm:ss");
 
-        const formatted: DateValue[] = Object.entries(grouped).map(
-          ([date, value]) => ({
-            date: new Date(date),
-            value,
-          }),
-        )
+      let allData: any[] = [];
+      let fromIndex = 0;
+      let toIndex = 999;
 
-        setData(formatted)
+      while (true) {
+        const { data, error } = await supabase
+          .from("withdraw")
+          .select("*")
+          .gte("created_at", fromStr)
+          .lte("created_at", toStr)
+          .order("created_at", { ascending: true })
+          .range(fromIndex, toIndex);
 
-        const to = selectedDates?.to ?? new Date()
-        const from = selectedDates?.from ?? new Date()
-        const previousFrom = subDays(from, 30)
+        if (error) {
+          console.error("Error fetching registration stats:", error);
+          break;
+        }
 
-        const currentInterval = interval(from, to)
-        const previousInterval = interval(previousFrom, from)
+        allData = allData.concat(data);
+        if (data.length < 1000) break;
 
-        const current = formatted
-          .filter((item) => isWithinInterval(item.date, currentInterval))
-          .reduce((acc, item) => acc + item.value, 0)
-
-        const previous = formatted
-          .filter((item) => isWithinInterval(item.date, previousInterval))
-          .reduce((acc, item) => acc + item.value, 0)
-
-        setCurrentTotal(current)
-        setPreviousTotal(previous)
-      } catch (error) {
-        console.error("Failed to fetch withdrawals:", error)
+        fromIndex += 1000;
+        toIndex += 1000;
       }
+
+      if (previousDates !== undefined) {
+        const fromDate = startOfDay(previousDates.from as Date);
+        const toDate = endOfDay(previousDates.to as Date);
+        const fromStr = format(fromDate, "yyyy-MM-dd HH:mm:ss");
+        const toStr = format(toDate, "yyyy-MM-dd HH:mm:ss");
+
+        while (true) {
+            const { data, error } = await supabase
+              .from("withdraw")
+              .select("*")
+              .gte("created_at", fromStr)
+              .lte("created_at", toStr)
+              .order("created_at", { ascending: true })
+              .range(fromIndex, toIndex);
+    
+            if (error) {
+              console.error("Error fetching registration stats:", error);
+              break;
+            }
+    
+            allData = allData.concat(data);
+            if (data.length < 1000) break;
+    
+            fromIndex += 1000;
+            toIndex += 1000;
+        }
+      }
+
+      const dailyStats = allData.reduce<Record<string, number>>((acc, withdrawal) => {
+        const localDay = formatInTimeZone(new Date(withdrawal.created_at), "UTC", "yyyy-MM-dd");
+        acc[localDay] = (acc[localDay] || 0) + withdrawal.sum;
+        return acc;
+      }, {});
+
+      const allDays = eachDayOfInterval({ start: fromDate, end: toDate });
+      const allDaysPrevious = eachDayOfInterval({ start: previousDates?.from as Date, end: previousDates?.to as Date });
+
+      const currentDaysWithdrawals = allDays.map((day) => {
+        const localDay = format(day, "yyyy-MM-dd");
+        return {
+          date: day,
+          value: dailyStats[localDay] || 0,
+        };
+      });
+      console.log("currentDaysWithdrawals=====>", currentDaysWithdrawals);
+      const previousDaysWithdrawals = allDaysPrevious.map((day) => {
+        const localDay = format(day, "yyyy-MM-dd");
+        return {
+          date: day,
+          value: dailyStats[localDay] || 0,
+        };
+      });
+
+      const withdrawals = [...currentDaysWithdrawals, ...previousDaysWithdrawals];
+
+      setData({ withdrawals: withdrawals });
+      setCurrentTotal(currentDaysWithdrawals.reduce((acc, withdrawal) => acc + withdrawal.value, 0));
+      setPreviousTotal(previousDaysWithdrawals.reduce((acc, withdrawal) => acc + withdrawal.value, 0));
     }
 
     fetchWithdrawals()
   }, [selectedDates])
 
   return {
-    withdrawals: data,
+    withdrawals: data.withdrawals,
     currentTotal,
     previousTotal,
   }

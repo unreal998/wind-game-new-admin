@@ -4,12 +4,7 @@ import { DateRange } from "react-day-picker"
 import { PeriodValue } from "@/types/overview"
 import { createClient } from "@/utils/supabase/client"
 import { getPeriod } from "@/app/(cp)/overview/_components/FilterBar"
-
-type Transaction = {
-  created_at: string
-  summ: number
-  txid: string
-}
+import { formatInTimeZone } from "date-fns-tz"
 
 export function useTransactionStatsNew(
   selectedDates?: DateRange, prevDates?: PeriodValue
@@ -90,16 +85,16 @@ export function useTransactionStatsNew(
         }
       }
 
-      const dailyStats = allData.reduce<Record<string, number>>((acc, user) => {
-        const localDay = format(startOfDay(new Date(user.created_at)), "yyyy-MM-dd");
-        acc[localDay] = (acc[localDay] || 0) + user.summ;
+      const dailyStats = allData.reduce<Record<string, number>>((acc, transaction) => {
+        const localDay = formatInTimeZone(new Date(transaction.created_at), "UTC", "yyyy-MM-dd");
+        acc[localDay] = (acc[localDay] || 0) + transaction.summ;
         return acc;
       }, {});
-      console.log("dailyStats=====>", dailyStats);
+
       const allDays = eachDayOfInterval({ start: fromDate, end: toDate });
       const allDaysPrevious = eachDayOfInterval({ start: previousDates?.from as Date, end: previousDates?.to as Date });
 
-      const currentDaysRegistrations = allDays.map((day) => {
+      const currentDaysTransactions = allDays.map((day) => {
         const localDay = format(day, "yyyy-MM-dd");
         return {
           date: day,
@@ -107,7 +102,7 @@ export function useTransactionStatsNew(
         };
       });
 
-      const previousDaysRegistrations = allDaysPrevious.map((day) => {
+      const previousDaysTransactions = allDaysPrevious.map((day) => {
         const localDay = format(day, "yyyy-MM-dd");
         return {
           date: day,
@@ -115,11 +110,11 @@ export function useTransactionStatsNew(
         };
       });
 
-      const transactions = [...currentDaysRegistrations, ...previousDaysRegistrations];
+      const transactions = [...currentDaysTransactions, ...previousDaysTransactions];
 
       setStats({ transactions });
-      setCurrentTotalTransactions(allData.reduce((acc, tx) => acc + tx.summ, 0));
-      setPreviousTotalTransactions(allData.reduce((acc, tx) => acc + tx.summ, 0));
+      setCurrentTotalTransactions(currentDaysTransactions.reduce((acc, tx) => acc + tx.value, 0));
+      setPreviousTotalTransactions(previousDaysTransactions.reduce((acc, tx) => acc + tx.value, 0));
     }
 
     fetchTransactions()
