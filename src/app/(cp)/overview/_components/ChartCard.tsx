@@ -17,8 +17,8 @@ import { useTransactionStatsNew } from "@/hooks/useTransactionStatsNew"
 import { useTurxBalance } from "@/hooks/useTurxBalance"
 import { useRegistrationStats } from "@/hooks/useRegistrationStats"
 import { useReferalsStats } from "@/hooks/useReferalsStats"
-import { useTonBalanceStats } from "@/hooks/useTonBalanceStats"
 import { usePotentialOutputStats } from "@/hooks/usePotentialOutputStats"
+import { useEffect, useState } from "react"
 
 type StatsType = {
   registrations: Array<{ date: Date; value: number }>
@@ -69,7 +69,7 @@ export function ChartCard({
 
   const { registrations } = useRegistrationStats(selectedDates, selectedPeriod)
   const { withdrawals, currentTotal, previousTotal } =
-    useWithdrawalsStats(selectedDates)
+    useWithdrawalsStats(selectedDates, selectedPeriod)
   const { transactions, currentTotalTransactions, previousTotalTransactions } =
     useTransactionStatsNew(selectedDates, selectedPeriod)
   const { 
@@ -79,14 +79,43 @@ export function ChartCard({
     currentTotalReferalsKWTBalance, 
     previousTotalReferalsTonBalance, 
     previousTotalReferalsKWTBalance 
-  } = useReferalsStats(selectedDates)
-  const { tonBalance, currentTotalTonBalance, previousTotalTonBalance } =
-    useTonBalanceStats(selectedDates)
+  } = useReferalsStats(selectedDates, selectedPeriod)
+  const [tonBalance, setTonBalance] = useState<Array<{ date: Date; value: number }>>([])
+  const [currentTotalTonBalance, setCurrentTotalTonBalance] = useState<number>(0)
+  const [previousTotalTonBalance, setPreviousTotalTonBalance] = useState<number>(0)
   const { turxBalance, currentTotalTurxBalance, previousTotalTurxBalance } =
-    useTurxBalance(selectedDates)
+    useTurxBalance(selectedDates, selectedPeriod)
     
   const { potentialOutput, currentTotalPotentialOutput, previousTotalPotentialOutput } =
-    usePotentialOutputStats(selectedDates)
+    usePotentialOutputStats(selectedDates, selectedPeriod)
+
+  useEffect(() => {
+    if (transactions?.length && withdrawals?.length) {
+      const balanceData: Array<{ date: Date; value: number }> = [];
+      let balance = 0;
+      let previousBalance = 0;
+      const startSelectedDate = startOfDay(selectedDates?.from || new Date());
+      
+      transactions.forEach((t, index) => {
+        if (t.date >= startSelectedDate) {
+          balance += t.value - (withdrawals[index]?.value || 0);
+          balanceData.push({
+            date: t.date,
+            value: balance,
+          });
+        } else {
+          previousBalance += t.value - (withdrawals[index]?.value || 0);
+          balanceData.push({
+            date: t.date,
+            value: previousBalance,
+          });
+        }
+      });
+      setTonBalance(balanceData)
+      setCurrentTotalTonBalance(balance);
+      setPreviousTotalTonBalance(previousBalance);
+    }
+  }, [withdrawals, transactions, selectedDates, selectedPeriod])
 
   const stats: StatsType = {
     registrations: registrations,

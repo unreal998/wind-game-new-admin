@@ -1,115 +1,149 @@
 import { useEffect, useState } from "react"
-import { eachDayOfInterval, isWithinInterval, startOfDay } from "date-fns"
+import { eachDayOfInterval, endOfDay, format, startOfDay } from "date-fns"
 import { createClient } from "@/utils/supabase/client"
 import { DateRange } from "react-day-picker"
-
-type DateValue = { date: Date; value: number }
-
-type ReferalsIncome = {
-  id: string
-  created_at: string
-  sumTON: number
-  sumKWT: number
-}
+import { PeriodValue } from "@/types/overview"
+import { getPeriod } from "@/app/(cp)/overview/_components/FilterBar"
+import { formatInTimeZone } from "date-fns-tz"
 
 export function useReferalsStats(
-  selectedDates: DateRange | undefined
+    selectedDates?: DateRange, prevDates?: PeriodValue
 ) {
-  const [referalsTonBalance, setReferalsTonBalance] = useState<DateValue[]>([])
+  const [referalsTonBalance, setReferalsTonBalance] = useState<Array<{ date: Date; value: number }>>([])
   const [currentTotalReferalsTonBalance, setCurrentTotalReferalsTonBalance] = useState<number>(0)
   const [previousTotalReferalsTonBalance, setPreviousTotalReferalsTonBalance] = useState<number>(0)
 
-  const [referalsKWTBalance, setReferalsKWTBalance] = useState<DateValue[]>([])
+  const [referalsKWTBalance, setReferalsKWTBalance] = useState<Array<{ date: Date; value: number }>>([])
   const [currentTotalReferalsKWTBalance, setCurrentTotalReferalsKWTBalance] = useState<number>(0)
   const [previousTotalReferalsKWTBalance, setPreviousTotalReferalsKWTBalance] = useState<number>(0)
 
 
   useEffect(() => {
     const fetchReferalsIncome = async () => {
-        const supabase = createClient()
-        const { data, error } = await supabase.from("referal_income_dynamic").select("*")
-        if (error) {
-            console.error("Error fetching potential output:", error)
-            return
+        const supabase = createClient();
+        let previousDates: DateRange | undefined = undefined;
+        if (prevDates) {
+          previousDates = getPeriod(selectedDates, prevDates)
+        };
+        if (!selectedDates?.from || !selectedDates?.to) return;
+  
+        const fromDate = startOfDay(selectedDates.from);
+        const toDate = endOfDay(selectedDates.to);
+  
+        const fromStr = format(fromDate, "yyyy-MM-dd HH:mm:ss");
+        const toStr = format(toDate, "yyyy-MM-dd HH:mm:ss");
+  
+        let allData: any[] = [];
+        let fromIndex = 0;
+        let toIndex = 999;
+  
+        while (true) {
+          const { data, error } = await supabase
+            .from("referal_income_dynamic")
+            .select("*")
+            .gte("created_at", fromStr)
+            .lte("created_at", toStr)
+            .order("created_at", { ascending: true })
+            .range(fromIndex, toIndex);
+  
+          if (error) {
+            console.error("Error fetching registration stats:", error);
+            break;
+          }
+  
+          allData = allData.concat(data);
+          if (data.length < 1000) break;
+  
+          fromIndex += 1000;
+          toIndex += 1000;
         }
-        const referalsIncome = data as ReferalsIncome[]
-        let from: Date, to: Date
-        if (selectedDates?.from && selectedDates?.to) {
-            from = startOfDay(selectedDates.from)
-            to = startOfDay(selectedDates.to)
-        } else {
-            const allDates = [
-                ...referalsIncome.map((po) => startOfDay(new Date(po.created_at))),
-            ]
-            if (allDates.length) {
-                from = new Date(Math.min(...allDates.map((d) => d.getTime())))
-                to = new Date(Math.max(...allDates.map((d) => d.getTime())))
-            } else {
-                from = to = startOfDay(new Date())
-            }
+  
+        if (previousDates !== undefined) {
+          const fromDate = startOfDay(previousDates.from as Date);
+          const toDate = endOfDay(previousDates.to as Date);
+          const fromStr = format(fromDate, "yyyy-MM-dd HH:mm:ss");
+          const toStr = format(toDate, "yyyy-MM-dd HH:mm:ss");
+  
+          while (true) {
+              const { data, error } = await supabase
+                .from("referal_income_dynamic")
+                .select("*")
+                .gte("created_at", fromStr)
+                .lte("created_at", toStr)
+                .order("created_at", { ascending: true })
+                .range(fromIndex, toIndex);
+      
+              if (error) {
+                console.error("Error fetching registration stats:", error);
+                break;
+              }
+      
+              allData = allData.concat(data);
+              if (data.length < 1000) break;
+      
+              fromIndex += 1000;
+              toIndex += 1000;
+          }
         }
-        const isInRange = (date: Date) =>
-            isWithinInterval(date, { start: from, end: to })
-        const filteredReferalsIncome = referalsIncome.filter((po) =>
-            isInRange(startOfDay(new Date(po.created_at))),
-        )
-        const referalsTonIncomeByDay: Record<string, number> = {}
-        const referalsKWTIncomeByDay: Record<string, number> = {}
-        filteredReferalsIncome.forEach((po) => {
-            const key = startOfDay(new Date(po.created_at)).toISOString()
-            referalsTonIncomeByDay[key] = (referalsTonIncomeByDay[key] || 0) + Number(po.sumTON)
-            referalsKWTIncomeByDay[key] = (referalsKWTIncomeByDay[key] || 0) + Number(po.sumKWT)
-        })
-        const formattedTon: DateValue[] = Object.entries(referalsTonIncomeByDay).map(
-            ([date, value]) => ({
-                date: new Date(date),
-                value,
-            }),
-        )
-        setReferalsTonBalance(formattedTon)
-        const formattedKWT: DateValue[] = Object.entries(referalsKWTIncomeByDay).map(
-            ([date, value]) => ({
-                date: new Date(date),
-                value,
-            }),
-        )
-        setReferalsKWTBalance(formattedKWT)
 
-        const days = eachDayOfInterval({ start: from, end: to })
-        const intervalLength = days.length > 0 ? days.length : 1
-        const prevTo = from
-        const prevFrom = new Date(
-            from.getTime() - intervalLength * 24 * 60 * 60 * 1000,
-        )
-        const prevDays = eachDayOfInterval({
-            start: prevFrom,
-            end: new Date(prevTo.getTime() - 24 * 60 * 60 * 1000),
-        })
-        const currentTotalTon =
-            formattedTon.length > 0 ? formattedTon[formattedTon.length - 1].value : 0
-        const currentTotalKWT =
-            formattedKWT.length > 0 ? formattedKWT[formattedKWT.length - 1].value : 0
-        let prevRunningTonBalance = 0
-        let prevRunningKWTBalance = 0
-        const prevResultTon: DateValue[] = prevDays.map((date) => {
-            const key = startOfDay(date).toISOString()
-            prevRunningTonBalance = referalsTonIncomeByDay[key] || 0
-            return { date, value: prevRunningTonBalance }
-        })
-        const prevResultKWT: DateValue[] = prevDays.map((date) => {
-            const key = startOfDay(date).toISOString()
-            prevRunningKWTBalance = referalsKWTIncomeByDay[key] || 0
-            return { date, value: prevRunningKWTBalance }
-        })
-        const previousTotalTon =
-            prevResultTon.length > 0 ? prevResultTon[prevResultTon.length - 1].value : 0
-        const previousTotalKWT =
-            prevResultKWT.length > 0 ? prevResultKWT[prevResultKWT.length - 1].value : 0
+        const dailyStatsTon = allData.reduce<Record<string, number>>((acc, transaction) => {
+          const localDay = formatInTimeZone(new Date(transaction.created_at), "UTC", "yyyy-MM-dd");
+          acc[localDay] = (acc[localDay] || 0) + transaction.sumTON;
+          return acc;
+        }, {});
 
-        setCurrentTotalReferalsTonBalance(currentTotalTon)
-        setCurrentTotalReferalsKWTBalance(currentTotalKWT)
-        setPreviousTotalReferalsTonBalance(previousTotalTon)
-        setPreviousTotalReferalsKWTBalance(previousTotalKWT)
+        const dailyStatsKWT = allData.reduce<Record<string, number>>((acc, transaction) => {
+          const localDay = formatInTimeZone(new Date(transaction.created_at), "UTC", "yyyy-MM-dd");
+          acc[localDay] = (acc[localDay] || 0) + transaction.sumKWT;
+          return acc;
+        }, {});
+  
+        const allDays = eachDayOfInterval({ start: fromDate, end: toDate });
+        const allDaysPrevious = eachDayOfInterval({ start: previousDates?.from as Date, end: previousDates?.to as Date });
+  
+        const currentDaysTonTransactions = allDays.map((day) => {
+          const localDay = format(day, "yyyy-MM-dd");
+          return {
+            date: day,
+            value: dailyStatsTon[localDay] || 0,
+          };
+        });
+  
+        const previousDaysTonTransactions = allDaysPrevious.map((day) => {
+          const localDay = format(day, "yyyy-MM-dd");
+          return {
+            date: day,
+            value: dailyStatsTon[localDay] || 0,
+          };
+        });
+
+        const currentDaysKWTTransactions = allDays.map((day) => {
+          const localDay = format(day, "yyyy-MM-dd");
+          return {
+            date: day,
+            value: dailyStatsKWT[localDay] || 0,
+          };
+        });
+
+        const previousDaysKWTTransactions = allDaysPrevious.map((day) => {
+          const localDay = format(day, "yyyy-MM-dd");
+          return {
+            date: day,
+            value: dailyStatsKWT[localDay] || 0,
+          };
+        });
+  
+        console.log("previousDaysTonTransactions====", previousDaysTonTransactions, currentDaysTonTransactions)
+         
+        const referalsTonBalance = [...currentDaysTonTransactions, ...previousDaysTonTransactions];
+        const referalsKWTBalance = [...currentDaysKWTTransactions, ...previousDaysKWTTransactions];
+
+      setReferalsTonBalance(referalsTonBalance)
+      setReferalsKWTBalance(referalsKWTBalance)
+      setCurrentTotalReferalsTonBalance(currentDaysTonTransactions.reduce((acc, tx) => acc + tx.value, 0))
+      setCurrentTotalReferalsKWTBalance(currentDaysKWTTransactions.reduce((acc, tx) => acc + tx.value, 0))
+      setPreviousTotalReferalsTonBalance(previousDaysTonTransactions.reduce((acc, tx) => acc + tx.value, 0))
+      setPreviousTotalReferalsKWTBalance(previousDaysKWTTransactions.reduce((acc, tx) => acc + tx.value, 0))
     }
     fetchReferalsIncome()
 }, [selectedDates])

@@ -78,13 +78,14 @@ export function useTransactionStatsNew(
             }
     
             allData = allData.concat(data);
+
             if (data.length < 1000) break;
     
             fromIndex += 1000;
             toIndex += 1000;
         }
       }
-
+      allData = allData.filter((item) => item.txid !== "312r2r12f12r12f12fqwfh55h5h" && item.txid !== "1w23uui8890bbh1y7u9it5r2cv2g");
       const dailyStats = allData.reduce<Record<string, number>>((acc, transaction) => {
         const localDay = formatInTimeZone(new Date(transaction.created_at), "UTC", "yyyy-MM-dd");
         acc[localDay] = (acc[localDay] || 0) + transaction.summ;

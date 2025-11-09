@@ -44,7 +44,9 @@ export function useWithdrawalsStats(selectedDates?: DateRange, prevDates?: Perio
           break;
         }
 
-        allData = allData.concat(data);
+        let filteredCompletedData = data.filter((item) => item.status === "completed");
+
+        allData = allData.concat(filteredCompletedData);
         if (data.length < 1000) break;
 
         fromIndex += 1000;
@@ -70,8 +72,9 @@ export function useWithdrawalsStats(selectedDates?: DateRange, prevDates?: Perio
               console.error("Error fetching registration stats:", error);
               break;
             }
-    
-            allData = allData.concat(data);
+
+            let filteredCompletedData = data.filter((item) => item.status === "completed");
+            allData = allData.concat(filteredCompletedData);
             if (data.length < 1000) break;
     
             fromIndex += 1000;
