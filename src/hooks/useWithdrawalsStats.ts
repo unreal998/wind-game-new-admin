@@ -95,7 +95,7 @@ export function useWithdrawalsStats(selectedDates?: DateRange, prevDates?: Perio
           value: dailyStats[localDay] || 0,
         };
       });
-      console.log("currentDaysWithdrawals=====>", currentDaysWithdrawals);
+
       const previousDaysWithdrawals = allDaysPrevious.map((day) => {
         const localDay = format(day, "yyyy-MM-dd");
         return {
