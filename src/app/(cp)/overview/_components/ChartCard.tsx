@@ -38,6 +38,7 @@ export type CardProps = {
   type: "currency" | "unit"
   selectedDates: DateRange | undefined
   selectedPeriod: PeriodValue
+  setPotentialTonOutput?: (value: number) => void
 }
 
 const formattingMap = {
@@ -64,6 +65,7 @@ export function ChartCard({
   type,
   selectedDates,
   selectedPeriod,
+  setPotentialTonOutput,
 }: CardProps) {
   const formatter = formattingMap[type]
 
@@ -110,6 +112,7 @@ export function ChartCard({
             value: previousBalance,
           });
         }
+        setPotentialTonOutput?.(tonBalance[tonBalance.length - 1]?.value || 0)
       });
       setTonBalance(balanceData)
       setCurrentTotalTonBalance(balance);
