@@ -2,7 +2,7 @@
 
 import { DataTable } from "@/components/data-table/DataTable"
 import { FilterableColumn, TableColumn } from "@/types/table"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { getUserData, replenishUserTONBalance, updateUserInvitedBy, updateUserKWTBalance, updateUserReferalArray, updateUserTeam, updateUserTONBalance } from "./updateUserBalance"
 import { fetchTransactionsByUid } from "./fetchTransactionsByUid"
 import { transactionColumns } from "./transactionColumns"
@@ -11,6 +11,7 @@ import { areaColumns } from "./areaColumns"
 import { modifiersColumns } from "./ModifierColumn"
 import { AdminProfile, adminProfileTeams } from "@/types/profile"
 import { Select, SelectItem, SelectGroup, SelectValue, SelectTrigger, SelectContent } from "@/components/Select"
+import axios from "axios"
 
 interface UserSidebarProps {
   user: AdminProfile
@@ -31,7 +32,7 @@ export const UserSidebar = ({
   isAvialableToWrite
 }: UserSidebarProps) => {
   const [transactions, setTransactions] = useState<any[] | null>(null)
-  console.log(user)
+  const [referalsData, setReferalsData] = useState<any[] | null>(null)
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -44,6 +45,55 @@ export const UserSidebar = ({
 
     if (user?.id) fetchData()
   }, [user?.id])
+
+  const referalsByLevelIncome = useMemo(() => {
+    if (!referalsData) return [];
+    let usersIncomeByLevel = {
+      1: {
+        kwtIncome: user?.referalIncomeKWT[1] ?? 0,
+        tonIncome: user?.referalIncomeTON[1] ?? 0,
+        count: 0,
+      },
+      2: {
+        kwtIncome: user?.referalIncomeKWT[2] ?? 0,
+        tonIncome: user?.referalIncomeTON[2] ?? 0,
+        count: 0,
+      },
+      3: {
+        kwtIncome: user?.referalIncomeKWT[3] ?? 0,
+        tonIncome: user?.referalIncomeTON[3] ?? 0,
+        count: 0,
+      },
+      4: {
+        kwtIncome: user?.referalIncomeKWT[4] ?? 0,
+        tonIncome: user?.referalIncomeTON[4] ?? 0,
+        count: 0,
+      },
+      5: {
+        kwtIncome: user?.referalIncomeKWT[5] ?? 0,
+        tonIncome: user?.referalIncomeTON[5] ?? 0,
+        count: 0,
+      },
+    };
+    Object.values(referalsData).forEach((userReferal) => {
+      console.log(userReferal)
+        usersIncomeByLevel[
+          (userReferal.level ?? 1) as keyof typeof usersIncomeByLevel
+        ].count += 1;
+    });
+    return usersIncomeByLevel;
+  }, [referalsData, user]);
+
+  useEffect(() => {
+    const fetchUserReferalCountData = async (tid: string) => {
+      const response = await axios.get(
+        `https://turbinex.pp.ua/user/nested-referrals?tid=${tid}`
+      );
+
+      setReferalsData(response.data.data);
+    };
+    if (user?.id) fetchUserReferalCountData(user.telegramID)
+  }, [user])
 
   return (
     <div
@@ -244,6 +294,21 @@ export const UserSidebar = ({
                   onRowClick={() => {}}
                   openSidebarOnRowClick={false}
                 />
+              </div>
+            </div>
+          )}
+          {referalsByLevelIncome && (
+            <div>
+              <h3 className="mb-2 text-lg font-semibold">Рефералів по рівнях</h3>
+              <div className="max-h-[400px] overflow-auto rounded border dark:border-gray-700">
+                {Object.entries(referalsByLevelIncome).map(([level, data]) => (
+                  <div key={level} style={{ marginTop: "10px" }}>
+                    <h4 className="text-lg font-semibold">Рівень {level}</h4>
+                    <p>Кількість рефералів: {data.count}</p>
+                    <p>кВт: {data.kwtIncome}</p>
+                    <p>TON: {data.tonIncome}</p>
+                  </div>
+                ))}
               </div>
             </div>
           )}

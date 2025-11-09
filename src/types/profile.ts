@@ -13,6 +13,8 @@ export type AdminProfile = UserRow & {
   inactiveReferalCount?: number
   team: AdminProfileTeams
   invitedBy: string
+  referalIncomeKWT: Record<number, number>
+  referalIncomeTON: Record<number, number>
 }
 
 export interface TransactionProfile {
