@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react"
-import { startOfDay, interval, isWithinInterval, subDays } from "date-fns"
-import axios from "axios"
+import { eachDayOfInterval, endOfDay, format, startOfDay } from "date-fns"
 import { DateRange } from "react-day-picker"
+import { PeriodValue } from "@/types/overview"
+import { createClient } from "@/utils/supabase/client"
+import { getPeriod } from "@/app/(cp)/overview/_components/FilterBar"
 
 type Transaction = {
   created_at: string
@@ -9,82 +11,119 @@ type Transaction = {
   txid: string
 }
 
-type DateValue = { date: Date; value: number }
-
 export function useTransactionStatsNew(
-  selectedPeriod: DateRange | undefined,
-  selectedDates: string,
+  selectedDates?: DateRange, prevDates?: PeriodValue
 ) {
-  const [transactionData, setTransactionData] = useState<DateValue[]>([])
-  const [currentTotalTransactions, setCurrentTotalTransactions] =
-    useState<number>(0)
-  const [previousTotalTransactions, setPreviousTotalTransactions] =
-    useState<number>(0)
+  const [stats, setStats] = useState<{
+    transactions: Array<{ date: Date; value: number }>;
+  }>({
+    transactions: [],
+  });
+  const [currentTotalTransactions, setCurrentTotalTransactions] = useState<number>(0);
+  const [previousTotalTransactions, setPreviousTotalTransactions] = useState<number>(0);
 
   useEffect(() => {
     const fetchTransactions = async () => {
-      try {
-        const response = await axios.get(
-          "https://turbinex.pp.ua/transaction/all",
-          {
-            headers: {
-              "ngrok-skip-browser-warning": true,
-            },
-          },
-        )
+      const supabase = createClient();
+      let previousDates: DateRange | undefined = undefined;
+      if (prevDates) {
+        previousDates = getPeriod(selectedDates, prevDates)
+      };
+      if (!selectedDates?.from || !selectedDates?.to) return;
 
-        const rawData: Transaction[] = response.data.data
+      const fromDate = startOfDay(selectedDates.from);
+      const toDate = endOfDay(selectedDates.to);
 
-        const filteredRawData = rawData.filter((item) => {
-          return item.txid !== "1w23uui8890bbh1y7u9it5r2cv2g" && item.txid !== "312r2r12f12r12f12fqwfh55h5h"
-        })
-        const grouped = filteredRawData.reduce<Record<string, number>>((acc, item) => {
-          const key = startOfDay(new Date(item.created_at)).toISOString()
-          acc[key] = (acc[key] || 0) + item.summ
-          return acc
-        }, {})
+      const fromStr = format(fromDate, "yyyy-MM-dd HH:mm:ss");
+      const toStr = format(toDate, "yyyy-MM-dd HH:mm:ss");
 
-        const formatted: DateValue[] = Object.entries(grouped).map(
-          ([date, value]) => ({
-            date: new Date(date),
-            value,
-          }),
-        )
+      let allData: any[] = [];
+      let fromIndex = 0;
+      let toIndex = 999;
 
-        setTransactionData(formatted)
+      while (true) {
+        const { data, error } = await supabase
+          .from("transactions")
+          .select("*")
+          .gte("created_at", fromStr)
+          .lte("created_at", toStr)
+          .order("created_at", { ascending: true })
+          .range(fromIndex, toIndex);
 
-        const today = new Date()
-        const from = subDays(today, 30)
-        const previousFrom = subDays(from, 30)
-        let currentInterval = interval(from, today)
-        let previousInterval = interval(previousFrom, from)
-        if (selectedPeriod && selectedPeriod.from && selectedPeriod.to) {
-          currentInterval = interval(selectedPeriod.from, selectedPeriod.to)
-          const previousFrom = subDays(selectedPeriod.from, 30)
-          previousInterval = interval(previousFrom, selectedPeriod.from)
+        if (error) {
+          console.error("Error fetching registration stats:", error);
+          break;
         }
 
-        const current = formatted
-          .filter((item) => isWithinInterval(item.date, currentInterval))
-          .reduce((acc, item) => acc + item.value, 0)
+        allData = allData.concat(data);
+        if (data.length < 1000) break;
 
-        const previous = formatted
-          .filter((item) => isWithinInterval(item.date, previousInterval))
-          .reduce((acc, item) => acc + item.value, 0)
-
-        setCurrentTotalTransactions(current)
-        setPreviousTotalTransactions(previous)
-      } catch (error) {
-        console.error("Failed to fetch transactions:", error)
+        fromIndex += 1000;
+        toIndex += 1000;
       }
+
+      if (previousDates !== undefined) {
+        const fromDate = startOfDay(previousDates.from as Date);
+        const toDate = endOfDay(previousDates.to as Date);
+        const fromStr = format(fromDate, "yyyy-MM-dd HH:mm:ss");
+        const toStr = format(toDate, "yyyy-MM-dd HH:mm:ss");
+
+        while (true) {
+            const { data, error } = await supabase
+              .from("transactions")
+              .select("*")
+              .gte("created_at", fromStr)
+              .lte("created_at", toStr)
+              .order("created_at", { ascending: true })
+              .range(fromIndex, toIndex);
+    
+            if (error) {
+              console.error("Error fetching registration stats:", error);
+              break;
+            }
+    
+            allData = allData.concat(data);
+            if (data.length < 1000) break;
+    
+            fromIndex += 1000;
+            toIndex += 1000;
+        }
+      }
+
+      const dailyStats = allData.reduce<Record<string, number>>((acc, user) => {
+        const localDay = format(startOfDay(new Date(user.created_at)), "yyyy-MM-dd");
+        acc[localDay] = (acc[localDay] || 0) + user.summ;
+        return acc;
+      }, {});
+      console.log("dailyStats=====>", dailyStats);
+      const allDays = eachDayOfInterval({ start: fromDate, end: toDate });
+      const allDaysPrevious = eachDayOfInterval({ start: previousDates?.from as Date, end: previousDates?.to as Date });
+
+      const currentDaysRegistrations = allDays.map((day) => {
+        const localDay = format(day, "yyyy-MM-dd");
+        return {
+          date: day,
+          value: dailyStats[localDay] || 0,
+        };
+      });
+
+      const previousDaysRegistrations = allDaysPrevious.map((day) => {
+        const localDay = format(day, "yyyy-MM-dd");
+        return {
+          date: day,
+          value: dailyStats[localDay] || 0,
+        };
+      });
+
+      const transactions = [...currentDaysRegistrations, ...previousDaysRegistrations];
+
+      setStats({ transactions });
+      setCurrentTotalTransactions(allData.reduce((acc, tx) => acc + tx.summ, 0));
+      setPreviousTotalTransactions(allData.reduce((acc, tx) => acc + tx.summ, 0));
     }
 
     fetchTransactions()
-  }, [selectedPeriod, selectedDates])
+  }, [selectedDates])
 
-  return {
-    transactions: transactionData,
-    currentTotalTransactions,
-    previousTotalTransactions,
-  }
+  return { transactions: stats.transactions, currentTotalTransactions, previousTotalTransactions };
 }
