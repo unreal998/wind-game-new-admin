@@ -12,12 +12,16 @@ import { UserLocation } from "@/types/userLocation"
 import { createClient } from "@/utils/supabase/client"
 import { roleSelector, useUserStore } from "@/stores/useUserStore"
 import NotAllowed from "@/components/NotAllowed"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/Select"
+import { AdminProfileTeams, adminProfileTeams } from "@/types/profile"
 
 export default function UserLocationsAdminPage() {
   const { userLocations, isLoading } = useAdminUserLocationsStore()
   const [aggregatedValue] = useState<string | number | null>(null)
   const [countries, setCountries] = useState<any[]>([])
   const userRole = useUserStore(roleSelector)
+  const [filteredUserLocations, setFilteredUserLocations] = useState<UserLocation[]>([])
+  const [teamFilter, setTeamFilter] = useState<AdminProfileTeams | "all">("all")
 
 
   const filterableColumns: FilterableColumn[] = [
@@ -73,33 +77,37 @@ export default function UserLocationsAdminPage() {
     fetchModsData()
   }, [])
 
-  const formatUserLocations = [] as UserLocation[]
-  userLocations.forEach((location: any) => {
-    const locationData = location as any
-    locationData.areas.forEach((area: any) => {
-      if (locationData.telegramID === "7598364146") {
-        console.log(area)
-      }
-      const selectedCountire = countries.find((c) => c.shortName === area.name)
-      const userMod = {
-        user: {
-          id: locationData.telegramID,
-          username: locationData.userName || locationData.telegramID,
-          first_name: locationData.firstName || "Unknown",
-          last_name: locationData.lastName || "Unknown",
-        },
-        location: {
-          base_energy_per_hour: selectedCountire?.basicBonusPerClick || 0,
-        },
-        location_id: area.name || "",
-        last_push_at: area.lastButtonPress || "",
-        boughtAt: area.boughtAt || null,
-        areaIncome: area.areaIncome || 0,
-        areaIncomeTon: area.areaIncomeTon || 0,
-      } as UserLocation
-      formatUserLocations.push(userMod as UserLocation)
+  useEffect(() => {
+    const formatUserLocations = [] as UserLocation[]
+    userLocations.forEach((location: any) => {
+      const locationData = location as any
+      locationData.areas.forEach((area: any) => {
+        const selectedCountire = countries.find((c) => c.shortName === area.name)
+        const userMod = {
+          user: {
+            id: locationData.telegramID,
+            username: locationData.userName || locationData.telegramID,
+            first_name: locationData.firstName || "Unknown",
+            last_name: locationData.lastName || "Unknown",
+            team: locationData.team || "Unknown",
+          },
+          location: {
+            base_energy_per_hour: selectedCountire?.basicBonusPerClick || 0,
+          },
+          location_id: area.name || "",
+          last_push_at: area.lastButtonPress || "",
+          boughtAt: area.boughtAt || null,
+          areaIncome: area.areaIncome || 0,
+          areaIncomeTon: area.areaIncomeTon || 0,
+        } as UserLocation
+        if (teamFilter === "all" || userMod.user?.team === teamFilter) {
+          formatUserLocations.push(userMod as UserLocation)
+        }
+        
+      })
     })
-  })
+    setFilteredUserLocations(formatUserLocations)
+  }, [userLocations, teamFilter])
 
   if (userRole === "marketing") return <NotAllowed />
 
@@ -112,11 +120,30 @@ export default function UserLocationsAdminPage() {
             {aggregatedValue}
           </Badge>
         )}
+          <Select
+              onValueChange={(value) =>
+                setTeamFilter(value as AdminProfileTeams)
+              }
+              value={teamFilter}
+        >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select a team" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {[...adminProfileTeams, "all"].map((team) => (
+                    <SelectItem key={team} value={team}>
+                      {team === "all" ? "All Teams" : team.toUpperCase()}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+        </Select>
       </div>
 
       <Card className="p-0">
         <DataTable
-          data={formatUserLocations}
+          data={filteredUserLocations}
           columns={userLocationColumns}
           filterableColumns={filterableColumns}
           isLoading={isLoading}

@@ -1,5 +1,6 @@
 import { type Database } from "@/utils/supabase/database.types";
 import { type WindMod } from "./windMod";
+import { AdminProfileTeams } from "./profile";
 
 export type UserMod =
     & Database["public"]["Tables"]["user_mods"]["Row"]
@@ -9,6 +10,7 @@ export type UserMod =
             username?: string;
             first_name?: string;
             last_name?: string;
+            team?: AdminProfileTeams;
         };
         mod?: WindMod;
         location?: {

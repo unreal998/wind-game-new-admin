@@ -41,7 +41,7 @@ export const userLocationColumns: TableColumn<UserLocation>[] = [
 
   columnHelper.accessor((row) => row.user?.id, {
     id: "user.id",
-    header: "ID користувача",
+    header: "Telegram ID",
     cell: ({ getValue }) => {
       const id = getValue()
       if (!id) return "-"
@@ -69,6 +69,15 @@ export const userLocationColumns: TableColumn<UserLocation>[] = [
     },
   }),
 
+  columnHelper.accessor((row) => row.user?.team, {
+    header: "Команда",
+    cell: ({ getValue }) => getValue() || "-",
+    enableSorting: true,
+    filterFn: "text",
+    meta: {
+      exportValue: (row) => row.user?.team || "-",
+    },
+  }),
   columnHelper.accessor("location_id", {
     header: "Локація",
     cell: ({ getValue }) => getValue() || "-",

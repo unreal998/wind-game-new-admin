@@ -12,6 +12,8 @@ import { UserMod } from "@/types/userMod"
 import { createClient } from "@/utils/supabase/client"
 import NotAllowed from "@/components/NotAllowed"
 import { roleSelector, useUserStore } from "@/stores/useUserStore"
+import { Select, SelectGroup, SelectValue, SelectTrigger, SelectContent, SelectItem } from "@/components/Select"
+import { AdminProfileTeams, adminProfileTeams } from "@/types/profile"
 
 export default function UserModsAdminPage() {
   const { userMods, isLoading } = useAdminUserModsStore()
@@ -19,6 +21,8 @@ export default function UserModsAdminPage() {
   const formatUserMod = [] as UserMod[];
   const [modifiersData, setModifiers] = useState<any[]>([])
   const userRole = useUserStore(roleSelector)
+  const [filteredUserMods, setFilteredUserMods] = useState<UserMod[]>([])
+  const [teamFilter, setTeamFilter] = useState<AdminProfileTeams | "all">("all")
 
   useEffect(() => {
     const fetchModsData = async () => {
@@ -33,49 +37,61 @@ export default function UserModsAdminPage() {
     fetchModsData()
   }, [])
 
-  userMods.forEach((mod) => {
-    const modData = mod as any;
-    modData.modifiers.forEach((modifier: any) => {
-      if (modifier.boughtModifier.length) {
+  useEffect(() => {
+    
+    userMods.forEach((mod) => {
+      const modData = mod as any;
+      modData.modifiers.forEach((modifier: any) => {
+        if (modifier.boughtModifier.length) {
 
-        const selectedMod = modifiersData.find(
-          (m) => m.area === modifier.areaName
-        )
+          const selectedMod = modifiersData.find(
+            (m) => m.area === modifier.areaName
+          )
 
-        modifier.boughtModifier.forEach((modifierData: any) => {
-          const selectedModValue = selectedMod?.values[modifierData.speed - 1];
-          const userMod = {
-            user: { 
-              id: modData.telegramID,
-              username: modData.userName || modData.telegramID,
-              first_name: modData.firstName || "Unknown",
-              last_name: modData.lastName || "Unknown"
-            },
-            pushes_done: 63 - modifierData.clicksRemaining,
-            required_pushes: modifierData.clicksRemaining,
-            ton_earned: selectedModValue?.tonValue ? ((selectedModValue.tonValue / 64) * (64 - modifierData.clicksRemaining)).toFixed(2) : 0,
-            coins_earned: selectedModValue?.turxValue ? (selectedModValue.turxValue / 64) * (64 - modifierData.clicksRemaining) : 0,
-            ton_remaining: selectedModValue?.tonValue ? ((selectedModValue.tonValue / 64) * modifierData.clicksRemaining).toFixed(2) : 0,
-            coins_remaining: selectedModValue?.turxValue ? (selectedModValue.turxValue / 64) * modifierData.clicksRemaining : 0,
-            price: selectedModValue?.price || 0,
-            purchased_at: modifierData.boughtDate,
-            location_id: modifier.areaName || "",
-          }
-          formatUserMod.push(userMod as UserMod);
-        })
-      }
+          modifier.boughtModifier.forEach((modifierData: any) => {
+            const selectedModValue = selectedMod?.values[modifierData.speed - 1];
+            const userMod = {
+              user: { 
+                id: modData.telegramID,
+                username: modData.userName || modData.telegramID,
+                first_name: modData.firstName || "Unknown",
+                last_name: modData.lastName || "Unknown",
+                team: modData.team || "Unknown",
+              },
+              pushes_done: 63 - modifierData.clicksRemaining,
+              required_pushes: modifierData.clicksRemaining,
+              ton_earned: selectedModValue?.tonValue ? ((selectedModValue.tonValue / 64) * (64 - modifierData.clicksRemaining)).toFixed(2) : 0,
+              coins_earned: selectedModValue?.turxValue ? (selectedModValue.turxValue / 64) * (64 - modifierData.clicksRemaining) : 0,
+              ton_remaining: selectedModValue?.tonValue ? ((selectedModValue.tonValue / 64) * modifierData.clicksRemaining).toFixed(2) : 0,
+              coins_remaining: selectedModValue?.turxValue ? (selectedModValue.turxValue / 64) * modifierData.clicksRemaining : 0,
+              price: selectedModValue?.price || 0,
+              purchased_at: modifierData.boughtDate,
+              location_id: modifier.areaName || "",
+            }
+            if (teamFilter === "all" || userMod.user?.team === teamFilter) {
+              formatUserMod.push(userMod as UserMod);
+            }
+          })
+        }
+      })
     })
-  })
+    setFilteredUserMods(formatUserMod)
+  }, [userMods, teamFilter])
 
   const filterableColumns: FilterableColumn[] = [
     {
       id: "user.telegramID",
-      title: "Telegram ID користувача",
+      title: "Telegram ID",
       type: "text",
     },
     {
       id: "user.username",
       title: "Username",
+      type: "text",
+    },
+    {
+      id: "user.team",
+      title: "Команда",
       type: "text",
     },
     {
@@ -141,11 +157,30 @@ export default function UserModsAdminPage() {
             {aggregatedValue}
           </Badge>
         )}
+        <Select
+              onValueChange={(value) =>
+                setTeamFilter(value as AdminProfileTeams)
+              }
+              value={teamFilter}
+        >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select a team" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {[...adminProfileTeams, "all"].map((team) => (
+                    <SelectItem key={team} value={team}>
+                      {team === "all" ? "All Teams" : team.toUpperCase()}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+        </Select>
       </div>
 
       <Card className="p-0">
         <DataTable
-          data={formatUserMod}
+          data={filteredUserMods}
           columns={userModColumns}
           filterableColumns={filterableColumns}
           isLoading={isLoading}

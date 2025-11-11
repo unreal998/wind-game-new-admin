@@ -1,5 +1,6 @@
 import { type Database } from "@/utils/supabase/database.types";
 import { type LocationType } from "./location";
+import { AdminProfileTeams } from "./profile";
 
 export type UserLocation =
     & Database["public"]["Tables"]["user_locations"]["Row"]
@@ -9,6 +10,7 @@ export type UserLocation =
             username?: string;
             first_name?: string;
             last_name?: string;
+            team?: AdminProfileTeams;
         };
         location?: {
             id: LocationType;
