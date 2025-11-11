@@ -115,11 +115,11 @@ export const getWithdrawalColumns = (
     }),
     columnHelper.accessor("fee", {
       header: "Комісія",
-      cell: ({ row }) => row.original.sum * 0.02,
+      cell: ({ row }) => Math.floor(((row.original.sum * 1000 )* 0.02) / 1000),
     }),
     columnHelper.accessor("sumfee", {
       header: "Сума з комісією",
-      cell: ({ row }) => row.original.sum * 0.98,
+      cell: ({ row }) => Math.floor(((row.original.sum * 1000 )* 0.98) / 1000),
     }),
     columnHelper.accessor("uid", {
       header: "UID",
