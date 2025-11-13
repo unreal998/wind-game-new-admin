@@ -136,20 +136,20 @@ export default function WithdrawalAdminPage() {
   }, [withdrawals, profiles])
 
   useEffect(() => {
+    const completedData = filteredWithdrawalsData.filter((item: any) => item.status === "completed")
     setCompletedSum(
-      withdrawalsData.reduce((acc: number, next: any) => {
+      completedData.reduce((acc: number, next: any) => {
         return next.status === "completed" ? acc + next.sum : acc
       }, 0),
     )
 
     setPendingSum(
-      withdrawalsData.reduce((acc: number, next: any) => {
+      filteredWithdrawalsData.reduce((acc: number, next: any) => {
         return next.status === "new" ? acc + next.sum : acc
       }, 0)
     )
-    const filteredWithdrawalsData = withdrawalsData.filter((item: any) => item.status === "completed")
     setSelectedDateRangeClearSum(
-      filteredWithdrawalsData.filter((item: any) => item.status === "completed" && isWithinInterval(
+      completedData.filter((item: any) => isWithinInterval(
           item.created_at,
           interval(
             selectedDateRange?.to ?? new Date(),
@@ -159,7 +159,7 @@ export default function WithdrawalAdminPage() {
       )
       .reduce((acc: number, next: any) => acc + next.sum, 0),
     )
-  }, [withdrawalsData, selectedDateRange])
+  }, [withdrawalsData, selectedDateRange, filteredWithdrawalsData])
 
   useEffect(() => {
     if (withdrawalsData.length === 0) return

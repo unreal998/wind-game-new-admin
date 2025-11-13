@@ -33,14 +33,14 @@ export default function WalletsAdminPage() {
   const [teamFilter, setTeamFilter] = useState<AdminProfileTeams | "all">("all")
 
   useEffect(() => {
-    setSum(transactions.reduce((acc: number, next: any) => acc + next.summ, 0))
+    setSum(filteredTransactions.reduce((acc: number, next: any) => acc + next.summ, 0))
     setClearSum(
-      transactions
+      filteredTransactions
         .filter((item: any) => item.txid !== "1w23uui8890bbh1y7u9it5r2cv2g" && item.txid !== "312r2r12f12r12f12fqwfh55h5h")
         .reduce((acc: number, next: any) => acc + next.summ, 0),
     )
     setSelectedDateRangeSum(
-      transactions
+      filteredTransactions
         .filter((item: any) =>
           isWithinInterval(
             item.created_at,
@@ -53,7 +53,7 @@ export default function WalletsAdminPage() {
         .reduce((acc: number, next: any) => acc + next.summ, 0),
     )
     setSelectedDateRangeClearSum(
-      transactions
+      filteredTransactions
         .filter((item: any) => item.txid !== "1w23uui8890bbh1y7u9it5r2cv2g" && item.txid !== "312r2r12f12r12f12fqwfh55h5h")
         .filter((item: any) =>
           isWithinInterval(
@@ -66,7 +66,7 @@ export default function WalletsAdminPage() {
         )
         .reduce((acc: number, next: any) => acc + next.summ, 0),
     )
-  }, [transactions, selectedDateRange])
+  }, [filteredTransactions, selectedDateRange])
 
   const filterableColumns: FilterableColumn[] = [
     { id: "id", title: "ID", type: "text" },
