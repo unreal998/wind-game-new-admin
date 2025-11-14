@@ -302,11 +302,13 @@ export const UserSidebar = ({
               <h3 className="mb-2 text-lg font-semibold">Рефералів по рівнях</h3>
               <div className="max-h-[400px] overflow-auto rounded border dark:border-gray-700">
                 {Object.entries(referalsByLevelIncome).map(([level, data]) => (
-                  <div key={level} style={{ marginTop: "10px" }}>
+                  <div key={level} style={{ marginTop: "20px", display: "flex", flexDirection: "column", gap: "10px", alignItems: "center" }}>
                     <h4 className="text-lg font-semibold">Рівень {level}</h4>
-                    <p>Кількість рефералів: {data.count}</p>
-                    <p>кВт: {data.kwtIncome}</p>
-                    <p>TON: {data.tonIncome}</p>
+                    <div style={{ display: "flex", gap: "40px", alignItems: "center" }}>                    
+                      <p>Кількість рефералів: {data.count}</p>
+                      <p>кВт: {Math.floor((data.kwtIncome) * 10000) / 10000}</p>
+                      <p>TON: {Math.floor((data.tonIncome) * 10000) / 10000}</p>
+                    </div>
                   </div>
                 ))}
               </div>

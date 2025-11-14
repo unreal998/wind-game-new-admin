@@ -319,49 +319,9 @@ export function EditTransactionDrawer({
               />
             </div>
 
-            {/* Commission */}
-            {/* <div className="space-y-1">
-              <div className="flex h-8 items-center justify-between">
-                <label
-                  className={cx(
-                    labelStyles.base,
-                    editableFields.commission
-                      ? labelStyles.editable
-                      : labelStyles.readonly,
-                  )}
-                >
-                  <span className="flex items-center gap-x-2">
-                    {editableFields.commission && (
-                      <RiEditLine className="size-4 text-indigo-600 dark:text-indigo-400" />
-                    )}
-                    <span>Комісія</span>
-                  </span>
-                </label>
-                {!editableFields.commission && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => toggleFieldEdit("commission")}
-                  >
-                    <RiEditLine className="size-4" />
-                  </Button>
-                )}
-              </div>
-              <Input
-                ref={setInputRef("commission")}
-                type={!editableFields.commission ? "copy" : "number"}
-                value={changedFields.commission ?? transaction.commission}
-                onChange={(e) =>
-                  handleFieldChange("commission", Number(e.target.value))
-                }
-                readOnly={!editableFields.commission}
-              />
-            </div> */}
           </div>
 
-          {/* Final Amount and Created At Row */}
           <div className="grid grid-cols-2 gap-4">
-            {/* Final Amount */}
             <div className="space-y-1">
               <div className="flex h-8 items-center justify-between">
                 <label className={cx(labelStyles.base, labelStyles.readonly)}>
