@@ -106,9 +106,9 @@ export default function TelegramMessagePage() {
 
         <div className="space-y-2">
           <Label htmlFor="tg-message">Повідомлення</Label>
-          <Input
+          <textarea
+            className="h-[500px] w-full resize-none rounded border border-gray-300 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-900 dark:text-white"
             id="tg-message"
-            type="text"
             placeholder="Введіть ваше повідомлення"
             value={tgMessagePayload.msg}
             onChange={(e) =>
