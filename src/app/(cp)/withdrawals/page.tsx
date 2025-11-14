@@ -109,8 +109,8 @@ export default function WithdrawalAdminPage() {
   }, [userRole])
 
   useEffect(() => {
-    fetchWithdrawals()
-  }, [fetchWithdrawals])
+    fetchWithdrawals(selectedDateRange)
+  }, [fetchWithdrawals, selectedDateRange])
 
   useEffect(() => {
     if (!withdrawals.length || !profiles.length) return

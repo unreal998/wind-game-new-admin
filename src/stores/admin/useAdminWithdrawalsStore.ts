@@ -1,7 +1,9 @@
 import {
-  fetchUpdateWithDrawStatus,
-  fetchWithdrawalsApi,
+  fetchUpdateWithDrawStatus
 } from "@/app/(cp)/withdrawals/_components/fetchWithdrawal"
+import { createClient } from "@/utils/supabase/client"
+import { format } from "date-fns-tz"
+import { DateRange } from "react-day-picker"
 import { create } from "zustand"
 
 type WithdrawalRequestStatus = "new" | "completed" | "declined"
@@ -22,7 +24,7 @@ interface AdminWithdrawalsState {
   isLoadingWithDrawal: boolean
   error: string | null
   newWithdrawalsCount: number | null
-  fetchWithdrawals: () => Promise<void>
+  fetchWithdrawals: (selectedDateRange?: DateRange) => Promise<void>
   updateWithdrawals: () => Promise<void>
   updateWithDrawStatus: (
     id: string,
@@ -36,13 +38,40 @@ export const useAdminWithdrawalsStore = create<AdminWithdrawalsState>(
     newWithdrawalsCount: null,
     isLoadingWithDrawal: true,
     error: null,
-    fetchWithdrawals: async () => {
+    fetchWithdrawals: async (selectedDateRange?: DateRange) => {
+      const supabase = createClient();
       set({ isLoadingWithDrawal: true })
       try {
-        const withdrawals: Withdrawal[] = await fetchWithdrawalsApi()
+        let allData: any[] = [];
+        let fromIndex = 0;
+        let toIndex = 999;
+
+        while (true) {
+          const { data, error } = await supabase
+            .from("withdraw")
+            .select("*")
+            .gte("created_at", format(selectedDateRange?.from as Date, "yyyy-MM-dd HH:mm:ss"))
+            .lte("created_at", format(selectedDateRange?.to as Date, "yyyy-MM-dd HH:mm:ss"))
+            .order("created_at", { ascending: true })
+            .range(fromIndex, toIndex);
+  
+          if (error) {
+            console.error("Error fetching registration stats:", error);
+            break;
+          }
+  
+          let filteredCompletedData = data.filter((item) => item.status === "completed");
+  
+          allData = allData.concat(filteredCompletedData);
+          if (data.length < 1000) break;
+  
+          fromIndex += 1000;
+          toIndex += 1000;
+        }
+        console.log(allData);
         set({
-          withdrawals: withdrawals || [],
-          newWithdrawalsCount: withdrawals.filter((w) => w.status === "new")
+          withdrawals: allData || [],
+          newWithdrawalsCount: allData.filter((w) => w.status === "new")
             .length,
           isLoadingWithDrawal: false,
         })
