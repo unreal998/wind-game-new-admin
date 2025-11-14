@@ -21,6 +21,7 @@ export type Withdrawal = {
 
 interface AdminWithdrawalsState {
   withdrawals: Withdrawal[]
+  allWithdrawals: Withdrawal[]
   isLoadingWithDrawal: boolean
   error: string | null
   newWithdrawalsCount: number | null
@@ -32,12 +33,42 @@ interface AdminWithdrawalsState {
   ) => Promise<void>
 }
 
+async function getAllWithdrawals() {
+  const supabase = createClient();
+  let allData: any[] = [];
+  let fromIndex = 0;
+  let toIndex = 999;
+
+  while (true) {
+    const { data, error } = await supabase
+      .from("withdraw")
+      .select("*")
+      .order("created_at", { ascending: true })
+      .range(fromIndex, toIndex);
+
+    if (error) {
+      console.error("Error fetching withdrawals:", error);
+      break;
+    }
+
+    allData = allData.concat(data);
+    if (data.length < 1000) break;
+
+    fromIndex += 1000;
+    toIndex += 1000;
+  }
+  return allData;
+}
+
 export const useAdminWithdrawalsStore = create<AdminWithdrawalsState>(
   (set) => ({
     withdrawals: [],
     newWithdrawalsCount: null,
     isLoadingWithDrawal: true,
     error: null,
+    allWithdrawals: [],
+    
+
     fetchWithdrawals: async (selectedDateRange?: DateRange) => {
       const supabase = createClient();
       set({ isLoadingWithDrawal: true })
@@ -59,27 +90,28 @@ export const useAdminWithdrawalsStore = create<AdminWithdrawalsState>(
             console.error("Error fetching registration stats:", error);
             break;
           }
+
   
-          let filteredCompletedData = data.filter((item) => item.status === "completed");
-  
-          allData = allData.concat(filteredCompletedData);
+          allData = allData.concat(data);
           if (data.length < 1000) break;
   
           fromIndex += 1000;
           toIndex += 1000;
         }
-        console.log(allData);
+        const allWithdrawals = await getAllWithdrawals();
         set({
           withdrawals: allData || [],
           newWithdrawalsCount: allData.filter((w) => w.status === "new")
             .length,
           isLoadingWithDrawal: false,
+          allWithdrawals: allWithdrawals || [],
         })
       } catch (error) {
         console.error("Error fetching withdrawals:", error)
         set({ error: "Failed to load withdrawals", isLoadingWithDrawal: false })
       }
     },
+
 
     updateWithDrawStatus: async (
       id: string,

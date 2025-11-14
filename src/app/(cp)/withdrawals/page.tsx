@@ -26,7 +26,6 @@ import {
   SelectValue,
 } from "@/components/Select"
 import { adminProfileTeams, AdminProfileTeams } from "@/types/profile"
-import { interval, isWithinInterval } from "date-fns"
 
 export default function WithdrawalAdminPage() {
   const [selectedDateRange, setSelectedDateRange] = useState<DateRange>()
@@ -42,7 +41,7 @@ export default function WithdrawalAdminPage() {
   const [teamFilter, setTeamFilter] = useState<AdminProfileTeams | "all">("all")
 
   const { profiles, isLoading } = useAdminReferralsStore()
-  const { withdrawals, isLoadingWithDrawal, fetchWithdrawals } =
+  const { withdrawals, allWithdrawals, isLoadingWithDrawal, fetchWithdrawals } =
     useAdminWithdrawalsStore()
 
   const filterableColumns: FilterableColumn[] = [
@@ -138,28 +137,21 @@ export default function WithdrawalAdminPage() {
   useEffect(() => {
     const completedData = filteredWithdrawalsData.filter((item: any) => item.status === "completed")
     setCompletedSum(
-      completedData.reduce((acc: number, next: any) => {
+      allWithdrawals.reduce((acc: number, next: any) => {
         return next.status === "completed" ? acc + next.sum : acc
       }, 0),
     )
 
     setPendingSum(
-      filteredWithdrawalsData.reduce((acc: number, next: any) => {
+      allWithdrawals.reduce((acc: number, next: any) => {
         return next.status === "new" ? acc + next.sum : acc
       }, 0)
     )
     setSelectedDateRangeClearSum(
-      completedData.filter((item: any) => isWithinInterval(
-          item.created_at,
-          interval(
-            selectedDateRange?.to ?? new Date(),
-            selectedDateRange?.from ?? new Date(),
-          ),
-        ),
-      )
+      completedData
       .reduce((acc: number, next: any) => acc + next.sum, 0),
     )
-  }, [withdrawalsData, selectedDateRange, filteredWithdrawalsData])
+  }, [selectedDateRange, filteredWithdrawalsData, allWithdrawals])
 
   useEffect(() => {
     if (withdrawalsData.length === 0) return
