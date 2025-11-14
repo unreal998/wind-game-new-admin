@@ -105,10 +105,10 @@ export const usePotentialOutputStats = (selectedDates?: DateRange, prevDates?: P
       });
 
       const potentialOutput = [...currentDaysPotentialOutput, ...previousDaysPotentialOutput];
- 
+      
       setPotentialOutput(potentialOutput);
-      setCurrentTotalPotentialOutput(currentDaysPotentialOutput.reduce((acc, potentialOutput) => acc + potentialOutput.value, 0));
-      setPreviousTotalPotentialOutput(previousDaysPotentialOutput.reduce((acc, potentialOutput) => acc + potentialOutput.value, 0));
+      setCurrentTotalPotentialOutput(currentDaysPotentialOutput[currentDaysPotentialOutput.length - 1].value);
+      setPreviousTotalPotentialOutput(previousDaysPotentialOutput[previousDaysPotentialOutput.length - 1].value);
     }
     fetchPotentialOutput()
     }, [selectedDates])
