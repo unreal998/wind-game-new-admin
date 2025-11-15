@@ -4,10 +4,11 @@ import { useState } from "react"
 import { X } from "lucide-react"
 import { Button, Input } from "@/components"
 import { cx, focusInput } from "@/lib/utils"
+import axios from "axios"
 
 export const WindsModModal = ({ onClose }: { onClose: () => void }) => {
   const [form, setForm] = useState({
-    country: "USA",
+    country: "usa",
     windSpeed: "",
     tonPrice: "",
     tonReward: "",
@@ -18,8 +19,8 @@ export const WindsModModal = ({ onClose }: { onClose: () => void }) => {
     setForm((prev) => ({ ...prev, [field]: value }))
   }
 
-  const handleSubmit = () => {
-    console.log("Submitted config:", form)
+  const handleSubmit = async () => {
+    await axios.post(`http://localhost:3003/modifier`, form)
     onClose()
   }
 
@@ -59,13 +60,6 @@ export const WindsModModal = ({ onClose }: { onClose: () => void }) => {
             <option value="gr">Німеччина</option>
             <option value="usa">США</option>
           </select>
-
-          <Input
-            type="number"
-            placeholder="кВт"
-            value={form.windSpeed}
-            onChange={(e) => handleChange("windSpeed", e.target.value)}
-          />
 
           <Input
             type="number"
