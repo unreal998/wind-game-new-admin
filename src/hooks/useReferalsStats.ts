@@ -138,10 +138,10 @@ export function useReferalsStats(
 
       setReferalsTonBalance(referalsTonBalance)
       setReferalsKWTBalance(referalsKWTBalance)
-      setCurrentTotalReferalsTonBalance(currentDaysTonTransactions.reduce((acc, tx) => acc + tx.value, 0))
-      setCurrentTotalReferalsKWTBalance(currentDaysKWTTransactions.reduce((acc, tx) => acc + tx.value, 0))
-      setPreviousTotalReferalsTonBalance(previousDaysTonTransactions.reduce((acc, tx) => acc + tx.value, 0))
-      setPreviousTotalReferalsKWTBalance(previousDaysKWTTransactions.reduce((acc, tx) => acc + tx.value, 0))
+      setCurrentTotalReferalsTonBalance(currentDaysTonTransactions[currentDaysTonTransactions.length - 1].value)
+      setCurrentTotalReferalsKWTBalance(currentDaysKWTTransactions[currentDaysKWTTransactions.length - 1].value)
+      setPreviousTotalReferalsTonBalance(previousDaysTonTransactions[previousDaysTonTransactions.length - 1].value)
+      setPreviousTotalReferalsKWTBalance(previousDaysKWTTransactions[previousDaysKWTTransactions.length - 1].value)
     }
     fetchReferalsIncome()
 }, [selectedDates])

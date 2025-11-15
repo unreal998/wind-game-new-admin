@@ -109,8 +109,8 @@ export function useTurxBalance(selectedDates?: DateRange, prevDates?: PeriodValu
       const turxBalance = [...currentDaysTurxBalance, ...previousDaysTurxBalance];
 
       setTurxBalance(turxBalance);
-      setCurrentTotalTurxBalance(currentDaysTurxBalance.reduce((acc, turxDynamic) => acc + turxDynamic.value, 0));
-      setPreviousTotalTurxBalance(previousDaysTurxBalance.reduce((acc, turxDynamic) => acc + turxDynamic.value, 0));
+      setCurrentTotalTurxBalance(currentDaysTurxBalance[currentDaysTurxBalance.length - 1].value);
+      setPreviousTotalTurxBalance(previousDaysTurxBalance[previousDaysTurxBalance.length - 1].value);
     }
 
     fetchData()
