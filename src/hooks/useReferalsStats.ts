@@ -132,8 +132,6 @@ export function useReferalsStats(
             value: dailyStatsKWT[localDay] || 0,
           };
         });
-  
-        console.log("previousDaysTonTransactions====", previousDaysTonTransactions, currentDaysTonTransactions)
          
         const referalsTonBalance = [...currentDaysTonTransactions, ...previousDaysTonTransactions];
         const referalsKWTBalance = [...currentDaysKWTTransactions, ...previousDaysKWTTransactions];

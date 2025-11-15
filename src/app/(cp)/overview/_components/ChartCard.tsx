@@ -89,7 +89,7 @@ export function ChartCard({
     useTurxBalance(selectedDates, selectedPeriod)
     
   const { potentialOutput, currentTotalPotentialOutput, previousTotalPotentialOutput } =
-    usePotentialOutputStats(selectedDates, selectedPeriod)
+    usePotentialOutputStats(selectedDates, setPotentialTonOutput, selectedPeriod)
 
   useEffect(() => {
     if (transactions?.length && withdrawals?.length) {
@@ -112,7 +112,6 @@ export function ChartCard({
             value: previousBalance,
           });
         }
-        setPotentialTonOutput?.(tonBalance[tonBalance.length - 1]?.value || 0)
       });
       setTonBalance(balanceData)
       setCurrentTotalTonBalance(balance);

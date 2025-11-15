@@ -5,8 +5,9 @@ import { eachDayOfInterval, endOfDay, format, startOfDay } from "date-fns"
 import { getPeriod } from "@/app/(cp)/overview/_components/FilterBar"
 import { formatInTimeZone } from "date-fns-tz"
 import { PeriodValue } from "@/types/overview"
+import axios from "axios"
 
-export const usePotentialOutputStats = (selectedDates?: DateRange, prevDates?: PeriodValue) => {
+export const usePotentialOutputStats = (selectedDates?: DateRange, setPotentialTonOutput?: (value: number) => void, prevDates?: PeriodValue) => {
     const [potentialOutput, setPotentialOutput] = useState<Array<{ date: Date; value: number }>>([])
     const [currentTotalPotentialOutput, setCurrentTotalPotentialOutput] = useState<number>(0)
     const [previousTotalPotentialOutput, setPreviousTotalPotentialOutput] = useState<number>(0)
@@ -105,7 +106,9 @@ export const usePotentialOutputStats = (selectedDates?: DateRange, prevDates?: P
       });
 
       const potentialOutput = [...currentDaysPotentialOutput, ...previousDaysPotentialOutput];
-      
+
+      const currentPotentialOutput = await axios.get(`https://turbinex.pp.ua/user/potential-ton-output`);
+      setPotentialTonOutput?.(currentPotentialOutput.data.potentialTONOutput);
       setPotentialOutput(potentialOutput);
       setCurrentTotalPotentialOutput(currentDaysPotentialOutput[currentDaysPotentialOutput.length - 1].value);
       setPreviousTotalPotentialOutput(previousDaysPotentialOutput[previousDaysPotentialOutput.length - 1].value);
