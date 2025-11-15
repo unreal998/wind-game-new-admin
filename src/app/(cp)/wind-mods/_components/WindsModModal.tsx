@@ -20,7 +20,7 @@ export const WindsModModal = ({ onClose }: { onClose: () => void }) => {
   }
 
   const handleSubmit = async () => {
-    await axios.post(`http://localhost:3003/modifier`, form)
+    await axios.post(`https://turbinex.pp.ua/modifier`, form)
     onClose()
   }
 
