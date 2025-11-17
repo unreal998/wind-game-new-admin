@@ -42,7 +42,7 @@ export default function PermissionsPage() {
       </div>
       <Card className="p-0">
         <DataTable
-          selectedDateRange={selectedDateRange}
+          selectedDateRange={{ from: selectedDateRange?.from || new Date(), to: selectedDateRange?.to || new Date() }}
           data={permissions}
           columns={getPermissionColumns(isAvialableToWrite ?? false)}
           isLoading={isLoading}

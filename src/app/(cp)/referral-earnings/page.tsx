@@ -221,7 +221,7 @@ export default function ReferralEarningsAdminPage() {
           selectedRowid={selectedRowid}
           dropDownComponent={
              referralEarnings1.length && !isLoadingEarnings1 ? <DataTable
-              selectedDateRange={selectedDateRange}
+              selectedDateRange={{ from: selectedDateRange?.from || new Date(), to: selectedDateRange?.to || new Date() }}
               data={referralEarnings1}
               columns={referralEarningColumns}
               openSidebarOnRowClick={true}
@@ -231,7 +231,7 @@ export default function ReferralEarningsAdminPage() {
               isLoading={isLoadingEarnings1}
               dropDownComponent={
                 referralEarnings2.length && !isLoadingEarnings2 ? <DataTable
-                  selectedDateRange={selectedDateRange}
+                  selectedDateRange={{ from: selectedDateRange?.from || new Date(), to: selectedDateRange?.to || new Date() }}
                   data={referralEarnings2}
                   columns={referralEarningColumns}
                   filterableColumns={filterableColumns}
@@ -241,7 +241,7 @@ export default function ReferralEarningsAdminPage() {
                   selectedRowid={selectedSub3RowId}
                   dropDownComponent={
                     referralEarnings3.length && !isLoadingEarnings3 ? <DataTable
-                      selectedDateRange={selectedDateRange}
+                      selectedDateRange={{ from: selectedDateRange?.from || new Date(), to: selectedDateRange?.to || new Date() }}
                       data={referralEarnings3}
                       columns={referralEarningColumns}
                       filterableColumns={filterableColumns}
@@ -251,7 +251,7 @@ export default function ReferralEarningsAdminPage() {
                       selectedRowid={selectedSub4RowId}
                       dropDownComponent={
                         referralEarnings4.length && !isLoadingEarnings4 ? <DataTable
-                          selectedDateRange={selectedDateRange}
+                          selectedDateRange={{ from: selectedDateRange?.from || new Date(), to: selectedDateRange?.to || new Date() }}
                           data={referralEarnings4}
                           openSidebarOnRowClick={true}
                           columns={referralEarningColumns}
@@ -261,7 +261,7 @@ export default function ReferralEarningsAdminPage() {
                           selectedRowid={selectedSub5RowId}
                           dropDownComponent={
                             referralEarnings5.length ? <DataTable
-                              selectedDateRange={selectedDateRange}
+                              selectedDateRange={{ from: selectedDateRange?.from || new Date(), to: selectedDateRange?.to || new Date() }}
                               data={referralEarnings5}
                               openSidebarOnRowClick={true}
                               columns={referralEarningColumns}
