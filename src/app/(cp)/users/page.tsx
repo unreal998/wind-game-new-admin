@@ -323,7 +323,7 @@ export default function ReferralsAdminPage() {
       <Card className="p-0">
         {userRole && userRole !== "marketing" && (
           <DataTable
-            selectedDateRange={selectedDateRange}
+            selectedDateRange={{ from: selectedDateRange?.from || new Date(), to: selectedDateRange?.to || new Date() }}
             data={usersColumnData ?? profiles}
             columns={userColumns}
             filterableColumns={filterableColumns}

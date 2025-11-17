@@ -39,14 +39,15 @@ export default function WalletsAdminPage() {
         .filter((item: any) => item.txid !== "1w23uui8890bbh1y7u9it5r2cv2g" && item.txid !== "312r2r12f12r12f12fqwfh55h5h")
         .reduce((acc: number, next: any) => acc + next.summ, 0),
     )
+
     setSelectedDateRangeSum(
       filteredTransactions
         .filter((item: any) =>
           isWithinInterval(
             item.created_at,
             interval(
-              selectedDateRange?.to ?? new Date(),
-              selectedDateRange?.from ?? new Date(),
+              selectedDateRange?.to || new Date(),
+              selectedDateRange?.from || new Date(),
             ),
           ),
         )
@@ -59,8 +60,8 @@ export default function WalletsAdminPage() {
           isWithinInterval(
             item.created_at,
             interval(
-              selectedDateRange?.to ?? new Date(),
-              selectedDateRange?.from ?? new Date(),
+              selectedDateRange?.to || new Date(),
+              selectedDateRange?.from || new Date(),
             ),
           ),
         )
@@ -163,7 +164,7 @@ export default function WalletsAdminPage() {
 
       <Card className="p-0">
         <DataTable
-          selectedDateRange={selectedDateRange}
+          selectedDateRange={{ from: selectedDateRange?.from || new Date(), to: selectedDateRange?.to || new Date() }}
           data={filteredTransactions}
           columns={walletColumns}
           filterableColumns={filterableColumns}

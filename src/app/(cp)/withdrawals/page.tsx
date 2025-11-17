@@ -206,7 +206,7 @@ export default function WithdrawalAdminPage() {
           columns={getWithdrawalColumns(isAvialableToWrite)}
           filterableColumns={filterableColumns}
           isLoading={isLoading && isLoadingWithDrawal}
-          selectedDateRange={selectedDateRange}
+          selectedDateRange={{ from: selectedDateRange?.from || new Date(), to: selectedDateRange?.to || new Date() }}
         />
       </Card>
     </>
