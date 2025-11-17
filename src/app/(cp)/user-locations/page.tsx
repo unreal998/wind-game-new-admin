@@ -13,7 +13,7 @@ import { createClient } from "@/utils/supabase/client"
 import { roleSelector, useUserStore } from "@/stores/useUserStore"
 import NotAllowed from "@/components/NotAllowed"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/Select"
-import { AdminProfileTeams, adminProfileTeams } from "@/types/profile"
+import { AdminProfileTeams, adminProfileTeams, Locations, locations } from "@/types/profile"
 
 export default function UserLocationsAdminPage() {
   const { userLocations, isLoading } = useAdminUserLocationsStore()
@@ -22,6 +22,7 @@ export default function UserLocationsAdminPage() {
   const userRole = useUserStore(roleSelector)
   const [filteredUserLocations, setFilteredUserLocations] = useState<UserLocation[]>([])
   const [teamFilter, setTeamFilter] = useState<AdminProfileTeams | "all">("all")
+  const [locationFilter, setLocationFilter] = useState<Locations | "all">("all")
 
 
   const filterableColumns: FilterableColumn[] = [
@@ -100,14 +101,13 @@ export default function UserLocationsAdminPage() {
           areaIncome: area.areaIncome || 0,
           areaIncomeTon: area.areaIncomeTon || 0,
         } as UserLocation
-        if (teamFilter === "all" || userMod.user?.team === teamFilter) {
+        if ((teamFilter === "all" || userMod.user?.team === teamFilter) && (locationFilter === "all" || area.name === locationFilter)) {
           formatUserLocations.push(userMod as UserLocation)
         }
-        
       })
     })
     setFilteredUserLocations(formatUserLocations)
-  }, [userLocations, teamFilter])
+  }, [userLocations, teamFilter, locationFilter])
 
   if (userRole === "marketing") return <NotAllowed />
 
@@ -134,6 +134,25 @@ export default function UserLocationsAdminPage() {
                   {[...adminProfileTeams, "all"].map((team) => (
                     <SelectItem key={team} value={team}>
                       {team === "all" ? "All Teams" : team.toUpperCase()}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+        </Select>
+        <Select
+              onValueChange={(value) =>
+                setLocationFilter(value as Locations)
+              }
+              value={locationFilter}
+        >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select a team" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {[...locations, "all"].map((location) => (
+                    <SelectItem key={location} value={location}>
+                      {location === "all" ? "All" : location.toUpperCase()}
                     </SelectItem>
                   ))}
                 </SelectGroup>

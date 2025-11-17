@@ -4,7 +4,9 @@ import { Database } from "@/utils/supabase/database.types"
 type UserRow = Database["public"]["Tables"]["users"]["Row"]
 
 export const adminProfileTeams = ["a", "i", "ran", "t"] as const
+export const locations = ["nl", "dk", "gr", "usa"] as const
 export type AdminProfileTeams = (typeof adminProfileTeams)[number]
+export type Locations = (typeof locations)[number]
 
 // Розширюємо тип для адмін панелі
 export type AdminProfile = UserRow & {
