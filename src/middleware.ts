@@ -8,7 +8,7 @@ const ALLOWED_IPS = [
   "5.45.79.91",
   "46.227.136.53",
   "185.213.234.87",
-  "81.30.165.243"//my ip
+  "81.30.168.219"//my ip
 ];
 
 export async function middleware(request: NextRequest) {
