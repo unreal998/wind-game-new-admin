@@ -13,7 +13,7 @@ import { createClient } from "@/utils/supabase/client"
 import NotAllowed from "@/components/NotAllowed"
 import { roleSelector, useUserStore } from "@/stores/useUserStore"
 import { Select, SelectGroup, SelectValue, SelectTrigger, SelectContent, SelectItem } from "@/components/Select"
-import { AdminProfileTeams, adminProfileTeams } from "@/types/profile"
+import { AdminProfileTeams, adminProfileTeams, locations, Locations } from "@/types/profile"
 
 export default function UserModsAdminPage() {
   const { userMods, isLoading } = useAdminUserModsStore()
@@ -23,6 +23,8 @@ export default function UserModsAdminPage() {
   const userRole = useUserStore(roleSelector)
   const [filteredUserMods, setFilteredUserMods] = useState<UserMod[]>([])
   const [teamFilter, setTeamFilter] = useState<AdminProfileTeams | "all">("all")
+  const [locationFilter, setLocationFilter] = useState<Locations | "all">("all")
+  const [priceFilter, setPriceFilter] = useState<string>("all")
 
   useEffect(() => {
     const fetchModsData = async () => {
@@ -60,23 +62,31 @@ export default function UserModsAdminPage() {
               },
               pushes_done: 63 - modifierData.clicksRemaining,
               required_pushes: modifierData.clicksRemaining,
-              ton_earned: selectedModValue?.tonValue ? ((selectedModValue.tonValue / 64) * (64 - modifierData.clicksRemaining)).toFixed(2) : 0,
-              coins_earned: selectedModValue?.turxValue ? (selectedModValue.turxValue / 64) * (64 - modifierData.clicksRemaining) : 0,
-              ton_remaining: selectedModValue?.tonValue ? ((selectedModValue.tonValue / 64) * modifierData.clicksRemaining).toFixed(2) : 0,
-              coins_remaining: selectedModValue?.turxValue ? (selectedModValue.turxValue / 64) * modifierData.clicksRemaining : 0,
+              ton_earned: selectedModValue?.tonValue ? Number(((selectedModValue.tonValue / 64) * (64 - modifierData.clicksRemaining)).toFixed(2)) : 0,
+              coins_earned: selectedModValue?.turxValue ? Number(selectedModValue.turxValue / 64) * (64 - modifierData.clicksRemaining) : 0,
+              ton_remaining: selectedModValue?.tonValue ? Number(((selectedModValue.tonValue / 64) * modifierData.clicksRemaining).toFixed(2)) : 0,
+              coins_remaining: selectedModValue?.turxValue ? Number((selectedModValue.turxValue / 64) * modifierData.clicksRemaining) : 0,
               price: selectedModValue?.price || 0,
               purchased_at: modifierData.boughtDate,
               location_id: modifier.areaName || "",
             }
-            if (teamFilter === "all" || userMod.user?.team === teamFilter) {
-              formatUserMod.push(userMod as UserMod);
+            if ((teamFilter === "all" || userMod.user?.team === teamFilter)) {
+              if (locationFilter !== "all") {
+                if (modifier.areaName.toUpperCase() === locationFilter.toUpperCase()) {
+                  if (priceFilter === "all" || selectedModValue.price === Number(priceFilter)) {
+                    formatUserMod.push(userMod as UserMod);
+                  }
+                }
+              } else {
+                formatUserMod.push(userMod as UserMod);
+              }
             }
           })
         }
       })
     })
     setFilteredUserMods(formatUserMod)
-  }, [userMods, teamFilter])
+  }, [userMods, teamFilter, locationFilter, priceFilter])
 
   const filterableColumns: FilterableColumn[] = [
     {
@@ -176,6 +186,44 @@ export default function UserModsAdminPage() {
                 </SelectGroup>
               </SelectContent>
         </Select>
+        <Select
+              onValueChange={(value) =>
+                setLocationFilter(value as Locations)
+              }
+              value={locationFilter}
+        >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select a location" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {[...locations, "all"].map((location) => (
+                    <SelectItem key={location} value={location}>
+                      {location === "all" ? "All" : location.toUpperCase()}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+        </Select>
+        {locationFilter !== "all" && <Select
+              onValueChange={(value) =>
+                setPriceFilter(value as string)
+              }
+              value={priceFilter}
+        >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select a price" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {[...modifiersData.find(m => m.area.toUpperCase() === locationFilter.toUpperCase())?.values, {price: "all", label: "All"}].map((value) => (
+                    <SelectItem key={value.price} value={value.price}>
+                      {value.price === "all" ? "All" : value.price.toString()}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+        </Select>}
       </div>
 
       <Card className="p-0">
