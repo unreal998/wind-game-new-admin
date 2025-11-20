@@ -11,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/Select"
+import { createClient } from "@/utils/supabase/client"
 
 type Result = {
   failed: number
@@ -61,6 +62,7 @@ export default function TelegramMessagePage() {
         })
         const result = await response.json()
         setResult(result)
+        await saveReport(result, tgMessagePayload.lang, tgMessagePayload.msg)
         setTgMessagePayload({ msg: "", lang: "all", country: "all", delay: 0 })
         setFile(null)
         setPreviewUrl(null)
@@ -72,6 +74,24 @@ export default function TelegramMessagePage() {
 
     } catch (e: any) {
       console.error(`Error when sending message, ${e.message}`)
+    }
+  }
+
+  const saveReport = async (reportResult: Result, lng: string, text: string) => {
+    const supabase = createClient();
+    const { error } = await supabase
+      .from("telegram_newsletter")
+      .insert({
+        failed: reportResult.failed,
+        sent: reportResult.sent,
+        inactive: reportResult.inactive,
+        total: reportResult.total,
+        created_at: new Date().toISOString(),
+        lng: lng,
+        text: text,
+      })
+    if (error) {
+      console.error("Error saving report:", error)
     }
   }
 
