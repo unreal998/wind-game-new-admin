@@ -13,6 +13,7 @@ import {
 } from "@/components/Select"
 import { createClient } from "@/utils/supabase/client"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/Accordion"
+import { LoadingState } from "@/components/LoadingState"
 
 type Result = {
   failed: number
@@ -118,7 +119,7 @@ export default function TelegramMessagePage() {
   }, [])
 
   if (isLoading) {
-    return <div>Завантаження звітів...</div>
+    return <LoadingState />
   }
   
   return (
