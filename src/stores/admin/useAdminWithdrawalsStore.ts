@@ -26,6 +26,7 @@ interface AdminWithdrawalsState {
   error: string | null
   newWithdrawalsCount: number | null
   fetchWithdrawals: (selectedDateRange?: DateRange) => Promise<void>
+  fetchNewWithdrawalsCount: () => Promise<void>
   updateWithdrawals: () => Promise<void>
   updateWithDrawStatus: (
     id: string,
@@ -101,8 +102,6 @@ export const useAdminWithdrawalsStore = create<AdminWithdrawalsState>(
         const allWithdrawals = await getAllWithdrawals();
         set({
           withdrawals: allData || [],
-          newWithdrawalsCount: allData.filter((w) => w.status === "new")
-            .length,
           isLoadingWithDrawal: false,
           allWithdrawals: allWithdrawals || [],
         })
@@ -112,6 +111,19 @@ export const useAdminWithdrawalsStore = create<AdminWithdrawalsState>(
       }
     },
 
+    fetchNewWithdrawalsCount: async () => {
+      const supabase = createClient();
+      const { data, error } = await supabase
+        .from("withdraw")
+        .select("*")
+        .eq("status", "new")
+      if (error) {
+        console.error("Error fetching new withdrawals count:", error);
+      }
+      set({
+        newWithdrawalsCount: data?.length || 0,
+      })
+    },
 
     updateWithDrawStatus: async (
       id: string,

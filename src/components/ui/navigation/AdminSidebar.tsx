@@ -112,13 +112,15 @@ export function AdminSidebar({
   const pathname = usePathname()
   const { getUserPermissions, role } = useUserStore()
   const { getPendingTransactions } = useAdminTransactionsStore()
-  const { newWithdrawalsCount, fetchWithdrawals } = useAdminWithdrawalsStore()
+  const { newWithdrawalsCount, fetchNewWithdrawalsCount } = useAdminWithdrawalsStore()
   const [isMobile, setIsMobile] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
-    fetchWithdrawals()
-  }, [fetchWithdrawals])
+    setInterval(() => {
+      fetchNewWithdrawalsCount()
+    }, 10000)
+  }, [fetchNewWithdrawalsCount])
 
   useEffect(() => {
     const handleResize = () => {
