@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { LocationType } from "@/types/location"
 import { Input, Card, Button } from "@/components"
 import { Label } from "@/components/Label"
@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/Select"
 import { createClient } from "@/utils/supabase/client"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/Accordion"
 
 type Result = {
   failed: number
@@ -28,10 +29,24 @@ export default function TelegramMessagePage() {
     delay: 0,
   })
 
-  const [result, setResult] = useState<Result | null>(null)
   const [file, setFile] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [reports, setReports] = useState<any[]>([])
+
+  const getReports = async () => {
+    const supabase = createClient();
+    const { data, error } = await supabase
+      .from("telegram_newsletter")
+      .select("*")
+      .order("created_at", { ascending: false })
+    if (data) {
+      setReports(data)
+    }
+    if (error) {
+      console.error("Error fetching report:", error)
+    }
+  }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0] || null
@@ -61,9 +76,9 @@ export default function TelegramMessagePage() {
           body: formData,
         })
         const result = await response.json()
-        setResult(result)
         await saveReport(result, tgMessagePayload.lang, tgMessagePayload.msg)
         setTgMessagePayload({ msg: "", lang: "all", country: "all", delay: 0 })
+        await getReports()
         setFile(null)
         setPreviewUrl(null)
       } catch (e: any) {
@@ -95,6 +110,17 @@ export default function TelegramMessagePage() {
     }
   }
 
+
+  useEffect(() => {
+    (async () => {
+      await getReports()
+    })()
+  }, [])
+
+  if (isLoading) {
+    return <div>Завантаження звітів...</div>
+  }
+  
   return (
     <div className="p-4 sm:p-6">
       <Card className="mx-auto max-w-2xl space-y-6">
@@ -224,16 +250,25 @@ export default function TelegramMessagePage() {
         </div>
 
         <div className="space-y-2">
-          <Label>Результат</Label>
-          {!isLoading && result && <div>
-              <p>Не вдалося надіслати: {result?.failed}</p>
-              <p>Вдалося надіслати: {result?.sent}</p>
-              <p>Не активних: {result?.inactive}</p>
-              <p>Всього: {result?.total}</p>
-            </div>
-          }
-          {!isLoading && result === null && <p>Очікую відправку</p>}
-          {isLoading && <p>Завантаження...</p>}
+          <Label>Звіти</Label>
+          <div className="flex flex-col gap-2">
+            {reports.map((report) => (
+              <Accordion type="single" collapsible>
+                <AccordionItem value={report.id.toString()} key={report.id}>
+                  <AccordionTrigger>
+                    {new Date(report.created_at).toLocaleString()}
+                  </AccordionTrigger>
+
+                  <AccordionContent>
+                    <p>Не вдалося надіслати: {report.failed}</p>
+                    <p>Вдалося надіслати: {report.sent}</p>
+                    <p>Не активних: {report.inactive}</p>
+                    <p>Всього: {report.total}</p>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            ))}
+          </div>
         </div>
       </Card>
     </div>
