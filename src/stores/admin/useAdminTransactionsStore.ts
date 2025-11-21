@@ -6,7 +6,6 @@ interface AdminTransactionsState {
   transactions: Transaction[];
   isLoading: boolean;
   error: string | null;
-  fetchTransactions: () => Promise<void>;
   updateTransactionStatus: (
     id: string,
     status: "completed" | "cancelled",
@@ -25,7 +24,6 @@ interface AdminTransactionsState {
   getPendingTransactions: (types: TransactionType[]) => {
     pendingCount: number;
   };
-  subscribeToTransactions: () => Promise<() => void>;
 }
 
 const supabase = createClient();
@@ -38,33 +36,6 @@ export const useAdminTransactionsStore = create<AdminTransactionsState>((
   isLoading: true,
   error: null,
 
-  fetchTransactions: async () => {
-    try {
-      const { data, error } = await supabase
-        .from("transactions")
-        .select(`
-          *,
-          user:users!transactions_user_id_fkey (
-            id,
-            first_name,
-            last_name,
-            username,
-            status,
-            wallet,
-            wallet_ton
-          )
-        `)
-        .order("created_at", { ascending: false });
-
-      if (error) throw error;
-
-      set({ transactions: data || [], isLoading: false });
-      console.log("Transactions fetched:", data);
-    } catch (error) {
-      console.error("Error fetching transactions:", error);
-      set({ error: "Failed to load transactions", isLoading: false });
-    }
-  },
 
   updateTransactionStatus: async (id, status) => {
     try {
@@ -147,31 +118,5 @@ export const useAdminTransactionsStore = create<AdminTransactionsState>((
         },
         { pendingCount: 0 },
       );
-  },
-
-  subscribeToTransactions: async () => {
-    const channel = supabase
-      .channel("transactions_channel")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "transactions",
-        },
-        (payload) => {
-          console.log("Received change event:", payload);
-          set((state) => {
-            console.log("Fetching updated transactions...");
-            state.fetchTransactions();
-            return state;
-          });
-        },
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  },
+  }
 }));

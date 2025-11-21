@@ -129,7 +129,7 @@ export const userLocationColumns: TableColumn<UserLocation>[] = [
     filterFn: "number",
     meta: {
       exportHeader: "Всього зароблено (КВТ)",
-      exportValue: (row) => row.areaIncome || 0,
+      exportValue: (row) => Math.floor((row.areaIncome || 0) * 10000) / 10000,
       exportAlign: "right",
     },
   }),
@@ -141,7 +141,7 @@ export const userLocationColumns: TableColumn<UserLocation>[] = [
     filterFn: "number",
     meta: {
       exportHeader: "Всього зароблено (TON)",
-      exportValue: (row) => row.areaIncomeTon || 0,
+      exportValue: (row) => Math.floor((row.areaIncomeTon || 0) * 1000) / 1000,
       exportAlign: "right",
     },
   }),

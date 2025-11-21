@@ -47,29 +47,30 @@ export default function ReferralEarningsAdminPage() {
   const [selectedSub3RowId, setSelectedSub3RowId] = useState<string>('')
   const [selectedSub4RowId, setSelectedSub4RowId] = useState<string>('')
   const [selectedSub5RowId, setSelectedSub5RowId] = useState<string>('')
-  // const [isAvialableToWrite, setIsAvialableToWrite] = useState<boolean>(false)
   const [userPermissions, setUserPermissionsData] =
   useState<CreatePermissionDto | null>(null)
 
   useEffect(() => {
-    const loadUserData = async () => {
+    if (!userPermissions) return;
+
+    const loadUserData = async (userPermissionsData: CreatePermissionDto) => {
       let ownerData = await getUserData({
-        id: String(userPermissions?.additionalField),
+        id: String(userPermissionsData?.additionalField),
       })
 
-      if (userPermissions && ownerData) {
+      if (userPermissionsData) {
  
-        if (userPermissions?.type === "marketing" && userPermissions?.additionalField) {
+        if (userPermissionsData?.type === "marketing" && userPermissionsData?.additionalField && ownerData) {
           ownerData = { ...ownerData, user: { username: ownerData.userName } }
-          fetchReferralEarningsReferals(userPermissions?.additionalField ?? '', 0, ownerData)
+          fetchReferralEarningsReferals(userPermissionsData?.additionalField ?? '', 0, ownerData)
         } else {
           fetchReferralEarnings(0)
         }
       }
     }
-    loadUserData()
+    loadUserData(userPermissions)
     
-  }, [fetchReferralEarnings, fetchReferralEarningsReferals, userPermissions])
+  }, [userPermissions])
 
   useEffect(() => {
     const loadPermissions = async () => {

@@ -99,8 +99,8 @@ export default function UserLocationsAdminPage() {
           location_id: area.name || "",
           last_push_at: area.lastButtonPress || "",
           boughtAt: area.boughtAt || null,
-          areaIncome: area.areaIncome || 0,
-          areaIncomeTon: area.areaIncomeTon || 0,
+          areaIncome: Math.floor((area.areaIncome || 0) * 10000) / 10000,
+          areaIncomeTon: Math.floor((area.areaIncomeTon || 0) * 1000) / 1000,
         } as UserLocation
         if ((teamFilter === "all" || userMod.user?.team === teamFilter) && (locationFilter === "all" || area.name === locationFilter)) {
           formatUserLocations.push(userMod as UserLocation)

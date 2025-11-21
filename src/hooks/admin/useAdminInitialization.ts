@@ -2,12 +2,10 @@ import { useEffect } from "react";
 
 import { useUserStore } from "@/stores/useUserStore";
 
-import { useAdminStatsStore } from "@/stores/admin/useAdminStatsStore";
 import { useAdminLocationsStore } from "@/stores/admin/useAdminLocationsStore";
 import { useAdminPushesStore } from "@/stores/admin/useAdminPushesStore";
 import { useAdminReferralsStore } from "@/stores/admin/useAdminReferralsStore";
 import { useAdminTasksStore } from "@/stores/admin/useAdminTasksStore";
-import { useAdminTransactionsStore } from "@/stores/admin/useAdminTransactionsStore";
 import { useAdminUserLocationsStore } from "@/stores/admin/useAdminUserLocationsStore";
 import { useAdminUserModsStore } from "@/stores/admin/useAdminUserModsStore";
 import { useAdminUserTasksStore } from "@/stores/admin/useAdminUserTasksStore";
@@ -26,10 +24,7 @@ export function useAdminInitialization() {
         getCurrentProfileUserAsync,
     ]);
 
-    const { fetchStats } = useAdminStatsStore();
     const { fetchProfiles, subscribeToProfiles } = useAdminReferralsStore();
-    const { fetchTransactions, subscribeToTransactions } =
-        useAdminTransactionsStore();
     const { fetchWallets, subscribeToWallets } = useAdminWalletsStore();
     const { fetchLocations, subscribeToLocations } = useAdminLocationsStore();
     const { fetchUserLocations, subscribeToUserLocations } =
@@ -41,18 +36,9 @@ export function useAdminInitialization() {
     const { fetchUserTasks, subscribeToUserTasks } = useAdminUserTasksStore();
 
     useEffect(() => {
-        fetchStats();
-    }, [fetchStats]);
-
-    useEffect(() => {
         fetchProfiles();
         subscribeToProfiles();
     }, [fetchProfiles, subscribeToProfiles]);
-
-    useEffect(() => {
-        fetchTransactions();
-        subscribeToTransactions();
-    }, [fetchTransactions, subscribeToTransactions]);
 
     useEffect(() => {
         fetchWallets();

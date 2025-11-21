@@ -97,9 +97,9 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
            })
          }
        } 
-        if (level === 0) {
+        // if (level === 0) {
           set({ referralEarnings: result || [], isLoading: false })
-        }
+        // }
       } catch (error) {
         console.error("Error fetching referral earnings:", error)
         set({
