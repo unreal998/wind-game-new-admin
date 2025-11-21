@@ -254,7 +254,7 @@ export default function TelegramMessagePage() {
           <Label>Звіти</Label>
           <div className="flex flex-col gap-2">
             {reports.map((report) => (
-              <Accordion type="single" collapsible>
+              <Accordion type="single" collapsible key={report.id}>
                 <AccordionItem value={report.id.toString()} key={report.id}>
                   <AccordionTrigger>
                     {new Date(report.created_at).toLocaleString()}
