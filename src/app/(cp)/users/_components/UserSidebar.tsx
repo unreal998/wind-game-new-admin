@@ -246,7 +246,13 @@ export const UserSidebar = ({
           ))}
           {tableData && tableColumns && (
             <div className="pt-6">
-              <h3 className="mb-2 text-lg font-semibold">Виведення коштів</h3>
+              <h4 className="text-lg font-semibold mb-2">Виведення коштів</h4>
+              <div className="flex items-center justify-between gap-4 border-b pb-1">
+                <h4 className="text-sm font-semibold">Підтверджено: {tableData?.filter((transaction: any) => transaction.status === "completed").reduce((acc: number, curr: any) => acc + curr.sum, 0)}</h4>
+                <h4 className="text-sm font-semibold">Відмінено: {tableData?.filter((transaction: any) => transaction.status === "declined").reduce((acc: number, curr: any) => acc + curr.sum, 0)}</h4>
+                <h4 className="text-sm font-semibold">В очікуванні: {tableData?.filter((transaction: any) => transaction.status === "new").reduce((acc: number, curr: any) => acc + curr.sum, 0)}</h4>
+                <h4 className="text-sm font-semibold">Загальна сума: {tableData?.reduce((acc: number, curr: any) => acc + curr.sum, 0)}</h4>
+              </div>
               <div className="max-h-[300px] overflow-auto rounded border dark:border-gray-700">
                 <DataTable
                   data={tableData}
@@ -261,6 +267,9 @@ export const UserSidebar = ({
           {transactions && (
             <div className="pt-6">
               <h3 className="mb-2 text-lg font-semibold">Транзакції</h3>
+              <div className="flex items-center justify-between gap-4 border-b pb-1">
+                <h4 className="text-sm font-semibold">Загальна сума: {Math.floor((transactions?.reduce((acc: number, curr: any) => acc + curr.summ, 0) ?? 0) * 10000) / 10000}</h4>
+              </div>
               <div className="max-h-[400px] overflow-auto rounded border dark:border-gray-700">
                 <DataTable
                   data={transactions}
