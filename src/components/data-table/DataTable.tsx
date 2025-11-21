@@ -37,6 +37,7 @@ import { rankItem } from "@tanstack/match-sorter-utils"
 import { DateRange } from "react-day-picker"
 import { interval, isWithinInterval } from "date-fns"
 import React from "react"
+import { formatInTimeZone } from "date-fns-tz"
 
 interface DataTableProps<TData> {
   data: TData[]
@@ -166,8 +167,8 @@ export function DataTable<TData extends Record<string, any>>({
 
     if (selectedDateRange && selectedDateRange.from && selectedDateRange.to) {
       const selectedInterval = interval(
-        selectedDateRange.from,
-        selectedDateRange.to,
+        formatInTimeZone(selectedDateRange.from , 'Europe/Kiev', "yyyy-MM-dd HH:mm:ss"),
+        formatInTimeZone(selectedDateRange.to , 'Europe/Kiev', "yyyy-MM-dd HH:mm:ss"),
       )
       const sortedByPeriod = prepared.filter((item) => {
         return isWithinInterval(item.created_at, selectedInterval)
