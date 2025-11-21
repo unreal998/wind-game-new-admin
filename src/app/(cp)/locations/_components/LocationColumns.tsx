@@ -90,15 +90,17 @@ export const locationColumns = (
       },
     }),
 
-    //   columnHelper.accessor("created_at", {
-    //     header: "Дата створення",
-    //     cell: ({ getValue }) => <DateWithDistance date={getValue()} />,
-    //     enableSorting: true,
-    //     filterFn: "dateRange",
-    //     meta: {
-    //       exportValue: (row) => formatTimestamp({ date: row.created_at }),
-    //     },
-    //   }),
+    columnHelper.accessor("percent_income", {
+      header: "%",
+      cell: ({ getValue }) => formatAmount(getValue()),
+      enableSorting: true,
+      filterFn: "number",
+      meta: {
+        exportHeader: "%",
+        exportValue: (row) => row.percent_income || 0,
+        exportAlign: "right",
+      },
+    }),
   ]
   if (isAvialableToWrite) {
     columns.push(

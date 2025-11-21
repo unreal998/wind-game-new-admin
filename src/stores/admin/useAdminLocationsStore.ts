@@ -16,6 +16,7 @@ interface AdminLocationsState {
             basicBonusPerClick?: number
             referalsToUnlock?: number
             unlockPrice?: number
+            percent_income?: number
         },
     ) => Promise<void>
 }
@@ -76,6 +77,7 @@ export const useAdminLocationsStore = create<AdminLocationsState>((set) => ({
             basicBonusPerClick?: number
             referalsToUnlock?: number
             unlockPrice?: number
+            percentIncome?: number
         },
     ) => {
         try {

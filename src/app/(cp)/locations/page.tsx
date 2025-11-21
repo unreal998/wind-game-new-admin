@@ -40,6 +40,11 @@ export default function LocationsAdminPage() {
       title: "Ціна розблокування",
       type: "number",
     },
+    {
+      id: "percentIncome",
+      title: "%",
+      type: "number",
+    }
   ]
 
   useEffect(() => {

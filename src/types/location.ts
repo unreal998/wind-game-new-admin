@@ -1,6 +1,8 @@
 import { type Database } from "@/utils/supabase/database.types";
 
-export type Location = Database["public"]["Tables"]["locations"]["Row"];
+export type Location = Database["public"]["Tables"]["locations"]["Row"] & {
+    percent_income?: number;
+};
 export type LocationType = Database["public"]["Enums"]["location_type"];
 
 export const LOCATION_TYPES = [

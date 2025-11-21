@@ -6,6 +6,7 @@ import { useState, useEffect } from "react"
 export function LocationEditSidebar() {
   const { activeLocation, updateLocation, setActiveLocation } = useAdminLocationsStore()
   const [basicBonusPerClick, setBasicBonusPerClick] = useState(0)
+  const [percentIncome, setPercentIncome] = useState(0)
   const [referalsToUnlock, setReferalsToUnlock] = useState(0)
   const [unlockPrice, setUnlockPrice] = useState(0)
   const [isLoading, setIsLoading] = useState(false)
@@ -15,6 +16,7 @@ export function LocationEditSidebar() {
       setBasicBonusPerClick(activeLocation.basicBonusPerClick || 0)
       setReferalsToUnlock(activeLocation.referalsToUnlock || 0)
       setUnlockPrice(activeLocation.unlockPrice || 0)
+      setPercentIncome(activeLocation.percent_income || 0)
     }
   }, [activeLocation])
 
@@ -27,6 +29,7 @@ export function LocationEditSidebar() {
         basicBonusPerClick: Number(basicBonusPerClick),
         referalsToUnlock: Number(referalsToUnlock),
         unlockPrice: Number(unlockPrice),
+        percent_income: Number(percentIncome),
       })
       setActiveLocation(null)
     } catch (error) {
@@ -89,6 +92,17 @@ export function LocationEditSidebar() {
                 type="number"
                 value={unlockPrice}
                 onChange={(e) => setUnlockPrice(Number(e.target.value))}
+                className="mt-2"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium dark:text-gray-200">
+                % дохід
+              </label>
+              <Input
+                type="number"
+                value={percentIncome}
+                onChange={(e) => setPercentIncome(Number(e.target.value))}
                 className="mt-2"
               />
             </div>
