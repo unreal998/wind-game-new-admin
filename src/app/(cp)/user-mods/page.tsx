@@ -86,7 +86,7 @@ export default function UserModsAdminPage() {
       })
     })
     setFilteredUserMods(formatUserMod)
-  }, [userMods, teamFilter, locationFilter, priceFilter])
+  }, [userMods, teamFilter, locationFilter, priceFilter, modifiersData])
 
   const filterableColumns: FilterableColumn[] = [
     {
