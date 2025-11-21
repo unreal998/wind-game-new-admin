@@ -261,6 +261,8 @@ export default function TelegramMessagePage() {
                   </AccordionTrigger>
 
                   <AccordionContent>
+                    <p>Мова: {report.lng}</p>
+                    <p>Повідомлення: {report.text}</p>
                     <p>Не вдалося надіслати: {report.failed}</p>
                     <p>Вдалося надіслати: {report.sent}</p>
                     <p>Не активних: {report.inactive}</p>
