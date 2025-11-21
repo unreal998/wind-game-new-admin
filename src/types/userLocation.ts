@@ -17,6 +17,7 @@ export type UserLocation =
             base_wind_speed: number;
             base_energy_per_hour: number;
             profit_multiplier: number;
+            percent_income: number;
         };
         locationName?: string;
         areaIncome?: number;

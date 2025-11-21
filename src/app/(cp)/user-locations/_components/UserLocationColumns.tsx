@@ -105,6 +105,23 @@ export const userLocationColumns: TableColumn<UserLocation>[] = [
     },
   }),
 
+  columnHelper.accessor((row) => row.location?.percent_income, {
+    id: "location.percent_income",
+    header: "%",
+    cell: ({ getValue }) => {
+      const energy = getValue()
+      if (!energy) return "-"
+      return `${energy}%`
+    },
+    enableSorting: true,
+    filterFn: "number",
+    meta: {
+      exportHeader: "%",
+      exportValue: (row) => row.location?.percent_income || 0,
+      exportAlign: "right",
+    },
+  }),
+
   columnHelper.accessor("areaIncome", {
     header: "Всього зароблено кВт",
     cell: ({ getValue }) => `${getValue() || 0} кВт`,

@@ -94,6 +94,7 @@ export default function UserLocationsAdminPage() {
           },
           location: {
             base_energy_per_hour: selectedCountire?.basicBonusPerClick || 0,
+            percent_income: selectedCountire?.percent_income || 0,
           },
           location_id: area.name || "",
           last_push_at: area.lastButtonPress || "",
@@ -107,7 +108,7 @@ export default function UserLocationsAdminPage() {
       })
     })
     setFilteredUserLocations(formatUserLocations)
-  }, [userLocations, teamFilter, locationFilter])
+  }, [userLocations, teamFilter, locationFilter, countries])
 
   if (userRole === "marketing") return <NotAllowed />
 
