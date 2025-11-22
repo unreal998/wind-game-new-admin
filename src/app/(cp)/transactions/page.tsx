@@ -47,8 +47,8 @@ export default function WalletsAdminPage() {
           isWithinInterval(
             item.created_at,
             interval(
-              selectedDateRange?.to || new Date(),
-              selectedDateRange?.from || new Date(),
+              formatInTimeZone(selectedDateRange?.to || new Date(), 'Europe/Kiev', "yyyy-MM-dd HH:mm:ss"),
+              formatInTimeZone(selectedDateRange?.from || new Date(), 'Europe/Kiev', "yyyy-MM-dd HH:mm:ss"),
             ),
           ),
         )
