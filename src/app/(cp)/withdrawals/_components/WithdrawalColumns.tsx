@@ -33,7 +33,7 @@ export const getWithdrawalColumns = (
       header: "Дії",
       cell: ({ row }) => {
         const { id, status } = row.original
-        return isAvialableToWrite && status !== "new" ? null : <WithDrawalActions id={id} />
+        return isAvialableToWrite ? (status !== "new" ? null : <WithDrawalActions id={id} />) : null
       },
       enableSorting: false,
       enableHiding: false,
