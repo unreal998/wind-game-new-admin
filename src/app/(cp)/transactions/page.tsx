@@ -81,10 +81,11 @@ export default function WalletsAdminPage() {
   ]
 
   useEffect(() => {
-    const loadTransactions = async () => {
+    if (!selectedDateRange) return
+    const loadTransactions = async (selectedDateRange: DateRange) => {
       try {
         setIsLoading(true)
-        const data = await fetchTransactionsApi()
+        const data = await fetchTransactionsApi(selectedDateRange)
         const userIds: string[] = data.map((item: any) => item.uid)
         const uniqueUserIds = Array.from(new Set(userIds))
         const usersData = await getUsersByIds(uniqueUserIds)
@@ -107,8 +108,8 @@ export default function WalletsAdminPage() {
       }
     }
 
-    loadTransactions()
-  }, [setTransactions])
+    loadTransactions(selectedDateRange)
+  }, [setTransactions, selectedDateRange])
 
   useEffect(() => {
     if (transactions.length === 0) return
