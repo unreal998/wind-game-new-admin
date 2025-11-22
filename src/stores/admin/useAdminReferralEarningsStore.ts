@@ -20,6 +20,7 @@ interface AdminReferralEarningsState {
   fetchReferralEarnings: () => Promise<void>
   fetchReferralEarningsReferals: (tid: string, level: number, ownersData?: ReferralEarning) => Promise<void>
   subscribeToReferralEarnings: () => Promise<() => void>
+  fetchReferralStats: () => Promise<{ tonData: number, kwtData: number }>
 }
 
 const supabase = createClient()
@@ -69,17 +70,16 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
          if (user?.referals?.length > 0) {
            referalCount = (await axios.post(`https://turbinex.pp.ua/user/multiple-users`, { uids: user.referals })).data
          }
-        // const referalsArray = user.referals.filter((referal: string) =>  allUsers.find((user: any) => user.telegramID === referal))
-        // referalCount = referalsArray.length;
+
          if (user) {
            result.push({
              created_at:
                user.created_at ||
                new Date().toISOString(),
              amount:
-               user.rewardFromClicks || 0,
+              referalCount > 0 ? Math.floor(Object.values(user.referalIncomeKWT).reduce((a: number, v) => a + Number(v || 0), 0) * 10000) / 10000 : 0,
              tonAmount:
-               user.TONRewardFromClicks || 0,
+              referalCount > 0 ? Math.floor(Object.values(user.referalIncomeTON).reduce((a: number, v) => a + Number(v || 0), 0) * 10000) / 10000 : 0,
              user: {
                id: user.telegramID,
                username: user.userName || user.telegramID,
@@ -97,9 +97,7 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
            })
          }
        } 
-        // if (level === 0) {
           set({ referralEarnings: result || [], isLoading: false })
-        // }
       } catch (error) {
         console.error("Error fetching referral earnings:", error)
         set({
@@ -146,17 +144,16 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
             if (user?.referals?.length > 0) {
               referalCount = (await axios.post(`https://turbinex.pp.ua/user/multiple-users`, { uids: user.referals })).data
             }
-          // const referalsArray = user.referals.filter((referal: string) => allReferals.find((user: any) => user.telegramID === referal))
-          // referalCount = referalsArray.length;
+
           if (user) {
             result.push({
               created_at:
                 user.created_at ||
                 new Date().toISOString(),
-              amount:
-                user.rewardFromClicks || 0,
-              tonAmount:
-                user.TONRewardFromClicks || 0,
+                amount:
+                  referalCount > 0 ? Math.floor(Object.values(user.referalIncomeKWT).reduce((a: number, v) => a + Number(v || 0), 0) * 10000) / 10000 : 0,
+               tonAmount:
+                  referalCount > 0 ? Math.floor(Object.values(user.referalIncomeTON).reduce((a: number, v) => a + Number(v || 0), 0) * 10000) / 10000 : 0,
               user: {
                 id: user.telegramID,
                 username: user.userName || user.telegramID,
@@ -193,6 +190,14 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
         console.error("Error fetching marketing profiles:", error)
         set({ error: "Failed to load marketing profiles" })
       }
+    },
+
+    fetchReferralStats: async () => {
+      const { data: tonData, error: tonError } = await supabase.rpc("get_total_referal_income_ton");
+      const { data: kwtData, error: kwtError } = await supabase.rpc("get_total_referal_income_kwt");
+      if (tonError) throw tonError
+      if (kwtError) throw kwtError
+      return { tonData: tonData[0].total_sum, kwtData: kwtData[0].total_sum }
     },
 
     subscribeToReferralEarnings: async () => {

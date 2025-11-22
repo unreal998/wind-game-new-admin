@@ -13,7 +13,7 @@ import { fetchUserPermissions, useAdminReferralsStore } from "@/stores/admin/use
 import { ReferralEarning } from "@/types/referralEarning"
 import { roleSelector, useUserStore } from "@/stores/useUserStore"
 import NotAllowed from "@/components/NotAllowed"
-import { interval, isWithinInterval } from "date-fns"
+// import { interval, isWithinInterval } from "date-fns"
 import { TableCell, TableRow } from "@/components/Table"
 import { CreatePermissionDto } from "@/stores/admin/useAdminPermissionsStore"
 import { getUserData } from "../users/_components/updateUserBalance"
@@ -33,11 +33,12 @@ export default function ReferralEarningsAdminPage() {
     referralEarnings4, 
     referralEarnings5,
     fetchReferralEarnings,
-    fetchReferralEarningsReferals
+    fetchReferralEarningsReferals,
+    fetchReferralStats,
   } = useAdminReferralEarningsStore()
   const { profiles } = useAdminReferralsStore()
-  const [referalSum, setReferalSum] = useState<number>()
-  const [selectedDateRangeSum, setSelectedDateRangeSum] = useState<number>(0)
+  const [referalSum, setReferalSum] = useState<number>(0)
+  const [referalTonSum, setReferalTonSum] = useState<number>(0)
   const userRole = useUserStore(roleSelector)
   const [aggregatedValue] = useState<string | number | null>(null)
   const [selectedDateRange, setSelectedDateRange] = useState<DateRange>()
@@ -85,20 +86,25 @@ export default function ReferralEarningsAdminPage() {
   }, [])
 
   useEffect(() => {
-    setReferalSum(referralEarnings.reduce((sum, item) => sum + item.amount, 0))
-    setSelectedDateRangeSum(
-      referralEarnings
-        .filter((item) =>
-          isWithinInterval(
-            item.created_at,
-            interval(
-              selectedDateRange?.to ?? new Date(),
-              selectedDateRange?.from ?? new Date(),
-            ),
-          ),
-        )
-        .reduce((sum, item) => sum + item.amount, 0),
-    )
+    const fetchReferralStatsData = async () => {
+      const { tonData, kwtData } = await fetchReferralStats()
+      setReferalTonSum(tonData)
+      setReferalSum(kwtData)
+    }
+    fetchReferralStatsData()
+    // setSelectedDateRangeSum(
+    //   referralEarnings
+    //     .filter((item) =>
+    //       isWithinInterval(
+    //         item.created_at,
+    //         interval(
+    //           selectedDateRange?.to ?? new Date(),
+    //           selectedDateRange?.from ?? new Date(),
+    //         ),
+    //       ),
+    //     )
+    //     .reduce((sum, item) => sum + item.amount, 0),
+    // )
   }, [profiles, referralEarnings, selectedDateRange])
 
   const filterableColumns: FilterableColumn[] = [
@@ -206,10 +212,10 @@ export default function ReferralEarningsAdminPage() {
       </div>
       {userPermissions?.type !== "marketing" && <div className="flex gap-10">
          <Sum
-          label="Cума в кВт в обранному періоду"
-          sum={selectedDateRangeSum}
+          label="Загальна сума в TON"
+          sum={referalTonSum}
         />
-        <Sum label="Cума в кВт" sum={referalSum ?? 0} />
+        <Sum label="Загальна сума в кВт" sum={referalSum ?? 0} />
       </div>}
       <Card className="p-0">
         <DataTable
