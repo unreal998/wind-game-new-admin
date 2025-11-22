@@ -5,10 +5,11 @@ import { updateSession } from "@/utils/supabase/middleware";
 // Разрешённые IP-адреса
 const ALLOWED_IPS = [
   "::1", // localhost
+  "::ffff:127.0.0.1", // localhost
   "5.45.79.91",
   "46.227.136.53",
   "185.213.234.87",
-  "81.30.175.230"//my ip
+  "81.30.165.210"//my ip
 ];
 
 export async function middleware(request: NextRequest) {
