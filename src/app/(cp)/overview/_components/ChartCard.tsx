@@ -248,10 +248,10 @@ export function ChartCard({
       </div>
       <div className="mt-2 flex items-baseline justify-between">
         <dd className="text-xl text-indigo-600 dark:text-indigo-500">
-          {(Math.round(formatter(value) * 100) / 100).toFixed(2)}
+          {(Math.floor(value * 100) / 100).toFixed(2)}
         </dd>
         {selectedPeriod !== "no-comparison" && (
-          <dd className="text-sm text-gray-500">{formatter(previousValue)}</dd>
+          <dd className="text-sm text-gray-500">{Math.floor(previousValue * 10000) / 10000}</dd>
         )}
       </div>
       <LineChart
