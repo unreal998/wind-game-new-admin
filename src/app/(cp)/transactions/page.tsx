@@ -89,6 +89,7 @@ export default function WalletsAdminPage() {
       try {
         setIsLoading(true)
         const data = await fetchTransactionsApi(selectedDateRange)
+        console.log(JSON.stringify(data))
         const userIds: string[] = data.map((item: any) => item.uid)
         const uniqueUserIds = Array.from(new Set(userIds))
         const usersData = await getUsersByIds(uniqueUserIds)
@@ -178,7 +179,7 @@ export default function WalletsAdminPage() {
       <Card className="p-0">
         <DataTable
           selectedDateRange={{ from: selectedDateRange?.from || new Date(), to: selectedDateRange?.to || new Date() }}
-          data={filteredTransactions}
+          data={transactions}
           columns={walletColumns}
           filterableColumns={filterableColumns}
           isLoading={isLoading}
