@@ -17,7 +17,7 @@ interface AdminReferralEarningsState {
   isLoadingEarnings4: boolean
   isLoadingEarnings5: boolean
   error: string
-  fetchReferralEarnings: (level: number) => Promise<void>
+  fetchReferralEarnings: () => Promise<void>
   fetchReferralEarningsReferals: (tid: string, level: number, ownersData?: ReferralEarning) => Promise<void>
   subscribeToReferralEarnings: () => Promise<() => void>
 }
@@ -40,7 +40,7 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
     isLoadingEarnings5: true,
     error: '',
 
-    fetchReferralEarnings: async (level: number) => {
+    fetchReferralEarnings: async () => {
       set({ isLoading: true })
       const PAGE_SIZE = 1000;
       let allUsers: any[] = [];
@@ -207,7 +207,7 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
           },
           () => {
             set((state) => {
-              state.fetchReferralEarnings(0)
+              state.fetchReferralEarnings()
               return state
             })
           },

@@ -64,7 +64,7 @@ export default function ReferralEarningsAdminPage() {
           ownerData = { ...ownerData, user: { username: ownerData.userName } }
           fetchReferralEarningsReferals(userPermissionsData?.additionalField ?? '', 0, ownerData)
         } else {
-          fetchReferralEarnings(0)
+          fetchReferralEarnings()
         }
       }
     }
@@ -171,7 +171,7 @@ export default function ReferralEarningsAdminPage() {
         }
       }
       if (level === 0) {
-        fetchReferralEarnings(level)
+        fetchReferralEarnings()
       } else {
         fetchReferralEarningsReferals(row.user?.telegramID?.toString() || '', level, row)
       }
