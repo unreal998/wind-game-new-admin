@@ -178,8 +178,7 @@ export default function WalletsAdminPage() {
 
       <Card className="p-0">
         <DataTable
-          selectedDateRange={{ from: selectedDateRange?.from || new Date(), to: selectedDateRange?.to || new Date() }}
-          data={transactions}
+          data={filteredTransactions}
           columns={walletColumns}
           filterableColumns={filterableColumns}
           isLoading={isLoading}
