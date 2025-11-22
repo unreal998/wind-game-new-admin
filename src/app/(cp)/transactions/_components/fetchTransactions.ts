@@ -27,6 +27,26 @@ export const fetchTransactionsApi = async (selectedDateRange: DateRange) => {
   return allData
 }
 
+export const fetchTransactionsAllApi = async () => {
+  const supabase = createClient()
+  let allData: any[] = [];
+  let fromIndex = 0;
+  let toIndex = 999;
+  while (true) {
+    const { data, error } = await supabase
+      .from('transactions')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .range(fromIndex, toIndex)
+    if (error) throw error
+    allData = allData.concat(data)
+    if (data.length < 1000) break
+    fromIndex += 1000
+    toIndex += 1000
+  }
+  return allData
+}
+
 export async function getUsersByIds(user_ids: string[]) {
   const supabase = createClient()
   

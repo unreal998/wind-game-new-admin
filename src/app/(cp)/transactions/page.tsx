@@ -6,6 +6,7 @@ import { Card } from "@/components/Card"
 import { DataTable } from "@/components/data-table/DataTable"
 import { FilterableColumn } from "@/types/table"
 import {
+  fetchTransactionsAllApi,
   fetchTransactionsApi,
   getUsersByIds,
 } from "./_components/fetchTransactions"
@@ -32,11 +33,13 @@ export default function WalletsAdminPage() {
   const [selectedDateRangeClearSum, setSelectedDateRangeClearSum] = useState<number>(0)
   const userRole = useUserStore(roleSelector)
   const [teamFilter, setTeamFilter] = useState<AdminProfileTeams | "all">("all")
+  const [allTransactions, setAllTransactions] = useState<any[]>([])
 
   useEffect(() => {
-    setSum(filteredTransactions.reduce((acc: number, next: any) => acc + next.summ, 0))
+    if (allTransactions.length === 0) return
+    setSum(allTransactions.reduce((acc: number, next: any) => acc + next.summ, 0))
     setClearSum(
-      filteredTransactions
+      allTransactions
         .filter((item: any) => item.txid !== "1w23uui8890bbh1y7u9it5r2cv2g" && item.txid !== "312r2r12f12r12f12fqwfh55h5h")
         .reduce((acc: number, next: any) => acc + next.summ, 0),
     )
@@ -68,7 +71,7 @@ export default function WalletsAdminPage() {
         )
         .reduce((acc: number, next: any) => acc + next.summ, 0),
     )
-  }, [filteredTransactions, selectedDateRange])
+  }, [filteredTransactions, selectedDateRange, allTransactions])
 
   const filterableColumns: FilterableColumn[] = [
     { id: "id", title: "ID", type: "text" },
@@ -110,6 +113,14 @@ export default function WalletsAdminPage() {
 
     loadTransactions(selectedDateRange)
   }, [setTransactions, selectedDateRange])
+
+  useEffect(() => {
+    const fetchAllTransactions = async () => {
+      const data = await fetchTransactionsAllApi()
+      setAllTransactions(data)
+    }
+    fetchAllTransactions()
+  }, [])
 
   useEffect(() => {
     if (transactions.length === 0) return
