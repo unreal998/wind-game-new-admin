@@ -1,12 +1,12 @@
 import { createClient } from "@/utils/supabase/client"
 import { endOfDay, startOfDay } from "date-fns"
-import { formatInTimeZone } from "date-fns-tz"
+import { format } from "date-fns-tz"
 import { DateRange } from "react-day-picker"
 
 export const fetchTransactionsApi = async (selectedDateRange: DateRange) => {
   const supabase = createClient()
-  const fromDate = formatInTimeZone(startOfDay(selectedDateRange?.from || new Date()), 'Europe/Kiev', "yyyy-MM-dd HH:mm:ss")
-  const toDate = formatInTimeZone(endOfDay(selectedDateRange?.to || new Date()), 'Europe/Kiev', "yyyy-MM-dd HH:mm:ss")
+  const fromDate = format(startOfDay(selectedDateRange?.from || new Date()), "yyyy-MM-dd HH:mm:ss")
+  const toDate = format(endOfDay(selectedDateRange?.to || new Date()), "yyyy-MM-dd HH:mm:ss")
   let allData: any[] = [];
   let fromIndex = 0;
   let toIndex = 999;
