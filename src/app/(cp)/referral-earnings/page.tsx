@@ -55,18 +55,16 @@ export default function ReferralEarningsAdminPage() {
     if (!userPermissions) return;
 
     const loadUserData = async (userPermissionsData: CreatePermissionDto) => {
-      let ownerData = await getUserData({
-        id: String(userPermissionsData?.additionalField),
-      })
-
-      if (userPermissionsData) {
- 
+      if (userPermissionsData?.additionalField) {
+        let ownerData = await getUserData({
+          id: String(userPermissionsData?.additionalField),
+        })
         if (userPermissionsData?.type === "marketing" && userPermissionsData?.additionalField && ownerData) {
           ownerData = { ...ownerData, user: { username: ownerData.userName } }
           fetchReferralEarningsReferals(userPermissionsData?.additionalField ?? '', 0, ownerData)
-        } else {
-          fetchReferralEarnings()
         }
+      } else {
+        fetchReferralEarnings()
       }
     }
     loadUserData(userPermissions)

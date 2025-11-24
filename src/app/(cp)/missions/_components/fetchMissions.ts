@@ -36,7 +36,7 @@ export type CreateMissionData = {
 
 export async function fetchMissions() {
   const missionsDataRequest = await axios.get(
-    `https://turbinex.pp.ua/missions`,
+    `https://6d6ed6665a16.ngrok-free.app/missions`,
     {
       headers: {
         "ngrok-skip-browser-warning": true,
@@ -48,7 +48,7 @@ export async function fetchMissions() {
 
 export async function fetchAddMissions(createMissionData: CreateMissionData) {
   const missionsDataRequest = await axios.put(
-    `https://turbinex.pp.ua/missions`,
+    `https://6d6ed6665a16.ngrok-free.app/missions`,
     createMissionData,
     {
       headers: {
@@ -61,7 +61,7 @@ export async function fetchAddMissions(createMissionData: CreateMissionData) {
 
 export async function fetchDeleteMission(id: MissionsData["id"]) {
   const response = await axios.delete(
-    `https://turbinex.pp.ua/missions?id=${id}`,
+    `https://6d6ed6665a16.ngrok-free.app/missions?id=${id}`,
     {
       headers: {
         "ngrok-skip-browser-warning": true,

@@ -68,7 +68,7 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
         for (const user of allUsers) {
          let referalCount = 0;
          if (user?.referals?.length > 0) {
-           referalCount = (await axios.post(`https://turbinex.pp.ua/user/multiple-users`, { uids: user.referals })).data
+           referalCount = await getUsersByIds(user.referals)
          }
 
          if (user) {
@@ -142,7 +142,7 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
          for (const user of allReferals) {
           let referalCount = 0;
             if (user?.referals?.length > 0) {
-              referalCount = (await axios.post(`https://turbinex.pp.ua/user/multiple-users`, { uids: user.referals })).data
+              referalCount = await getUsersByIds(user.referals)
             }
 
           if (user) {
@@ -225,3 +225,31 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
     },
   }),
 )
+export async function getUsersByIds(uids: string[]) {
+  const CHUNK_SIZE = 1000;
+  const PAGE_SIZE = 1000;
+  let allUsers: any[] = [];
+
+  // делим массив uids на чанки по 1000
+  for (let i = 0; i < uids.length; i += CHUNK_SIZE) {
+    const chunk = uids.slice(i, i + CHUNK_SIZE);
+    let from = 0;
+    let hasMore = true;
+
+    while (hasMore) {
+      const { data, error } = await supabase
+        .from("users")
+        .select()
+        .in("telegramID", chunk)
+        .range(from, from + PAGE_SIZE - 1);
+
+      if (error) throw error;
+
+      allUsers = allUsers.concat(data);
+      hasMore = data.length === PAGE_SIZE;
+      from += PAGE_SIZE;
+    }
+  }
+
+  return allUsers.length;
+}

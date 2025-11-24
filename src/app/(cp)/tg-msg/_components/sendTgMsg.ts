@@ -10,8 +10,13 @@ export type TgMsgPayload = {
 
 export async function sendTgMsg(tgMsgPayload: TgMsgPayload) {
   await axios.post(
-    "https://turbinex.pp.ua/tgbot/send-msg",
+    "https://6d6ed6665a16.ngrok-free.app/tgbot/send-msg",
     tgMsgPayload,
+    {
+      headers: {
+        "ngrok-skip-browser-warning": "true",
+      },
+    },
   )
   return
 }

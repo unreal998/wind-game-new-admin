@@ -77,8 +77,13 @@ export const useAdminPermissionsStore = create<AdminPermissionsState>(
     ) => {
       try {
         const { data } = await axios.put(
-          `https://turbinex.pp.ua/permissions?id=${id}`,
+          `https://6d6ed6665a16.ngrok-free.app/permissions?id=${id}`,
           permissionData,
+          {
+            headers: {
+              "ngrok-skip-browser-warning": "true",
+            },
+          },
         )
         if (data.error) {
           set({ error: data.error })

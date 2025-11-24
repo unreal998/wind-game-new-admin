@@ -87,7 +87,12 @@ export const UserSidebar = ({
   useEffect(() => {
     const fetchUserReferalCountData = async (tid: string) => {
       const response = await axios.get(
-        `https://turbinex.pp.ua/user/nested-referrals?tid=${tid}`
+        `https://6d6ed6665a16.ngrok-free.app/user/nested-referrals?tid=${tid}`,
+        {
+          headers: {
+            "ngrok-skip-browser-warning": "true",
+          },
+        },
       );
 
       setReferalsData(response.data.data);

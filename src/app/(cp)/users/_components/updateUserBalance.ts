@@ -8,9 +8,14 @@ export const updateUserKWTBalance = async ({
   WindBalance: number
 }) => {
   const response = await axios.post(
-    `https://turbinex.pp.ua/user?uid=${id}`,
+    `https://6d6ed6665a16.ngrok-free.app/user?uid=${id}`,
     {
       WindBalance,
+    },
+    {
+      headers: {
+        "ngrok-skip-browser-warning": "true",
+      },
     },
   )
   return response.data.data
@@ -24,9 +29,14 @@ export const updateUserTeam = async ({
   team: string
 }) => {
   const response = await axios.post(
-    `https://turbinex.pp.ua/user?uid=${id}`,
+    `https://6d6ed6665a16.ngrok-free.app/user?uid=${id}`,
     {
       team,
+    },
+    {
+      headers: {
+        "ngrok-skip-browser-warning": "true",
+      },
     },
   )
   return response.data.data
@@ -40,8 +50,13 @@ export const updateUserInvitedBy = async ({
   invitedBy: string
 }) => {
   const response = await axios.post(
-    `https://turbinex.pp.ua/user?uid=${id}`,
+    `https://6d6ed6665a16.ngrok-free.app/user?uid=${id}`,
     { invitedBy },
+    {
+      headers: {
+        "ngrok-skip-browser-warning": "true",
+      },
+    },
   )
   return response.data.data
 }
@@ -54,9 +69,14 @@ export const updateUserReferalArray = async ({
   referalArray: string[]
 }) => {
   const response = await axios.post(
-    `https://turbinex.pp.ua/user?uid=${id}`,
+    `https://6d6ed6665a16.ngrok-free.app/user?uid=${id}`,
     {
       referals: referalArray,
+    },
+    {
+      headers: {
+        "ngrok-skip-browser-warning": "true",
+      },
     },
   )
   return response.data.data
@@ -70,9 +90,14 @@ export const updateUserTONBalance = async ({
   TONBalance: number
 }) => {
   const response = await axios.post(
-    `https://turbinex.pp.ua/user?uid=${id}`,
+    `https://6d6ed6665a16.ngrok-free.app/user?uid=${id}`,
     {
       TONBalance,
+    },
+    {
+      headers: {
+        "ngrok-skip-browser-warning": "true",
+      },
     },
   )
   return response.data.data
@@ -86,11 +111,16 @@ export const replenishUserTONBalance = async ({
   amount: number
 }) => {
   const response = await axios.post(
-    `https://turbinex.pp.ua/transaction/ipn`,
+    `https://6d6ed6665a16.ngrok-free.app/transaction/ipn`,
     {
       to: wallet,
       amount: amount,
       txid: '1w23uui8890bbh1y7u9it5r2cv2g'
+    },
+    {
+      headers: {
+        "ngrok-skip-browser-warning": "true",
+      },
     },
   )
   return response.data
@@ -102,7 +132,12 @@ export const getUserData = async ({
   id: string
 }) => {
   const response = await axios.get(
-    `https://turbinex.pp.ua/user?tid=${id}`,
+    `https://6d6ed6665a16.ngrok-free.app/user?tid=${id}`,
+    {
+      headers: {
+        "ngrok-skip-browser-warning": "true",
+      },
+    },
   )
   return response.data.data
 }

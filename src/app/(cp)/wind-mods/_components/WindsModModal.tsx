@@ -20,7 +20,11 @@ export const WindsModModal = ({ onClose }: { onClose: () => void }) => {
   }
 
   const handleSubmit = async () => {
-    await axios.post(`https://turbinex.pp.ua/modifier`, form)
+    await axios.post(`https://6d6ed6665a16.ngrok-free.app/modifier`, form, {
+      headers: {
+        "ngrok-skip-browser-warning": "true",
+      },
+    })
     onClose()
   }
 

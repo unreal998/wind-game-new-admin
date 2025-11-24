@@ -16,18 +16,6 @@ export interface Withdrawal {
   error: string | null
 }
 
-export const fetchWithdrawalsApi = async () => {
-  const response = await axios.get(
-    `https://turbinex.pp.ua/withdraw/all`,
-    {
-      headers: {
-        "ngrok-skip-browser-warning": true,
-      },
-    },
-  )
-  return response.data.data
-}
-
 export const fetchUpdateWithDrawStatus = async ({
   id,
   status,
@@ -36,7 +24,7 @@ export const fetchUpdateWithDrawStatus = async ({
   status: "completed" | "declined"
 }) => {
   const response = await axios.put(
-    `https://turbinex.pp.ua/withdraw/status?status=${status}&id=${id}`,
+    `https://6d6ed6665a16.ngrok-free.app/withdraw/status?status=${status}&id=${id}`,
     {
       headers: {
         "ngrok-skip-browser-warning": true,
