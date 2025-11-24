@@ -72,7 +72,7 @@ export default function TelegramMessagePage() {
       if (file) formData.append("image", file)
       setIsLoading(true)
       try {
-        const response = await fetch(`https://6d6ed6665a16.ngrok-free.app/broadcast-file`, {
+        const response = await fetch(`https://tired-parrots-joke.loca.lt/broadcast-file`, {
           headers: {
             "ngrok-skip-browser-warning": "true",
           },
