@@ -1,6 +1,5 @@
 import { type ReferralEarning } from "@/types/referralEarning"
 import { createClient } from "@/utils/supabase/client"
-import axios from "axios"
 import { create } from "zustand"
 
 interface AdminReferralEarningsState {
