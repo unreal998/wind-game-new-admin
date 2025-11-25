@@ -18,7 +18,7 @@ export const categories = [
   },
   {
     title: "turxBalance",
-    label: "кВт Пропрозиція",
+    label: "Загальна кВт пропозиція",
     type: "currency" as const,
   },
   {
@@ -33,12 +33,12 @@ export const categories = [
   },
   {
     title: "referalsKWT",
-    label: "кВт Рефералів",
+    label: "Загальна сума кВт від рефералів",
     type: "currency" as const,
   },
   {
     title: "referalsTon",
-    label: "TON Рефералів",
+    label: "Загальна сума TON від рефералів",
     type: "currency" as const,
   },
 ] as const
