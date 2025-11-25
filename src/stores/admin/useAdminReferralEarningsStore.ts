@@ -17,9 +17,10 @@ interface AdminReferralEarningsState {
   isLoadingEarnings5: boolean
   error: string
   fetchReferralEarnings: () => Promise<void>
-  fetchReferralEarningsReferals: (tid: string, level: number, ownersData?: ReferralEarning) => Promise<void>
+  fetchReferralEarningsReferals: (tid: string, level: number, ownersData?: ReferralEarning) => Promise<any[]>
   subscribeToReferralEarnings: () => Promise<() => void>
   fetchReferralStats: () => Promise<{ tonData: number, kwtData: number }>
+  searchReferralEarnings: (search: string) => Promise<any[]>
 }
 
 const supabase = createClient()
@@ -106,7 +107,7 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
       }
     },
 
-    fetchReferralEarningsReferals: async (tid: string, level: number, ownersData?: ReferralEarning) => {
+    fetchReferralEarningsReferals: async (tid: string, level: number, ownersData?: ReferralEarning): Promise<any[]> => {
       let allReferals: any[] = []
       if (level === 1) {
         set({ isLoadingEarnings1: true, referralEarnings1: [] })
@@ -183,11 +184,14 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
           set({ referralEarnings5: result || [], isLoadingEarnings5: false })
         } else if (level === 0) {
           set({ referralEarnings: result || [], isLoading: false })
+
         }
+        return result
       } 
       catch (error) {
         console.error("Error fetching marketing profiles:", error)
         set({ error: "Failed to load marketing profiles" })
+        return []
       }
     },
 
@@ -197,6 +201,14 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
       if (tonError) throw tonError
       if (kwtError) throw kwtError
       return { tonData: tonData[0].total_sum, kwtData: kwtData[0].total_sum }
+    },
+
+    searchReferralEarnings: async (search: string) => {
+      const { data, error } = await supabase.rpc("get_referral_parents_array", {
+        target_tid: search
+      })
+      if (error) throw error
+      return data
     },
 
     subscribeToReferralEarnings: async () => {

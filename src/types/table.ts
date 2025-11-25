@@ -76,6 +76,7 @@ export interface DataTableFilterProps<TData, TValue> {
 export interface DataTableFilterBarProps<TData extends Record<string, any>> {
   table: Table<TData>
   filterableColumns: FilterableColumn[]
+  title?: string
 }
 
 export interface DataTableProps<TData> {

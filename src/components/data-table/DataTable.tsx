@@ -55,6 +55,8 @@ interface DataTableProps<TData> {
   onRowClick?: (row: TData) => void
   dropDownComponent?: ReactElement
   selectedRowid?: string
+  title?: string
+  border?: string
 }
 
 // Функція для форматування значень для пошуку
@@ -141,7 +143,10 @@ export function DataTable<TData extends Record<string, any>>({
   selectedDateRange,
   dropDownComponent,
   selectedRowid,
-}: DataTableProps<TData> & { selectedDateRange?: DateRange }) {
+  title,
+  border,
+  onSearchChange,
+}: DataTableProps<TData> & { selectedDateRange?: DateRange, onSearchChange?: (search: string) => void }) {
   const [pagination, setPagination] = useState({
     pageSize: simple ? 100 : 50,
     pageIndex: 0,
@@ -376,11 +381,15 @@ export function DataTable<TData extends Record<string, any>>({
   }
 
   return (
-    <div className={cx(!simple && "flex max-h-[calc(100vh-90px)] flex-col")}>
+    <div className={cx(!simple && "flex max-h-[calc(100vh-90px)] flex-col")} style={{
+      border: border,
+    }}>
       {!simple && (
         <DataTableFilterBar
           table={table}
           filterableColumns={filterableColumns}
+          title={title}
+          onSearchChange={(search: string) => onSearchChange?.(search)}
         />
       )}
       <div className="relative h-full overflow-x-auto">

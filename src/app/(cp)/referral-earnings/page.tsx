@@ -13,7 +13,6 @@ import { fetchUserPermissions, useAdminReferralsStore } from "@/stores/admin/use
 import { ReferralEarning } from "@/types/referralEarning"
 import { roleSelector, useUserStore } from "@/stores/useUserStore"
 import NotAllowed from "@/components/NotAllowed"
-// import { interval, isWithinInterval } from "date-fns"
 import { TableCell, TableRow } from "@/components/Table"
 import { CreatePermissionDto } from "@/stores/admin/useAdminPermissionsStore"
 import { getUserData } from "../users/_components/updateUserBalance"
@@ -35,6 +34,7 @@ export default function ReferralEarningsAdminPage() {
     fetchReferralEarnings,
     fetchReferralEarningsReferals,
     fetchReferralStats,
+    searchReferralEarnings,
   } = useAdminReferralEarningsStore()
   const { profiles } = useAdminReferralsStore()
   const [referalSum, setReferalSum] = useState<number>(0)
@@ -90,19 +90,6 @@ export default function ReferralEarningsAdminPage() {
       setReferalSum(kwtData)
     }
     fetchReferralStatsData()
-    // setSelectedDateRangeSum(
-    //   referralEarnings
-    //     .filter((item) =>
-    //       isWithinInterval(
-    //         item.created_at,
-    //         interval(
-    //           selectedDateRange?.to ?? new Date(),
-    //           selectedDateRange?.from ?? new Date(),
-    //         ),
-    //       ),
-    //     )
-    //     .reduce((sum, item) => sum + item.amount, 0),
-    // )
   }, [profiles, referralEarnings, selectedDateRange])
 
   const filterableColumns: FilterableColumn[] = [
@@ -146,7 +133,9 @@ export default function ReferralEarningsAdminPage() {
   const handleReferalData = useCallback((row: ReferralEarning, level: number) => {
 
     if (row.user?.id) {
-        if (level === 4) {
+        if (level === 5) {
+          setSelectedSub5RowId(row.user.id.toString() === selectedSub5RowId ? '' : row.user.id.toString())
+        } else if (level === 4) {
           setSelectedSub4RowId(row.user.id.toString() === selectedSub4RowId ? '' : row.user.id.toString())
           if (row.user.id.toString() != selectedSub4RowId) {
             setSelectedSub5RowId('')
@@ -194,6 +183,19 @@ export default function ReferralEarningsAdminPage() {
     setSelectedSub5RowId,
   ])
 
+  const handleSearchChange = useCallback((search: string) => {
+    async function fetchSearchReferralEarnings(search: string) {
+      const data = await searchReferralEarnings(search)
+      if (!data) return;
+      const reversedData = data.reverse();
+      console.log(reversedData)
+      for (const item of reversedData) {
+        setSelectedRowid(item.toString())
+      }
+    }
+    fetchSearchReferralEarnings(search)
+  }, [searchReferralEarnings])
+
   if (!(userRole === "admin" || userRole === "teamlead" || userRole === "marketing")) return <NotAllowed />
 
   return (
@@ -218,24 +220,29 @@ export default function ReferralEarningsAdminPage() {
       <Card className="p-0">
         <DataTable
           data={referralEarnings}
+          title={`Поточний ланцюг: ${selectedRowid} -> ${selectedSubRowId} -> ${selectedSub3RowId} -> ${selectedSub4RowId} -> ${selectedSub5RowId}`}
           columns={referralEarningColumns}
           filterableColumns={filterableColumns}
           isLoading={isLoading}
           openSidebarOnRowClick={true}
           onRowClick={(row) => handleReferalData(row, 1)}
           selectedRowid={selectedRowid}
+          onSearchChange={(search: string) => handleSearchChange(search)}
           dropDownComponent={
              referralEarnings1.length && !isLoadingEarnings1 ? <DataTable
+              border="1px solid red"
               selectedDateRange={{ from: selectedDateRange?.from || new Date(), to: selectedDateRange?.to || new Date() }}
               data={referralEarnings1}
               columns={referralEarningColumns}
               openSidebarOnRowClick={true}
+              simple
               filterableColumns={filterableColumns}
               onRowClick={(row) => handleReferalData(row, 2)}
               selectedRowid={selectedSubRowId}
               isLoading={isLoadingEarnings1}
               dropDownComponent={
                 referralEarnings2.length && !isLoadingEarnings2 ? <DataTable
+                  border="1px solid green"
                   selectedDateRange={{ from: selectedDateRange?.from || new Date(), to: selectedDateRange?.to || new Date() }}
                   data={referralEarnings2}
                   columns={referralEarningColumns}
@@ -243,33 +250,40 @@ export default function ReferralEarningsAdminPage() {
                   isLoading={isLoadingEarnings2}
                   openSidebarOnRowClick={true}
                   onRowClick={(row) => handleReferalData(row, 3)}
+                  simple
                   selectedRowid={selectedSub3RowId}
                   dropDownComponent={
                     referralEarnings3.length && !isLoadingEarnings3 ? <DataTable
+                      border="1px solid blue"
                       selectedDateRange={{ from: selectedDateRange?.from || new Date(), to: selectedDateRange?.to || new Date() }}
                       data={referralEarnings3}
                       columns={referralEarningColumns}
                       filterableColumns={filterableColumns}
                       isLoading={isLoadingEarnings3}
+                      simple
                       openSidebarOnRowClick={true}
                       onRowClick={(row) => handleReferalData(row, 4)}
                       selectedRowid={selectedSub4RowId}
                       dropDownComponent={
                         referralEarnings4.length && !isLoadingEarnings4 ? <DataTable
+                          border="1px solid yellow"
                           selectedDateRange={{ from: selectedDateRange?.from || new Date(), to: selectedDateRange?.to || new Date() }}
                           data={referralEarnings4}
                           openSidebarOnRowClick={true}
                           columns={referralEarningColumns}
                           filterableColumns={filterableColumns}
+                          simple
                           isLoading={isLoadingEarnings4}
                           onRowClick={(row) => handleReferalData(row, 5)}
                           selectedRowid={selectedSub5RowId}
                           dropDownComponent={
                             referralEarnings5.length ? <DataTable
+                              border="1px solid purple"
                               selectedDateRange={{ from: selectedDateRange?.from || new Date(), to: selectedDateRange?.to || new Date() }}
                               data={referralEarnings5}
                               openSidebarOnRowClick={true}
                               columns={referralEarningColumns}
+                              simple
                               filterableColumns={filterableColumns}
                               isLoading={isLoadingEarnings5}
                             /> : 

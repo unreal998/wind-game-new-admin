@@ -15,7 +15,9 @@ import { ExportButton } from "./ExportButton"
 export function DataTableFilterBar<TData extends Record<string, any>>({
   table,
   filterableColumns,
-}: DataTableFilterBarProps<TData>) {
+  title,
+  onSearchChange,
+}: DataTableFilterBarProps<TData> & { onSearchChange?: (search: string) => void }) {
   const isFiltered = table.getState().columnFilters.length > 0
   const [showFilters, setShowFilters] = useState(false)
   const [filters, setFilters] = useQueryState("filters")
@@ -116,14 +118,15 @@ export function DataTableFilterBar<TData extends Record<string, any>>({
   }, [filters, table, handleResetFilters])
 
   // Оптимізований пошук з дебаунсом
-  const debouncedSearch = useDebouncedCallback((value: string) => {
-    table.setGlobalFilter(value || undefined)
+  const debouncedSearch = useDebouncedCallback((value: string, callback?: (search: string) => void) => {
+    // table.setGlobalFilter(value || undefined)
+    callback?.(value)
   }, 300)
 
   // Обробник події зміни input
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>, callback?: (search: string) => void) => {
     const value = event.target.value.trim()
-    debouncedSearch(value)
+    debouncedSearch(value, (search: string) => callback?.(search))
   }
 
   // Отримуємо поточні налаштування видимості та порядку колонок
@@ -154,10 +157,10 @@ export function DataTableFilterBar<TData extends Record<string, any>>({
         <Searchbar
           type="search"
           placeholder="Search..."
-          onChange={handleSearchChange}
+          onChange={(event) => handleSearchChange(event, onSearchChange)}
           className="w-full sm:max-w-[350px] [&>input]:h-[34px]"
         />
-
+        {title && <h3 className="text-base font-bold">{title}</h3>}
         <div className="flex items-center gap-2">
           {/* <Button
             onClick={() => setShowFilters(!showFilters)}
