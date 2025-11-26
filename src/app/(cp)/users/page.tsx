@@ -339,6 +339,7 @@ export default function ReferralsAdminPage() {
             filterableColumns={filterableColumns}
             isLoading={isLoading}
             openSidebarOnRowClick={true}
+            onRowClick={(row) => setActiveUser(row)}
           />
         )}
       </Card>

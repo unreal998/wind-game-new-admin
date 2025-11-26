@@ -188,10 +188,26 @@ export default function ReferralEarningsAdminPage() {
       const data = await searchReferralEarnings(search)
       if (!data) return;
       const reversedData = data.reverse();
-      console.log(reversedData)
-      for (const item of reversedData) {
-        setSelectedRowid(item.toString())
+      setSelectedRowid(reversedData[0])
+      await fetchReferralEarningsReferals(reversedData[0], 1)
+      if (reversedData[1]) {
+        setSelectedSubRowId(reversedData[1])
+        setSelectedDateRange({ from: new Date(new Date().getTime() - 31536000000), to: new Date() })
+        await fetchReferralEarningsReferals(reversedData[1], 2)
       }
+      if (reversedData[2]) {
+        setSelectedSub3RowId(reversedData[2])
+        await fetchReferralEarningsReferals(reversedData[2], 3)
+      }
+      if (reversedData[3]) {
+        setSelectedSub4RowId(reversedData[3])
+        await fetchReferralEarningsReferals(reversedData[3], 4)
+      }
+      if (reversedData[4]) {
+        setSelectedSub5RowId(reversedData[4])
+        await fetchReferralEarningsReferals(reversedData[4], 5)
+      }
+
     }
     fetchSearchReferralEarnings(search)
   }, [searchReferralEarnings])
@@ -292,7 +308,7 @@ export default function ReferralEarningsAdminPage() {
                                 colSpan={ referralEarningColumns.length }
                                 className="h-24 text-center text-gray-500"
                               > 
-                                  Немає результатів
+                                  {isLoadingEarnings5 ? "Завантажуємо..." : "Немає результатів"}
                               </TableCell>
                             </TableRow>
                           }
@@ -302,7 +318,7 @@ export default function ReferralEarningsAdminPage() {
                             colSpan={ referralEarningColumns.length }
                             className="h-24 text-center text-gray-500"
                           > 
-                            Немає результатів
+                            {isLoadingEarnings4 ? "Завантажуємо..." : "Немає результатів"}
                           </TableCell>
                         </TableRow>
                       } 
@@ -312,7 +328,7 @@ export default function ReferralEarningsAdminPage() {
                         colSpan={ referralEarningColumns.length }
                         className="h-24 text-center text-gray-500"
                       > 
-                        Немає результатів
+                        {isLoadingEarnings3 ? "Завантажуємо..." : "Немає результатів"}
                       </TableCell>
                     </TableRow>
                   }
@@ -322,7 +338,7 @@ export default function ReferralEarningsAdminPage() {
                     colSpan={ referralEarningColumns.length }
                     className="h-24 text-center text-gray-500"
                   > 
-                    Немає результатів
+                    {isLoadingEarnings2 ? "Завантажуємо..." : "Немає результатів"}
                   </TableCell>
                 </TableRow>
               }
@@ -333,7 +349,7 @@ export default function ReferralEarningsAdminPage() {
                 colSpan={ referralEarningColumns.length }
                 className="h-24 text-center text-gray-500"
               > 
-                Немає результатів
+                {isLoadingEarnings1 ? "Завантажуємо..." : "Немає результатів"}
               </TableCell>
             </TableRow>
           }
