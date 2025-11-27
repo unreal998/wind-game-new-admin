@@ -119,8 +119,11 @@ export function DataTableFilterBar<TData extends Record<string, any>>({
 
   // Оптимізований пошук з дебаунсом
   const debouncedSearch = useDebouncedCallback((value: string, callback?: (search: string) => void) => {
-    // table.setGlobalFilter(value || undefined)
-    callback?.(value)
+    if (callback) {
+      callback(value)
+    } else {
+      table.setGlobalFilter(value || undefined)
+    }
   }, 300)
 
   // Обробник події зміни input
