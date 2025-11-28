@@ -6,7 +6,6 @@ import { useAdminReferralEarningsStore } from "@/stores/admin/useAdminReferralEa
 import { FilterableColumn } from "@/types/table"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { referralEarningColumns } from "./_components/ReferralEarningColumns"
-import { EnhancedDatePicker } from "@/components/EnhancedDatePicker"
 import { DateRange } from "react-day-picker"
 import Sum from "@/components/Sum"
 import { fetchUserPermissions, useAdminReferralsStore } from "@/stores/admin/useAdminReferralsStore"
@@ -237,8 +236,6 @@ export default function ReferralEarningsAdminPage() {
     <>
       <div className="mb-4 flex items-center justify-between">
         <h1 className="mr-1 text-2xl font-semibold">Реферальні</h1>
-        <EnhancedDatePicker setSelectedDateRange={setSelectedDateRange} />
-
         {!isLoading && aggregatedValue && (
           <Badge variant="indigo" className="px-3 py-1 text-base">
             {aggregatedValue}
