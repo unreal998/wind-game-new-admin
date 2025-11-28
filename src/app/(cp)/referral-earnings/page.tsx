@@ -4,7 +4,7 @@ import { Card } from "@/components/Card"
 import { DataTable } from "@/components/data-table/DataTable"
 import { useAdminReferralEarningsStore } from "@/stores/admin/useAdminReferralEarningsStore"
 import { FilterableColumn } from "@/types/table"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { referralEarningColumns } from "./_components/ReferralEarningColumns"
 import { EnhancedDatePicker } from "@/components/EnhancedDatePicker"
 import { DateRange } from "react-day-picker"
@@ -212,6 +212,25 @@ export default function ReferralEarningsAdminPage() {
     fetchSearchReferralEarnings(search)
   }, [searchReferralEarnings])
 
+  const cuurenChainString = useMemo(() => {
+    if (!selectedRowid) return ''
+    if (selectedRowid) {
+      if (selectedSubRowId) {
+        if (selectedSub3RowId) {
+          if (selectedSub4RowId) {
+            if (selectedSub5RowId) {
+              return `Поточний ланцюг: ${selectedRowid} -> ${selectedSubRowId} -> ${selectedSub3RowId} -> ${selectedSub4RowId} -> ${selectedSub5RowId}`
+            }
+            return `Поточний ланцюг: ${selectedRowid} -> ${selectedSubRowId} -> ${selectedSub3RowId} -> ${selectedSub4RowId}`
+          }
+          return `Поточний ланцюг: ${selectedRowid} -> ${selectedSubRowId} -> ${selectedSub3RowId}`
+        }
+        return `Поточний ланцюг: ${selectedRowid} -> ${selectedSubRowId}`
+      }
+      return `Поточний ланцюг: ${selectedRowid}`
+    }
+  }, [selectedRowid, selectedSubRowId, selectedSub3RowId, selectedSub4RowId, selectedSub5RowId])
+
   if (!(userRole === "admin" || userRole === "teamlead" || userRole === "marketing")) return <NotAllowed />
 
   return (
@@ -236,7 +255,7 @@ export default function ReferralEarningsAdminPage() {
       <Card className="p-0">
         <DataTable
           data={referralEarnings}
-          title={`Поточний ланцюг: ${selectedRowid} -> ${selectedSubRowId} -> ${selectedSub3RowId} -> ${selectedSub4RowId} -> ${selectedSub5RowId}`}
+          title={cuurenChainString}
           columns={referralEarningColumns}
           filterableColumns={filterableColumns}
           isLoading={isLoading}
@@ -247,7 +266,6 @@ export default function ReferralEarningsAdminPage() {
           dropDownComponent={
              referralEarnings1.length && !isLoadingEarnings1 ? <DataTable
               border="1px solid red"
-              selectedDateRange={{ from: selectedDateRange?.from || new Date(), to: selectedDateRange?.to || new Date() }}
               data={referralEarnings1}
               columns={referralEarningColumns}
               openSidebarOnRowClick={true}
@@ -259,7 +277,6 @@ export default function ReferralEarningsAdminPage() {
               dropDownComponent={
                 referralEarnings2.length && !isLoadingEarnings2 ? <DataTable
                   border="1px solid green"
-                  selectedDateRange={{ from: selectedDateRange?.from || new Date(), to: selectedDateRange?.to || new Date() }}
                   data={referralEarnings2}
                   columns={referralEarningColumns}
                   filterableColumns={filterableColumns}
@@ -271,7 +288,6 @@ export default function ReferralEarningsAdminPage() {
                   dropDownComponent={
                     referralEarnings3.length && !isLoadingEarnings3 ? <DataTable
                       border="1px solid blue"
-                      selectedDateRange={{ from: selectedDateRange?.from || new Date(), to: selectedDateRange?.to || new Date() }}
                       data={referralEarnings3}
                       columns={referralEarningColumns}
                       filterableColumns={filterableColumns}
@@ -283,7 +299,6 @@ export default function ReferralEarningsAdminPage() {
                       dropDownComponent={
                         referralEarnings4.length && !isLoadingEarnings4 ? <DataTable
                           border="1px solid yellow"
-                          selectedDateRange={{ from: selectedDateRange?.from || new Date(), to: selectedDateRange?.to || new Date() }}
                           data={referralEarnings4}
                           openSidebarOnRowClick={true}
                           columns={referralEarningColumns}
@@ -295,7 +310,6 @@ export default function ReferralEarningsAdminPage() {
                           dropDownComponent={
                             referralEarnings5.length ? <DataTable
                               border="1px solid purple"
-                              selectedDateRange={{ from: selectedDateRange?.from || new Date(), to: selectedDateRange?.to || new Date() }}
                               data={referralEarnings5}
                               openSidebarOnRowClick={true}
                               columns={referralEarningColumns}
