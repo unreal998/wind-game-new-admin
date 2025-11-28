@@ -107,7 +107,7 @@ export const usePotentialOutputStats = (selectedDates?: DateRange, setPotentialT
 
       const potentialOutput = [...currentDaysPotentialOutput, ...previousDaysPotentialOutput];
 
-      const currentPotentialOutput = await axios.get(`https://6d6ed6665a16.ngrok-free.app/user/potential-ton-output`, {
+      const currentPotentialOutput = await axios.get(`https://turbinextesst.ngrok-free.dev/user/potential-ton-output`, {
         headers: {
           "ngrok-skip-browser-warning": "true",
         },

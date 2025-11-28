@@ -24,7 +24,7 @@ export const fetchUpdateWithDrawStatus = async ({
   status: "completed" | "declined"
 }) => {
   const response = await axios.put(
-    `https://6d6ed6665a16.ngrok-free.app/withdraw/status?status=${status}&id=${id}`,
+    `https://turbinextesst.ngrok-free.dev/withdraw/status?status=${status}&id=${id}`,
     {
       headers: {
         "ngrok-skip-browser-warning": true,

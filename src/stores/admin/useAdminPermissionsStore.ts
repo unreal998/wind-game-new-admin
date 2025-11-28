@@ -77,7 +77,7 @@ export const useAdminPermissionsStore = create<AdminPermissionsState>(
     ) => {
       try {
         const { data } = await axios.put(
-          `https://6d6ed6665a16.ngrok-free.app/permissions?id=${id}`,
+          `https://turbinextesst.ngrok-free.dev/permissions?id=${id}`,
           permissionData,
           {
             headers: {

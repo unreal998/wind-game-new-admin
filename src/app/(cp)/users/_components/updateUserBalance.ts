@@ -8,7 +8,7 @@ export const updateUserKWTBalance = async ({
   WindBalance: number
 }) => {
   const response = await axios.post(
-    `https://6d6ed6665a16.ngrok-free.app/user?uid=${id}`,
+    `https://turbinextesst.ngrok-free.dev/user?uid=${id}`,
     {
       WindBalance,
     },
@@ -29,7 +29,7 @@ export const updateUserTeam = async ({
   team: string
 }) => {
   const response = await axios.post(
-    `https://6d6ed6665a16.ngrok-free.app/user?uid=${id}`,
+    `https://turbinextesst.ngrok-free.dev/user?uid=${id}`,
     {
       team,
     },
@@ -50,7 +50,7 @@ export const updateUserInvitedBy = async ({
   invitedBy: string
 }) => {
   const response = await axios.post(
-    `https://6d6ed6665a16.ngrok-free.app/user?uid=${id}`,
+    `https://turbinextesst.ngrok-free.dev/user?uid=${id}`,
     { invitedBy },
     {
       headers: {
@@ -69,7 +69,7 @@ export const updateUserReferalArray = async ({
   referalArray: string[]
 }) => {
   const response = await axios.post(
-    `https://6d6ed6665a16.ngrok-free.app/user?uid=${id}`,
+    `https://turbinextesst.ngrok-free.dev/user?uid=${id}`,
     {
       referals: referalArray,
     },
@@ -90,7 +90,7 @@ export const updateUserTONBalance = async ({
   TONBalance: number
 }) => {
   const response = await axios.post(
-    `https://6d6ed6665a16.ngrok-free.app/user?uid=${id}`,
+    `https://turbinextesst.ngrok-free.dev/user?uid=${id}`,
     {
       TONBalance,
     },
@@ -111,7 +111,7 @@ export const replenishUserTONBalance = async ({
   amount: number
 }) => {
   const response = await axios.post(
-    `https://6d6ed6665a16.ngrok-free.app/transaction/ipn`,
+    `https://turbinextesst.ngrok-free.dev/transaction/ipn`,
     {
       to: wallet,
       amount: amount,
@@ -132,7 +132,7 @@ export const getUserData = async ({
   id: string
 }) => {
   const response = await axios.get(
-    `https://6d6ed6665a16.ngrok-free.app/user?tid=${id}`,
+    `https://turbinextesst.ngrok-free.dev/user?tid=${id}`,
     {
       headers: {
         "ngrok-skip-browser-warning": "true",

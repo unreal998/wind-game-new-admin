@@ -15,7 +15,7 @@ export type ModsItemType = {
 
 export async function fetchMods(areaName: string) {
   const request = await axios.get(
-    `https://6d6ed6665a16.ngrok-free.app/modifier?area=${areaName}`,
+    `https://turbinextesst.ngrok-free.dev/modifier?area=${areaName}`,
     {
       headers: {
         "ngrok-skip-browser-warning": true,

@@ -11,7 +11,7 @@ export type TonChange = {
 
 export async function getTonChanges(): Promise<TonChange[]> {
   const response = await axios.get(
-    "https://6d6ed6665a16.ngrok-free.app/tonChanges",
+    "https://turbinextesst.ngrok-free.dev/tonChanges",
     {
       headers: {
         "ngrok-skip-browser-warning": "true",

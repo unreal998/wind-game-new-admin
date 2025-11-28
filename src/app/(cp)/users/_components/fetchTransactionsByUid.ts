@@ -2,7 +2,7 @@ import axios from "axios"
 
 export const fetchTransactionsByUid = async (uid: string) => {
   const response = await axios.get(
-    `https://6d6ed6665a16.ngrok-free.app/transaction?uid=${uid}`,
+    `https://turbinextesst.ngrok-free.dev/transaction?uid=${uid}`,
     {
       headers: {
         "ngrok-skip-browser-warning": true,
