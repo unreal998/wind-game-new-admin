@@ -119,7 +119,7 @@ export function DataTableFilterBar<TData extends Record<string, any>>({
 
   // Оптимізований пошук з дебаунсом
   const debouncedSearch = useDebouncedCallback((value: string, callback?: (search: string) => void) => {
-    if (callback) {
+    if (typeof callback === "function") {
       callback(value)
     } else {
       table.setGlobalFilter(value || undefined)
@@ -129,7 +129,7 @@ export function DataTableFilterBar<TData extends Record<string, any>>({
   // Обробник події зміни input
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>, callback?: (search: string) => void) => {
     const value = event.target.value.trim()
-    debouncedSearch(value, (search: string) => callback?.(search))
+    debouncedSearch(value, callback)
   }
 
   // Отримуємо поточні налаштування видимості та порядку колонок
@@ -160,7 +160,7 @@ export function DataTableFilterBar<TData extends Record<string, any>>({
         <Searchbar
           type="search"
           placeholder="Search..."
-          onChange={(event) => handleSearchChange(event, onSearchChange)}
+          onChange={(event) => handleSearchChange(event, onSearchChange ?? undefined)}
           className="w-full sm:max-w-[350px] [&>input]:h-[34px]"
         />
         {title && <h3 className="text-base font-bold">{title}</h3>}

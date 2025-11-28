@@ -389,7 +389,7 @@ export function DataTable<TData extends Record<string, any>>({
           table={table}
           filterableColumns={filterableColumns}
           title={title}
-          onSearchChange={(search: string) => onSearchChange?.(search)}
+          onSearchChange={onSearchChange ? (search: string) => onSearchChange(search) : undefined}
         />
       )}
       <div className="relative h-full overflow-x-auto">
