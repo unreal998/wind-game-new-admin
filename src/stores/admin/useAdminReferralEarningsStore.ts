@@ -67,8 +67,10 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
 
         for (const user of allUsers) {
          let referalCount = 0;
+         let allReferalsCount = 0;
          if (user?.referals?.length > 0) {
            referalCount = await getUsersByIds(user.referals)
+           allReferalsCount = await getAllReferalsCount(user.telegramID)
          }
 
          if (user) {
@@ -86,6 +88,7 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
                telegramID: user.telegramID,
              },
              referalCount: referalCount,
+             allReferalsCount: allReferalsCount,
              inactiveReferalCount: user.referals?.length - referalCount,
              referral_user: {
                id: user.invitedBy,
@@ -141,8 +144,10 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
 
          for (const user of allReferals) {
           let referalCount = 0;
+          let allReferalsCount = 0;
             if (user?.referals?.length > 0) {
               referalCount = await getUsersByIds(user.referals)
+              allReferalsCount = await getAllReferalsCount(user.telegramID)
             }
 
           if (user) {
@@ -160,6 +165,7 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
                 telegramID: user.telegramID,
               },
               referalCount: referalCount,
+              allReferalsCount: allReferalsCount,
               inactiveReferalCount: user.referals?.length - referalCount,
               referral_user: {
                 id: user.invitedBy,
@@ -263,4 +269,13 @@ export async function getUsersByIds(uids: string[]) {
   }
 
   return allUsers.length;
+}
+
+export async function getAllReferalsCount(tid: string) {
+  const { data, error } = await supabase
+  .rpc("get_referral_children_count", {
+    target_tid: tid
+  })
+  if (error) throw error
+  return data;
 }
