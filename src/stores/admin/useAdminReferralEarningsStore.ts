@@ -53,6 +53,7 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
           .from("users")
           .select("*")
           .or('telegramID.eq.875867810,telegramID.eq.399678680,telegramID.eq.6668721056,team.eq.ran')
+          .filter("referals->0", "not.is", null)
           .range(from, from + PAGE_SIZE - 1)
 
 
