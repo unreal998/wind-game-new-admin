@@ -66,48 +66,48 @@ export const useAdminReferralEarningsStore = create<AdminReferralEarningsState>(
         const result: ReferralEarning[] = []
 
         for (const user of allUsers) {
-         let referalCount = 0;
-         let allReferalsCount = 0;
-         if (user?.referals?.length > 0) {
-           referalCount = await getUsersByIds(user.referals)
-           allReferalsCount = await getAllReferalsCount(user.telegramID)
-         }
+          let referalCount = 0;
+          let allReferalsCount = 0;
+          if (user?.referals?.length > 0) {
+            referalCount = await getUsersByIds(user.referals)
+            allReferalsCount = await getAllReferalsCount(user.telegramID)
+          }
 
-         if (user) {
-           result.push({
-             created_at:
-               user.created_at ||
-               new Date().toISOString(),
-             amount:
-              referalCount > 0 ? Math.floor(Object.values(user.referalIncomeKWT).reduce((a: number, v) => a + Number(v || 0), 0) * 10000) / 10000 : 0,
-             tonAmount:
-              referalCount > 0 ? Math.floor(Object.values(user.referalIncomeTON).reduce((a: number, v) => a + Number(v || 0), 0) * 10000) / 10000 : 0,
-             user: {
-               id: user.telegramID,
-               username: user.userName || user.telegramID,
-               telegramID: user.telegramID,
-             },
-             referalCount: referalCount,
-             allReferalsCount: allReferalsCount,
-             inactiveReferalCount: user.referals?.length - referalCount,
-             referral_user: {
-               id: user.invitedBy,
-               username: '',
-               first_name: "",
-               last_name: "",
-             },
-             id: user.telegramID,
-           })
-         }
-       } 
-          set({ referralEarnings: result || [], isLoading: false })
-      } catch (error) {
-        console.error("Error fetching referral earnings:", error)
-        set({
-          error: "Failed to load referral earnings",
-          isLoading: false,
-        })
-      }
+          if (user) {
+            result.push({
+              created_at:
+                user.created_at ||
+                new Date().toISOString(),
+              amount:
+                referalCount > 0 ? Math.floor(Object.values(user.referalIncomeKWT).reduce((a: number, v) => a + Number(v || 0), 0) * 10000) / 10000 : 0,
+              tonAmount:
+                referalCount > 0 ? Math.floor(Object.values(user.referalIncomeTON).reduce((a: number, v) => a + Number(v || 0), 0) * 10000) / 10000 : 0,
+              user: {
+                id: user.telegramID,
+                username: user.userName || user.telegramID,
+                telegramID: user.telegramID,
+              },
+              referalCount: referalCount,
+              allReferalsCount: allReferalsCount,
+              inactiveReferalCount: user.referals?.length - referalCount,
+              referral_user: {
+                id: user.invitedBy,
+                username: '',
+                first_name: "",
+                last_name: "",
+              },
+              id: user.telegramID,
+            })
+          }
+        } 
+            set({ referralEarnings: result || [], isLoading: false })
+        } catch (error) {
+          console.error("Error fetching referral earnings:", error)
+          set({
+            error: "Failed to load referral earnings",
+            isLoading: false,
+          })
+        }
     },
 
     fetchReferralEarningsReferals: async (tid: string, level: number, ownersData?: ReferralEarning): Promise<any[]> => {
