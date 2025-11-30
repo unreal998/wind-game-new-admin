@@ -73,7 +73,7 @@ export default function Overview() {
                 setPotentialTonOutput={setPotentialTonOutput}
               />
           ))}
-          <div>Загальна прогнозована сума виплат на даний момент: {potentialTonOutput} TON </div>
+          <div>Загальна прогнозована сума виплат на даний момент: {Math.floor(potentialTonOutput * 10000) / 10000} TON </div>
         </dl>
       </section>
     </>
