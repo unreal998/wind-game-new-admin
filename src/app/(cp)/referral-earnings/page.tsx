@@ -266,6 +266,7 @@ export default function ReferralEarningsAdminPage() {
               data={referralEarnings1}
               columns={referralEarningColumns}
               openSidebarOnRowClick={true}
+              simpleTitle="2 рівень"
               simple
               filterableColumns={filterableColumns}
               onRowClick={(row) => handleReferalData(row, 2)}
@@ -279,6 +280,7 @@ export default function ReferralEarningsAdminPage() {
                   filterableColumns={filterableColumns}
                   isLoading={isLoadingEarnings2}
                   openSidebarOnRowClick={true}
+                  simpleTitle="3 рівень"
                   onRowClick={(row) => handleReferalData(row, 3)}
                   simple
                   selectedRowid={selectedSub3RowId}
@@ -291,6 +293,7 @@ export default function ReferralEarningsAdminPage() {
                       isLoading={isLoadingEarnings3}
                       simple
                       openSidebarOnRowClick={true}
+                      simpleTitle="4 рівень"
                       onRowClick={(row) => handleReferalData(row, 4)}
                       selectedRowid={selectedSub4RowId}
                       dropDownComponent={
@@ -302,6 +305,7 @@ export default function ReferralEarningsAdminPage() {
                           filterableColumns={filterableColumns}
                           simple
                           isLoading={isLoadingEarnings4}
+                          simpleTitle="5 рівень"
                           onRowClick={(row) => handleReferalData(row, 5)}
                           selectedRowid={selectedSub5RowId}
                           dropDownComponent={
@@ -313,6 +317,7 @@ export default function ReferralEarningsAdminPage() {
                               simple
                               filterableColumns={filterableColumns}
                               isLoading={isLoadingEarnings5}
+                              simpleTitle="6 рівень"
                             /> : 
                             <TableRow>
                               <TableCell

@@ -57,6 +57,7 @@ interface DataTableProps<TData> {
   selectedRowid?: string
   title?: string
   border?: string
+  simpleTitle?: string
 }
 
 // Функція для форматування значень для пошуку
@@ -145,6 +146,7 @@ export function DataTable<TData extends Record<string, any>>({
   selectedRowid,
   title,
   border,
+  simpleTitle,
   onSearchChange,
 }: DataTableProps<TData> & { selectedDateRange?: DateRange, onSearchChange?: (search: string) => void }) {
   const [pagination, setPagination] = useState({
@@ -392,7 +394,10 @@ export function DataTable<TData extends Record<string, any>>({
           onSearchChange={onSearchChange ? (search: string) => onSearchChange(search) : undefined}
         />
       )}
-      <div className="relative h-full overflow-x-auto">
+      <div className="relative h-full overflow-x-auto" style={{
+        textAlign:'center'
+      }}>
+        {simpleTitle && <div className="text-lg font-bold">{simpleTitle}</div>}
         <Table className="border-none">
           <TableHead
             className={cx(
