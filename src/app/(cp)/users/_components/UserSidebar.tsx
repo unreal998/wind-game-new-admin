@@ -12,6 +12,7 @@ import { modifiersColumns } from "./ModifierColumn"
 import { AdminProfile, adminProfileTeams } from "@/types/profile"
 import { Select, SelectItem, SelectGroup, SelectValue, SelectTrigger, SelectContent } from "@/components/Select"
 import axios from "axios"
+import { ReferalsTreeComponent } from "./referalsTreeComponent"
 
 interface UserSidebarProps {
   user: AdminProfile
@@ -76,7 +77,6 @@ export const UserSidebar = ({
       },
     };
     Object.values(referalsData).forEach((userReferal) => {
-      console.log(userReferal)
         usersIncomeByLevel[
           (userReferal.level ?? 1) as keyof typeof usersIncomeByLevel
         ].count += 1;
@@ -328,6 +328,12 @@ export const UserSidebar = ({
               </div>
             </div>
           )}
+          {
+            <div>
+              <h3 className="mb-2 text-lg font-semibold">Дерево рефералів</h3>
+              <ReferalsTreeComponent uid={user.telegramID} />
+            </div>
+          }
         </div>
       </div>
     </div>
