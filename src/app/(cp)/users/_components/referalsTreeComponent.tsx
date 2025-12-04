@@ -86,22 +86,34 @@ export const ReferalsTreeComponent = ({ uid }: { uid: string }) => {
 
     const handleRowClick = useCallback((row: any, level: number) => {
         if (level === 2) {
+            setSelectedSub3RowId('');
+            setSelectedSubRowId('');
+            if (selectedRowid === row.telegramID) {
+                setSelectedRowid('');
+                return;
+            }
             fetchReferalData(row.telegramID, 2);
             setSelectedRowid(row.telegramID);
-            setSelectedSubRowId('');
-            setSelectedSub3RowId('');
             setIsLoading2(true);
         } else if (level === 3) {
+            setSelectedSub3RowId('');
+            if (selectedSubRowId === row.telegramID) {
+                setSelectedSubRowId('');
+                return;
+            }
             fetchReferalData(row.telegramID, 3);
             setSelectedSubRowId(row.telegramID);
-            setSelectedSub3RowId('');
             setIsLoading3(true);
         } else if (level === 4) {
+            if (selectedSub3RowId === row.telegramID) {
+                setSelectedSub3RowId('');
+                return;
+            }
             fetchReferalData(row.telegramID, 4);
             setSelectedSub3RowId(row.telegramID);
             setIsLoading4(true);
         }
-    }, [fetchReferalData, setSelectedRowid, setSelectedSubRowId, setSelectedSub3RowId])
+    }, [fetchReferalData, setSelectedRowid, setSelectedSubRowId, setSelectedSub3RowId, selectedRowid, selectedSubRowId, selectedSub3RowId])
 
     return (
         <div className="max-h-[400px] overflow-auto rounded border dark:border-gray-700">
