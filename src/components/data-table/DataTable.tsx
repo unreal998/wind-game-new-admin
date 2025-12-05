@@ -150,7 +150,7 @@ export function DataTable<TData extends Record<string, any>>({
   onSearchChange,
 }: DataTableProps<TData> & { selectedDateRange?: DateRange, onSearchChange?: (search: string) => void }) {
   const [pagination, setPagination] = useState({
-    pageSize: simple ? 100 : 50,
+    pageSize: simple ? 10000 : 50,
     pageIndex: 0,
   })
 
