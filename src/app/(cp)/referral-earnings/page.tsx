@@ -4,7 +4,7 @@ import { Card } from "@/components/Card"
 import { DataTable } from "@/components/data-table/DataTable"
 import { useAdminReferralEarningsStore } from "@/stores/admin/useAdminReferralEarningsStore"
 import { FilterableColumn } from "@/types/table"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { referralEarningColumns } from "./_components/ReferralEarningColumns"
 import { DateRange } from "react-day-picker"
 import Sum from "@/components/Sum"
@@ -49,6 +49,13 @@ export default function ReferralEarningsAdminPage() {
   const [selectedSub5RowId, setSelectedSub5RowId] = useState<string>('')
   const [userPermissions, setUserPermissionsData] =
   useState<CreatePermissionDto | null>(null)
+  const levelRefs = [
+    useRef<HTMLDivElement | null>(null),
+    useRef<HTMLDivElement | null>(null),
+    useRef<HTMLDivElement | null>(null),
+    useRef<HTMLDivElement | null>(null),
+    useRef<HTMLDivElement | null>(null),
+  ]
 
   useEffect(() => {
     if (!userPermissions) return;
@@ -189,22 +196,27 @@ export default function ReferralEarningsAdminPage() {
       const reversedData = data.reverse();
       setSelectedRowid(reversedData[0])
       await fetchReferralEarningsReferals(reversedData[0], 1)
+      levelRefs[0].current?.scrollIntoView({ behavior: 'smooth' })
       if (reversedData[1]) {
         setSelectedSubRowId(reversedData[1])
         setSelectedDateRange({ from: new Date(new Date().getTime() - 31536000000), to: new Date() })
         await fetchReferralEarningsReferals(reversedData[1], 2)
+        levelRefs[1].current?.scrollIntoView({ behavior: 'smooth' })
       }
       if (reversedData[2]) {
         setSelectedSub3RowId(reversedData[2])
         await fetchReferralEarningsReferals(reversedData[2], 3)
+        levelRefs[2].current?.scrollIntoView({ behavior: 'smooth' })
       }
       if (reversedData[3]) {
         setSelectedSub4RowId(reversedData[3])
         await fetchReferralEarningsReferals(reversedData[3], 4)
+        levelRefs[3].current?.scrollIntoView({ behavior: 'smooth' })
       }
       if (reversedData[4]) {
         setSelectedSub5RowId(reversedData[4])
         await fetchReferralEarningsReferals(reversedData[4], 5)
+        levelRefs[4].current?.scrollIntoView({ behavior: 'smooth' })
       }
 
     }
@@ -260,6 +272,7 @@ export default function ReferralEarningsAdminPage() {
           onRowClick={(row) => handleReferalData(row, 1)}
           selectedRowid={selectedRowid}
           onSearchChange={(search: string) => handleSearchChange(search)}
+          tableRef={levelRefs[0]}
           dropDownComponent={
              referralEarnings1.length && !isLoadingEarnings1 ? <DataTable
               border="1px solid red"
@@ -272,6 +285,7 @@ export default function ReferralEarningsAdminPage() {
               onRowClick={(row) => handleReferalData(row, 2)}
               selectedRowid={selectedSubRowId}
               isLoading={isLoadingEarnings1}
+              tableRef={levelRefs[1]}
               dropDownComponent={
                 referralEarnings2.length && !isLoadingEarnings2 ? <DataTable
                   border="1px solid green"
@@ -284,6 +298,7 @@ export default function ReferralEarningsAdminPage() {
                   onRowClick={(row) => handleReferalData(row, 3)}
                   simple
                   selectedRowid={selectedSub3RowId}
+                  tableRef={levelRefs[2]}
                   dropDownComponent={
                     referralEarnings3.length && !isLoadingEarnings3 ? <DataTable
                       border="1px solid blue"
@@ -296,6 +311,7 @@ export default function ReferralEarningsAdminPage() {
                       simpleTitle="3 рівень"
                       onRowClick={(row) => handleReferalData(row, 4)}
                       selectedRowid={selectedSub4RowId}
+                      tableRef={levelRefs[3]}
                       dropDownComponent={
                         referralEarnings4.length && !isLoadingEarnings4 ? <DataTable
                           border="1px solid yellow"
@@ -308,6 +324,7 @@ export default function ReferralEarningsAdminPage() {
                           simpleTitle="4 рівень"
                           onRowClick={(row) => handleReferalData(row, 5)}
                           selectedRowid={selectedSub5RowId}
+                          tableRef={levelRefs[4]}
                           dropDownComponent={
                             referralEarnings5.length ? <DataTable
                               border="1px solid purple"
@@ -318,6 +335,7 @@ export default function ReferralEarningsAdminPage() {
                               filterableColumns={filterableColumns}
                               isLoading={isLoadingEarnings5}
                               simpleTitle="5 рівень"
+                              tableRef={levelRefs[5]}
                             /> : 
                             <TableRow>
                               <TableCell

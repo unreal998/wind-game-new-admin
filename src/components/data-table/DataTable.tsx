@@ -58,6 +58,7 @@ interface DataTableProps<TData> {
   title?: string
   border?: string
   simpleTitle?: string
+  tableRef?: React.RefObject<HTMLDivElement>
 }
 
 // Функція для форматування значень для пошуку
@@ -148,6 +149,7 @@ export function DataTable<TData extends Record<string, any>>({
   border,
   simpleTitle,
   onSearchChange,
+  tableRef,
 }: DataTableProps<TData> & { selectedDateRange?: DateRange, onSearchChange?: (search: string) => void }) {
   const [pagination, setPagination] = useState({
     pageSize: simple ? 10000 : 50,
@@ -385,7 +387,7 @@ export function DataTable<TData extends Record<string, any>>({
   return (
     <div className={cx(!simple && "flex max-h-[calc(100vh-90px)] flex-col")} style={{
       border: border,
-    }}>
+    }} ref={tableRef}>
       {!simple && (
         <DataTableFilterBar
           table={table}
