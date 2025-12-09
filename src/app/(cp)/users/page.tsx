@@ -30,7 +30,6 @@ import {
 import { roleSelector, useUserStore } from "@/stores/useUserStore"
 import { EnhancedDatePicker } from "@/components/EnhancedDatePicker"
 import { DateRange } from "react-day-picker"
-import { interval, isWithinInterval } from "date-fns"
 import { CreatePermissionDto } from "@/stores/admin/useAdminPermissionsStore"
 
 export default function ReferralsAdminPage() {
@@ -40,6 +39,8 @@ export default function ReferralsAdminPage() {
     updateUser,
     marketingProfiles,
     fetchMarketingProfiles,
+    fetchKWTBalance,
+    fethTonBalance,
   } = useAdminReferralsStore()
 
   const userRole = useUserStore(roleSelector)
@@ -73,38 +74,18 @@ export default function ReferralsAdminPage() {
       }, 0),
     )
 
-    setSelectedDateRangeTONSum(
-      profiles
-        .filter((user) =>
-          isWithinInterval(
-            new Date(user.created_at ?? new Date().toISOString()),
-            interval(
-              selectedDateRange?.to ?? new Date(),
-              selectedDateRange?.from ?? new Date(),
-            ),
-          ),
-        )
-        .reduce((acc, user) => {
-          if (!user?.TONBalance) return acc
-          return acc + user.TONBalance
-        }, 0),
-    )
-    setSelectedDateRangeKwtSum(
-      profiles
-        .filter((user) =>
-          isWithinInterval(
-            new Date(user.created_at ?? new Date().toISOString()),
-            interval(
-              selectedDateRange?.to ?? new Date(),
-              selectedDateRange?.from ?? new Date(),
-            ),
-          ),
-        )
-        .reduce((acc, user) => {
-          if (!user?.WindBalance) return acc
-          return acc + user.WindBalance
-        }, 0),
-    )
+    const loadKWTBalance = async () => {
+      const kwtBalance = await fetchKWTBalance(selectedDateRange)
+      setSelectedDateRangeKwtSum(kwtBalance)
+    }
+    loadKWTBalance()
+
+    const loadBalance = async () => {
+      const balance = await fethTonBalance(selectedDateRange)
+      setSelectedDateRangeTONSum(balance)
+    }
+    loadBalance()
+
   }, [profiles, isLoading, selectedDateRange])
 
   useEffect(() => {
@@ -309,8 +290,8 @@ export default function ReferralsAdminPage() {
             <div className="flex gap-10">
               <div className="text-1xl m-1 w-72 border-2 bg-gray-400 p-2 font-semibold text-gray-900 dark:border-gray-800 dark:bg-gray-925 dark:text-gray-50">
                 <h1>Загальна сума в обранному періоду</h1>
-                <Sum label="кВт" sum={selectedDateRangeKwtSum} />
-                <Sum label="TON" sum={selectedDateRangeTONSum} />
+                <Sum label="кВт" sum={Number((Math.floor(selectedDateRangeKwtSum * 100) / 100).toFixed(2))} />
+                <Sum label="TON" sum={Number((Math.floor(selectedDateRangeTONSum * 100) / 100).toFixed(2))} />
               </div>
               <div className="text-1xl m-1 min-w-max border bg-gray-400 p-2 font-semibold text-gray-900 dark:border-gray-800 dark:bg-gray-925 dark:text-gray-50">
                 <h1>Загальна сума</h1>

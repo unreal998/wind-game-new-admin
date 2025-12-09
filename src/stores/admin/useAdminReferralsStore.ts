@@ -2,6 +2,8 @@ import { AdminProfile } from "@/types/profile"
 import { createClient } from "@/utils/supabase/client"
 import { create } from "zustand"
 import { GetPermissionsDto } from "./useAdminPermissionsStore"
+import { DateRange } from "react-day-picker"
+import { endOfDay, format, startOfDay } from "date-fns"
 
 interface AdminReferralsState {
   profiles: AdminProfile[]
@@ -13,6 +15,8 @@ interface AdminReferralsState {
   subscribeToProfiles: () => Promise<() => void>
   fetchMarketingProfiles: (tid: string) => Promise<void>
   fetchMarketingReferalsProfiles: (tid: string) => Promise<void>
+  fetchKWTBalance: (selectedDates?: DateRange) => Promise<number>
+  fethTonBalance: (selectedDates?: DateRange) => Promise<number>
   marketingReferalsProfiles: AdminProfile[]
 }
 
@@ -104,6 +108,49 @@ export const useAdminReferralsStore = create<AdminReferralsState>(
       }
     },
 
+    fetchKWTBalance: async (selectedDates?: DateRange) => {
+      const supabase = createClient();
+      if (!selectedDates?.from || !selectedDates?.to) return;
+
+      const fromDate = startOfDay(selectedDates.from);
+      const toDate = endOfDay(selectedDates.to);
+
+      const fromStr = format(fromDate, "yyyy-MM-dd HH:mm:ss");
+      const toStr = format(toDate, "yyyy-MM-dd HH:mm:ss");
+
+      let allData: any[] = [];
+      let fromIndex = 0;
+      let toIndex = 999;
+
+      while (true) {
+          const { data, error } = await supabase
+            .from("turx_dynamic")
+            .select("*")
+            .gte("created_at", fromStr)
+            .lte("created_at", toStr)
+            .order("created_at", { ascending: true })
+            .range(fromIndex, toIndex);
+
+          if (error) {
+            console.error("Error fetching registration stats:", error);
+            break;
+          }
+
+          allData = allData.concat(data);
+          if (data.length < 1000) break;
+
+          fromIndex += 1000;
+          toIndex += 1000;
+      }
+      return allData[allData.length - 1].sum;
+    },
+
+    fethTonBalance: async (selectedDates?: DateRange) => {
+      const withdrawalsBalance = await fetchWithdrawalsBalance(selectedDates);
+      const transactionsBalance = await fetchTransactionsBalance(selectedDates);
+      return transactionsBalance - withdrawalsBalance;
+    },
+
     subscribeToProfiles: async () => {
       const subscription = supabase
         .channel("users_channel")
@@ -162,4 +209,78 @@ export async function fetchUserDataByTid(tid: string): Promise<AdminProfile> {
     .single()
   if (error) throw error
   return data
+}
+
+export const fetchWithdrawalsBalance = async (selectedDates?: DateRange) => {
+  const supabase = createClient();
+  if (!selectedDates?.from || !selectedDates?.to) return;
+  const fromDate = startOfDay(selectedDates.from);
+  const toDate = endOfDay(selectedDates.to);
+
+  const fromStr = format(fromDate, "yyyy-MM-dd HH:mm:ss");
+  const toStr = format(toDate, "yyyy-MM-dd HH:mm:ss");
+
+  let allData: any[] = [];
+  let fromIndex = 0;
+  let toIndex = 999;
+
+  while (true) {
+      const { data, error } = await supabase
+        .from("withdraw")
+        .select("*")
+        .gte("created_at", fromStr)
+        .lte("created_at", toStr)
+        .order("created_at", { ascending: true })
+        .range(fromIndex, toIndex);
+
+      if (error) {
+        console.error("Error fetching registration stats:", error);
+        break;
+      }
+
+      allData = allData.concat(data);
+      if (data.length < 1000) break;
+
+      fromIndex += 1000;
+      toIndex += 1000;
+  }
+
+  return allData.filter((item) => item.status === "completed").reduce((acc, item) => acc + item.sum, 0);
+};
+
+export const fetchTransactionsBalance = async (selectedDates?: DateRange) => {
+  const supabase = createClient();
+  if (!selectedDates?.from || !selectedDates?.to) return;
+
+  const fromDate = startOfDay(selectedDates.from);
+  const toDate = endOfDay(selectedDates.to);
+
+  const fromStr = format(fromDate, "yyyy-MM-dd HH:mm:ss");
+  const toStr = format(toDate, "yyyy-MM-dd HH:mm:ss");
+
+  let allData: any[] = [];
+  let fromIndex = 0;
+  let toIndex = 999;
+
+  while (true) {
+      const { data, error } = await supabase
+        .from("transactions")
+        .select("*")
+        .gte("created_at", fromStr)
+        .lte("created_at", toStr)
+        .order("created_at", { ascending: true })
+        .range(fromIndex, toIndex);
+
+      if (error) {
+        console.error("Error fetching registration stats:", error);
+        break;
+      }
+
+      allData = allData.concat(data);
+      if (data.length < 1000) break;
+
+      fromIndex += 1000;
+      toIndex += 1000;
+  }
+  return allData.filter((item) => item.txid !== "312r2r12f12r12f12fqwfh55h5h" && item.txid !== "1w23uui8890bbh1y7u9it5r2cv2g").reduce((acc, item) => acc + item.summ, 0);
 }

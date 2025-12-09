@@ -6,7 +6,7 @@ export const fetchTransactionsApi = async (selectedDateRange: DateRange) => {
   const supabase = createClient()
   const fromDate = format(startOfDay(selectedDateRange?.from || new Date()), "yyyy-MM-dd HH:mm:ss")
   const toDate = format(endOfDay(selectedDateRange?.to || new Date()), "yyyy-MM-dd HH:mm:ss")
-  console.log(JSON.stringify(fromDate), JSON.stringify(toDate))
+
   let allData: any[] = [];
   let fromIndex = 0;
   let toIndex = 999;
