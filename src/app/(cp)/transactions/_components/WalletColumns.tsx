@@ -2,6 +2,7 @@
 import { Checkbox } from "@/components/Checkbox"
 import { CopyButton } from "@/components/CopyButton"
 import { DateWithDistance } from "@/components/data-table/DateWithDistance"
+import { formatTimestamp } from "@/hooks/formatTimestamp"
 import { type TableColumn } from "@/types/table"
 import { createColumnHelper } from "@tanstack/react-table"
 
@@ -58,10 +59,16 @@ export const walletColumns: TableColumn<Transaction>[] = [
         </span>
       )
     },
+    meta: {
+      exportValue: (row) => row.id || "-",
+    },
   }),
   columnHelper.accessor("created_at", {
     header: "Час створення",
     cell: ({ getValue }) => <DateWithDistance date={getValue()} />,
+    meta: {
+      exportValue: (row) => formatTimestamp({ date: row.created_at }),
+    },
   }),
   columnHelper.accessor("wallet", {
     header: "Гаманець",
@@ -74,10 +81,16 @@ export const walletColumns: TableColumn<Transaction>[] = [
         </span>
       )
     },
+    meta: {
+      exportValue: (row) => row.wallet || "-",
+    },
   }),
   columnHelper.accessor("summ", {
     header: "Сума",
     cell: ({ getValue }) => getValue().toFixed(2),
+    meta: {
+      exportValue: (row) => row.summ.toFixed(2) || "-",
+    },
   }),
   columnHelper.accessor("userName", {
     header: "Ім'я користувача",
@@ -90,6 +103,9 @@ export const walletColumns: TableColumn<Transaction>[] = [
           <CopyButton text={userName} />
         </span>
       )
+    },
+    meta: {
+      exportValue: (row) => row.userName || "-",
     },
   }),
   columnHelper.accessor("telegramID", {
@@ -104,6 +120,9 @@ export const walletColumns: TableColumn<Transaction>[] = [
         </span>
       )
     },
+    meta: {
+      exportValue: (row) => row.telegramID || "-",
+    },
   }),
   columnHelper.accessor("txid", {
     header: "TXID",
@@ -116,12 +135,18 @@ export const walletColumns: TableColumn<Transaction>[] = [
         </span>
       )
     },
+    meta: {
+      exportValue: (row) => row.txid || "-",
+    },
   }),
   columnHelper.accessor("team", {
     header: "Команда",
     cell: ({ getValue }) => {
       const value = getValue()
       return <span className="max-w-[160px] truncate">{value}</span>
+    },
+    meta: {
+      exportValue: (row) => row.team || "-",
     },
   }),
   columnHelper.accessor("invitedBy", {
@@ -134,6 +159,9 @@ export const walletColumns: TableColumn<Transaction>[] = [
           <CopyButton text={value} />
         </span>
       )
+    },
+    meta: {
+      exportValue: (row) => row.invitedBy || "-",
     },
   }),
 ]

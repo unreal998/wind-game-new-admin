@@ -77,6 +77,7 @@ export interface DataTableFilterBarProps<TData extends Record<string, any>> {
   table: Table<TData>
   filterableColumns: FilterableColumn[]
   title?: string
+  isExport?: boolean
 }
 
 export interface DataTableProps<TData> {

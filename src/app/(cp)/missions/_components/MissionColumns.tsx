@@ -7,6 +7,7 @@ import { createColumnHelper } from "@tanstack/react-table"
 import MissionActionsCell from "./MissionActionsCell"
 import type { Mission } from "./fetchMissions"
 import { Checkbox } from "@/components/Checkbox"
+import { formatTimestamp } from "@/hooks/formatTimestamp"
 
 const columnHelper = createColumnHelper<Mission>()
 
@@ -53,6 +54,9 @@ export const getMissionColumns = (
           </span>
         )
       },
+      meta: {
+        exportValue: (row) => row.id || "-",
+      },
     }),
     columnHelper.accessor("img", {
       header: "Зображення",
@@ -68,20 +72,32 @@ export const getMissionColumns = (
           <span className="italic text-gray-400">Немає</span>
         )
       },
+      meta: {
+        exportValue: (row) => row.img || "-",
+      },
     }),
     columnHelper.accessor((row) => row.title[lang], {
       id: "title",
       header: "Заголовок",
       cell: (info) => info.getValue(),
+      meta: {
+        exportValue: (row) => row.title[lang] || "-",
+      },
     }),
     columnHelper.accessor((row) => row.description[lang], {
       id: "description",
       header: "Опис",
       cell: (info) => info.getValue(),
+      meta: {
+        exportValue: (row) => row.description[lang] || "-",
+      },
     }),
     columnHelper.accessor("reward", {
       header: "Нагорода",
       cell: ({ getValue }) => getValue(),
+      meta: {
+        exportValue: (row) => row.reward || "-",
+      },
     }),
     columnHelper.accessor("coin", {
       header: "Коїн",
@@ -89,14 +105,23 @@ export const getMissionColumns = (
         const coin = getValue()
         return coin === "TURX" ? "кВт" : coin
       },
+      meta: {
+        exportValue: (row) => row.coin || "-",
+      },
     }),
     columnHelper.accessor("type", {
       header: "Тип",
       cell: ({ getValue }) => getValue(),
+      meta: {
+        exportValue: (row) => row.type || "-",
+      },
     }),
     columnHelper.accessor("created_at", {
       header: "Дата створення",
       cell: ({ getValue }) => new Date(getValue()).toLocaleString("uk-UA"),
+      meta: {
+        exportValue: (row) => formatTimestamp({ date: row.created_at }),
+      },
     }),
   ]
   if (isAvialableToWrite) {

@@ -85,7 +85,7 @@ export const userModColumns: TableColumn<UserMod>[] = [
     enableSorting: true,
     filterFn: "text",
     meta: {
-      exportValue: (row) => row.locationName || "-",
+      exportValue: (row) => row.location_id || "-",
     },
   }),
 

@@ -73,7 +73,7 @@ export const userColumns: TableColumn<AdminProfile>[] = [
     enableSorting: true,
     filterFn: "text",
     meta: {
-      exportValue: (row) => String(row.id),
+      exportValue: (row) => row.team || "-",
     },
   }),
 
@@ -125,6 +125,9 @@ export const userColumns: TableColumn<AdminProfile>[] = [
         </span>
       )
     },
+    meta: {
+      exportValue: (row) => row.referalCount || 0,
+    },
   }),
   columnHelper.accessor("inactiveReferalCount", {
     header: "Не активні реф.",
@@ -136,6 +139,9 @@ export const userColumns: TableColumn<AdminProfile>[] = [
           <span>{inactiveReferalCount}</span>
         </span>
       )
+    },
+    meta: {
+      exportValue: (row) => row.inactiveReferalCount || 0,
     },
   }),
 
@@ -216,7 +222,7 @@ export const userColumns: TableColumn<AdminProfile>[] = [
     enableSorting: true,
     filterFn: "text",
     meta: {
-      exportValue: (row) => row.invitedBy || "-",
+      exportValue: (row) => `https://t.me/TurbinexAppBot?start=r_${row.telegramID}` || "-",
     },
   }),
   columnHelper.accessor("areas", {
@@ -237,6 +243,9 @@ export const userColumns: TableColumn<AdminProfile>[] = [
           <CopyButton text={areaString} />
         </span>
       )
+    },
+    meta: {
+      exportValue: (row) => row.areas.map((area) => area.name).join(", ") || "-",
     },
   }),
   columnHelper.accessor("wallet", {

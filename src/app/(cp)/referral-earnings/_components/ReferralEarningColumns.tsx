@@ -68,6 +68,9 @@ export const referralEarningColumns: TableColumn<ReferralEarning>[] = [
         </span>
       )
     },
+    meta: {
+      exportValue: (row) => row.referalCount || 0,
+    },
   }),
   columnHelper.accessor("inactiveReferalCount", {
     header: "Не активні реф.",
@@ -80,6 +83,9 @@ export const referralEarningColumns: TableColumn<ReferralEarning>[] = [
         </span>
       )
     },
+    meta: {
+      exportValue: (row) => row.inactiveReferalCount || 0,
+    },
   }),
   columnHelper.accessor("allReferalsCount", {
     header: "Всі реф.",
@@ -91,6 +97,9 @@ export const referralEarningColumns: TableColumn<ReferralEarning>[] = [
           <span className="font-medium">{allReferalsCount}</span>
         </span>
       )
+    },
+    meta: {
+      exportValue: (row) => row.allReferalsCount || 0,
     },
   }),
   columnHelper.accessor((row) => row.user?.username, {

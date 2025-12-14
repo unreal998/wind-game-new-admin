@@ -263,6 +263,7 @@ export default function ReferralEarningsAdminPage() {
       </div>}
       <Card className="p-0">
         <DataTable
+          isExport={false}
           data={referralEarnings}
           title={cuurenChainString}
           columns={referralEarningColumns}

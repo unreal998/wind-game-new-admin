@@ -17,6 +17,7 @@ export function DataTableFilterBar<TData extends Record<string, any>>({
   filterableColumns,
   title,
   onSearchChange,
+  isExport = true,
 }: DataTableFilterBarProps<TData> & { onSearchChange?: (search: string) => void }) {
   const isFiltered = table.getState().columnFilters.length > 0
   const [showFilters, setShowFilters] = useState(false)
@@ -179,10 +180,10 @@ export function DataTableFilterBar<TData extends Record<string, any>>({
             <span className="hidden sm:block">Фільтри</span>
           </Button> */}
           <DataTableViewOptions table={table} />
-          <ExportButton
+          {isExport && <ExportButton
             data={table.getCoreRowModel().rows.map((row) => row.original)}
             columns={table.getAllColumns().map((column) => column.columnDef)}
-          />
+          />}
         </div>
       </div>
 
