@@ -51,7 +51,6 @@ export const useAdminPermissionsStore = create<AdminPermissionsState>(
           .select("*")
         if (fetchError) throw fetchError
 
-        console.log(data)
         set({ permissions: data, isLoading: false })
       } catch (e) {
         console.error("Error when creating permissions", e)
@@ -65,7 +64,7 @@ export const useAdminPermissionsStore = create<AdminPermissionsState>(
           .from("permissions")
           .select("*")
         if (error) throw error
-        console.log(permissionsData)
+
         set({ permissions: permissionsData, isLoading: false })
       } catch (e) {
         set({ error: "Error when fetching permissions", isLoading: false })

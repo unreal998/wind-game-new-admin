@@ -10,12 +10,9 @@ import { Button } from "@/components"
 import useIsAvailableToWrite from "@/hooks/useIsAvailableToWrite"
 import { roleSelector, useUserStore } from "@/stores/useUserStore"
 import NotAllowed from "@/components/NotAllowed"
-import { DateRange } from "react-day-picker"
-import { EnhancedDatePicker } from "@/components/EnhancedDatePicker"
 
 export default function PermissionsPage() {
   const [modalOpen, setModalOpen] = useState<boolean>(false)
-  const [selectedDateRange, setSelectedDateRange] = useState<DateRange>()
   const { isLoading, permissions, fetchPermissions } =
     useAdminPermissionsStore()
   const { isAvialableToWrite } = useIsAvailableToWrite()
@@ -30,7 +27,6 @@ export default function PermissionsPage() {
     <>
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Дозволи</h1>
-        <EnhancedDatePicker setSelectedDateRange={setSelectedDateRange} />
         <div className="flex items-center gap-2">
           {isAvialableToWrite && (
             <Button onClick={() => setModalOpen(true)}>Додати</Button>
@@ -42,7 +38,6 @@ export default function PermissionsPage() {
       </div>
       <Card className="p-0">
         <DataTable
-          selectedDateRange={{ from: selectedDateRange?.from || new Date(), to: selectedDateRange?.to || new Date() }}
           data={permissions}
           columns={getPermissionColumns(isAvialableToWrite ?? false)}
           isLoading={isLoading}
