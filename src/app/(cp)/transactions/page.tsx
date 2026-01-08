@@ -14,12 +14,12 @@ import { walletColumns } from "./_components/WalletColumns"
 import Sum from "@/components/Sum"
 import { EnhancedDatePicker } from "@/components/EnhancedDatePicker"
 import { DateRange } from "react-day-picker"
-import { format, interval, isWithinInterval } from "date-fns"
+import { interval, isWithinInterval } from "date-fns"
 import NotAllowed from "@/components/NotAllowed"
 import { roleSelector, useUserStore } from "@/stores/useUserStore"
 import { Select, SelectItem, SelectContent, SelectGroup, SelectValue, SelectTrigger } from "@/components/Select"
 import { AdminProfileTeams, adminProfileTeams } from "@/types/profile"
-import { formatInTimeZone } from "date-fns-tz"
+import { formatInTimeZone, fromZonedTime  } from "date-fns-tz"
 
 export default function WalletsAdminPage() {
   const [transactions, setTransactions] = useState<any[]>([])
@@ -57,16 +57,27 @@ export default function WalletsAdminPage() {
         )
         .reduce((acc: number, next: any) => acc + next.summ, 0),
     )
+    
+    const from = fromZonedTime(
+      selectedDateRange?.from || new Date(),
+      "Europe/Kiev"
+    );
+    
+    const to = fromZonedTime(
+      selectedDateRange?.to || new Date(),
+      "Europe/Kiev"
+    );
+
     setSelectedDateRangeClearSum(
       filteredTransactions
         .filter((item: any) => item.txid !== "1w23uui8890bbh1y7u9it5r2cv2g" && item.txid !== "312r2r12f12r12f12fqwfh55h5h")
         .filter((item: any) =>
           isWithinInterval(
             item.created_at,
-            interval(
-              format(selectedDateRange?.to || new Date(), "yyyy-MM-dd HH:mm:ss"),
-              format(selectedDateRange?.from || new Date(), "yyyy-MM-dd HH:mm:ss"),
-            ),
+            {
+              start: from,
+              end: to,
+            }
           ),
         )
         .reduce((acc: number, next: any) => acc + next.summ, 0),
