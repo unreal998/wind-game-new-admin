@@ -9,7 +9,7 @@ export type RewriteRoadmapRequest = {
 
 export const fetchGetRoadmap = async (lng: lng) => {
   const response = await axios.get(
-    `https://turbinextesst.ngrok-free.dev/roadmap?lng=${lng}`,
+    `https://wind-game-be.fly.dev/roadmap?lng=${lng}`,
     {
       headers: {
         "ngrok-skip-browser-warning": true,
@@ -24,7 +24,7 @@ export const fetchRewriteRoadmap = async ({
   lng,
 }: RewriteRoadmapRequest) => {
   const response = await axios.put(
-    `https://turbinextesst.ngrok-free.dev/roadmap?lng=${lng}`,
+    `https://wind-game-be.fly.dev/roadmap?lng=${lng}`,
     { data: newRoadmapText },
     {
       headers: {

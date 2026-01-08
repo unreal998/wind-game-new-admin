@@ -46,7 +46,7 @@ export const ReferalsTreeComponent = ({ uid }: { uid: string }) => {
     const [selectedSub3RowId, setSelectedSub3RowId] = useState<string>('')
 
     const fetchReferalData = useCallback(async (referalId: string, level: number) => {
-        const response = await axios.get(`https://turbinextesst.ngrok-free.dev/referal?uid=${referalId}`, {
+        const response = await axios.get(`https://wind-game-be.fly.dev/referal?uid=${referalId}`, {
             headers: {
               "ngrok-skip-browser-warning": true,
             },

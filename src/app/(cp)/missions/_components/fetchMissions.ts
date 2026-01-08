@@ -36,7 +36,7 @@ export type CreateMissionData = {
 
 export async function fetchMissions() {
   const missionsDataRequest = await axios.get(
-    `https://turbinextesst.ngrok-free.dev/missions`,
+    `https://wind-game-be.fly.dev/missions`,
     {
       headers: {
         "ngrok-skip-browser-warning": true,
@@ -48,7 +48,7 @@ export async function fetchMissions() {
 
 export async function fetchAddMissions(createMissionData: CreateMissionData) {
   const missionsDataRequest = await axios.put(
-    `https://turbinextesst.ngrok-free.dev/missions`,
+    `https://wind-game-be.fly.dev/missions`,
     createMissionData,
     {
       headers: {
@@ -61,7 +61,7 @@ export async function fetchAddMissions(createMissionData: CreateMissionData) {
 
 export async function fetchDeleteMission(id: MissionsData["id"]) {
   const response = await axios.delete(
-    `https://turbinextesst.ngrok-free.dev/missions?id=${id}`,
+    `https://wind-game-be.fly.dev/missions?id=${id}`,
     {
       headers: {
         "ngrok-skip-browser-warning": true,

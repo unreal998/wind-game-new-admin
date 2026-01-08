@@ -24,7 +24,7 @@ export const fetchUpdateWithDrawStatus = async ({
   status: "completed" | "declined"
 }) => {
   const response = await axios.put(
-    `https://turbinextesst.ngrok-free.dev/withdraw/status?status=${status}&id=${id}`,
+    `https://wind-game-be.fly.dev/withdraw/status?status=${status}&id=${id}`,
     {
       headers: {
         "ngrok-skip-browser-warning": true,
