@@ -14,7 +14,7 @@ import { walletColumns } from "./_components/WalletColumns"
 import Sum from "@/components/Sum"
 import { EnhancedDatePicker } from "@/components/EnhancedDatePicker"
 import { DateRange } from "react-day-picker"
-import { interval, isWithinInterval } from "date-fns"
+import { format, interval, isWithinInterval } from "date-fns"
 import NotAllowed from "@/components/NotAllowed"
 import { roleSelector, useUserStore } from "@/stores/useUserStore"
 import { Select, SelectItem, SelectContent, SelectGroup, SelectValue, SelectTrigger } from "@/components/Select"
@@ -64,8 +64,8 @@ export default function WalletsAdminPage() {
           isWithinInterval(
             item.created_at,
             interval(
-              formatInTimeZone(selectedDateRange?.to || new Date(), 'Europe/Kiev', "yyyy-MM-dd HH:mm:ss"),
-              formatInTimeZone(selectedDateRange?.from || new Date(), 'Europe/Kiev', "yyyy-MM-dd HH:mm:ss"),
+              format(selectedDateRange?.to || new Date(), "yyyy-MM-dd HH:mm:ss"),
+              format(selectedDateRange?.from || new Date(), "yyyy-MM-dd HH:mm:ss"),
             ),
           ),
         )
